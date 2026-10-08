@@ -157,6 +157,8 @@ La arquitectura restante del flujo es:
 
 El repositorio del proyecto es privado. Una vez que el administrador invite a un colega como colaborador y este acepte, podrá abrir la pestaña **Issues** del repositorio, seleccionar **Retroalimentación sobre formularios** y describir el formulario, sección, observación y mejora propuesta. La plantilla permite distinguir problemas de campos, presentación, comportamiento y textos.
 
+El repositorio privado permite compartir el código y recibir comentarios, pero no publica una vista web interactiva. Para probar los formularios, el colega debe descargar o clonar el repositorio autorizado y abrir `index.html` en un navegador; luego puede registrar la retroalimentación en Issues.
+
 La retroalimentación debe usar ejemplos ficticios. No adjuntar ni incluir datos personales, información reservada o antecedentes de casos reales en los comentarios. El acceso al repositorio también permite consultar los archivos y materiales de referencia que contiene.
 
 ---
