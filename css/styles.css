@@ -636,6 +636,12 @@ body {
 .col-3 { grid-column: span 3; }
 .col-2 { grid-column: span 2; }
 
+.form-grid-divider {
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.35rem;
+  padding-top: 1.15rem;
+}
+
 @media (max-width: 1100px) {
   .col-3 { grid-column: span 6; }
   .col-2 { grid-column: span 6; }
