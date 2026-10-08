@@ -14,7 +14,7 @@
  * CICLO DE ITERACIONES (el proceso es iterativo):
  *   - PRIMER_INGRESO          -> iteración N° 1 (todas las líneas)
  *   - RESPONDE_OBSERVACIONES  -> iteración N° 2 (todas las líneas)
- *   - REEVALUACION            -> iteración N° 3 (Circular 33, < 5.000 UTM y Programas)
+ *   - REEVALUACION            -> iteración N° 3 (Circular 33, Menores a 5.000 UTM y Programas)
  *   Cuando el estado resultante contiene observaciones, la iniciativa vuelve a
  *   evaluación por una nueva iteración; cada vuelta queda registrada en el
  *   arreglo "iteraciones" y se imprime en la ficha oficial.
@@ -42,7 +42,7 @@ const BLOQUE_PROCESO_EVALUACION = {
     enum: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"]
   },
   numero_iteracion: { tipo: "integer", minimo: 1 },
-  admite_reevaluacion: { tipo: "boolean", descripcion: "true en Circular 33, < 5.000 UTM y Programas" },
+  admite_reevaluacion: { tipo: "boolean", descripcion: "true en Circular 33, Menores a 5.000 UTM y Programas" },
   iteraciones_registradas: { tipo: "integer", descripcion: "Cantidad de iteraciones previas en el historial" }
 };
 
@@ -237,11 +237,12 @@ trazabilidad: {
    */
   evaluacion5000Utm: {
     nombre_modelo: "FichaEvaluacion5000UTM",
-    descripcion: "Evaluación técnica de iniciativas que no superan 5.000 UTM",
+    descripcion: "Evaluación técnica de iniciativas clasificadas como Menores a 5.000 UTM",
     flujo: ["Registro de la iniciativa", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
     instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"],
     campos: {
       ano_postulacion: { tipo: "integer" },
+      etapa_postulacion: { tipo: "string", enum: ["Diseño", "Ejecución"] },
       codigo_idi: { tipo: "string" },
       nombre_iniciativa: { tipo: "string" },
       sector: { tipo: "string", enum: ["Salud", "Agua Potable Rural (SSR)", "Deporte", "Seguridad", "Educación", "Recursos Naturales y Medio Ambiente", "Multisectorial", "Fomento Productivo", "Desarrollo Social", "Otros"] },
@@ -299,12 +300,22 @@ trazabilidad: {
     campos: {
       ano_postulacion: { tipo: "integer" },
       codigo_idi: { tipo: "string" },
-      localizacion: { provincia: { tipo: "string" }, comuna: { tipo: "string" } },
+      localizacion: {
+        provincia: { tipo: "string" },
+        comuna: { tipo: "string" },
+        localidad: { tipo: "string", opcional: true }
+      },
       sector: { tipo: "string" },
       nombre_programa: { tipo: "string" },
       unidad_formuladora: { tipo: "string" },
       unidad_tecnica: { tipo: "string" },
       costo_total: { tipo: "number" },
+      oficio_postulacion: {
+        numero: { tipo: "string", opcional: true },
+        fecha: { tipo: "string", formato: "date", opcional: true },
+        fechaIngresoOficinaPartes: { tipo: "string", formato: "date", opcional: true },
+        fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
+      },
       evaluacion: {
         estado: { tipo: "string", enum: ["RECOMENDADO", "OBSERVADO", "RECHAZADO"] },
         fecha: { tipo: "string", formato: "date" },

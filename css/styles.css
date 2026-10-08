@@ -681,8 +681,24 @@ body {
 .form-grid .ut5000-registro-field.ut5000-orden-12 { order: 12; }
 .form-grid .ut5000-registro-field.ut5000-orden-13 { order: 13; }
 .form-grid .ut5000-registro-field.ut5000-orden-14 { order: 14; }
-.form-grid .ut5000-registro-field.ut5000-orden-2 { grid-column: 1 / span 4; }
-.form-grid .ut5000-registro-field.ut5000-orden-3 { grid-column: 5 / span 8; }
+.form-grid .ut5000-registro-field.ut5000-orden-15 { order: 15; }
+.form-grid .ut5000-registro-field.ut5000-orden-3 { grid-column: 1 / span 4; }
+.form-grid .ut5000-registro-field.ut5000-orden-4 { grid-column: 5 / span 8; }
+
+.form-grid .prog-registro-field.prog-orden-1 { order: 1; }
+.form-grid .prog-registro-field.prog-orden-2 { order: 2; }
+.form-grid .prog-registro-field.prog-orden-3 { order: 3; grid-column: 1 / span 4; }
+.form-grid .prog-registro-field.prog-orden-4 { order: 4; grid-column: 5 / span 8; }
+.form-grid .prog-registro-field.prog-orden-5 { order: 5; }
+.form-grid .prog-registro-field.prog-orden-6 { order: 6; }
+.form-grid .prog-registro-field.prog-orden-7 { order: 7; }
+.form-grid .prog-registro-field.prog-orden-8 { order: 8; }
+.form-grid .prog-registro-field.prog-orden-9 { order: 9; }
+.form-grid .prog-registro-field.prog-orden-10 { order: 10; }
+.form-grid .prog-registro-field.prog-orden-11 { order: 11; }
+.form-grid .prog-registro-field.prog-orden-12 { order: 12; }
+.form-grid .prog-registro-field.prog-orden-13 { order: 13; }
+.form-grid .prog-registro-field.prog-orden-14 { order: 14; }
 
 @media (max-width: 900px) {
   .col-8, .col-6, .col-4, .col-3, .col-2 { grid-column: span 12; }
@@ -718,27 +734,44 @@ body {
   .form-grid .c33-registro-field.c33-orden-4 { grid-column: span 8; }
   .form-grid .c33-registro-field.c33-orden-12 { grid-column: span 12; }
   .form-grid .ut5000-registro-field.ut5000-orden-1,
-  .form-grid .ut5000-registro-field.ut5000-orden-4,
+  .form-grid .ut5000-registro-field.ut5000-orden-2,
   .form-grid .ut5000-registro-field.ut5000-orden-5,
   .form-grid .ut5000-registro-field.ut5000-orden-6,
   .form-grid .ut5000-registro-field.ut5000-orden-7,
-  .form-grid .ut5000-registro-field.ut5000-orden-11,
+  .form-grid .ut5000-registro-field.ut5000-orden-8,
   .form-grid .ut5000-registro-field.ut5000-orden-12,
   .form-grid .ut5000-registro-field.ut5000-orden-13,
-  .form-grid .ut5000-registro-field.ut5000-orden-14 { grid-column: span 6; }
-  .form-grid .ut5000-registro-field.ut5000-orden-2 { grid-column: 1 / span 4; }
-  .form-grid .ut5000-registro-field.ut5000-orden-3 { grid-column: 5 / span 8; }
-  .form-grid .ut5000-registro-field.ut5000-orden-8,
+  .form-grid .ut5000-registro-field.ut5000-orden-14,
+  .form-grid .ut5000-registro-field.ut5000-orden-15 { grid-column: span 6; }
+  .form-grid .ut5000-registro-field.ut5000-orden-3 { grid-column: 1 / span 4; }
+  .form-grid .ut5000-registro-field.ut5000-orden-4 { grid-column: 5 / span 8; }
   .form-grid .ut5000-registro-field.ut5000-orden-9,
-  .form-grid .ut5000-registro-field.ut5000-orden-10 { grid-column: span 4; }
+  .form-grid .ut5000-registro-field.ut5000-orden-10,
+  .form-grid .ut5000-registro-field.ut5000-orden-11 { grid-column: span 4; }
+  .form-grid .prog-registro-field.prog-orden-1,
+  .form-grid .prog-registro-field.prog-orden-2,
+  .form-grid .prog-registro-field.prog-orden-5,
+  .form-grid .prog-registro-field.prog-orden-6,
+  .form-grid .prog-registro-field.prog-orden-10,
+  .form-grid .prog-registro-field.prog-orden-11,
+  .form-grid .prog-registro-field.prog-orden-12,
+  .form-grid .prog-registro-field.prog-orden-13,
+  .form-grid .prog-registro-field.prog-orden-14 { grid-column: span 6; }
+  .form-grid .prog-registro-field.prog-orden-3 { grid-column: 1 / span 4; }
+  .form-grid .prog-registro-field.prog-orden-4 { grid-column: 5 / span 8; }
+  .form-grid .prog-registro-field.prog-orden-7,
+  .form-grid .prog-registro-field.prog-orden-8,
+  .form-grid .prog-registro-field.prog-orden-9 { grid-column: span 4; }
 }
 
 @media (max-width: 600px) {
   .form-grid .pert-registro-field[class*="pert-orden-"] { grid-column: span 12; }
   .form-grid .c33-registro-field { grid-column: span 12; }
   .form-grid .ut5000-registro-field { grid-column: span 12; }
+  .form-grid .prog-registro-field[class*="prog-orden-"] { grid-column: span 12; }
   .form-grid .ut5000-registro-field.ut5000-orden-2,
-  .form-grid .ut5000-registro-field.ut5000-orden-3 { grid-column: span 12; }
+  .form-grid .ut5000-registro-field.ut5000-orden-3,
+  .form-grid .ut5000-registro-field.ut5000-orden-4 { grid-column: span 12; }
 }
 
 /* Controles de Formulario */

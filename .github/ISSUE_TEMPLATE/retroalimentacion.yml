@@ -1,0 +1,58 @@
+name: Retroalimentación sobre formularios
+description: Reportar observaciones sobre estructura, campos, orden o flujo.
+title: "[Retroalimentación] "
+body:
+  - type: dropdown
+    id: formulario
+    attributes:
+      label: Formulario
+      options:
+        - Evaluación de Pertinencia
+        - Circular N° 33
+        - Iniciativas Menores a 5.000 UTM
+        - Evaluación de Programas
+        - Panel principal / navegación
+    validations:
+      required: true
+  - type: input
+    id: seccion
+    attributes:
+      label: Sección o campo
+      description: Indica dónde encontraste el punto a comentar.
+      placeholder: Registro de la Iniciativa - Localidad o Sector
+    validations:
+      required: true
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo de comentario
+      options:
+        - Campo faltante o incorrecto
+        - Orden o distribución visual
+        - Flujo o comportamiento
+        - Texto o instrucción
+        - Otra sugerencia
+    validations:
+      required: true
+  - type: textarea
+    id: observacion
+    attributes:
+      label: Observación
+      description: Describe lo que sucede y cómo esperabas que funcionara.
+      placeholder: Explica el caso con datos ficticios; no incluyas datos personales ni antecedentes reservados.
+    validations:
+      required: true
+  - type: textarea
+    id: propuesta
+    attributes:
+      label: Propuesta de mejora
+      description: Si tienes una propuesta concreta, descríbela aquí.
+    validations:
+      required: false
+  - type: input
+    id: navegador
+    attributes:
+      label: Navegador y dispositivo (opcional)
+      placeholder: Chrome en Windows 11
+    validations:
+      required: false

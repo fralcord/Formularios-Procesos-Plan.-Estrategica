@@ -12,12 +12,13 @@ Cada formulario cuenta con una barra de pestañas superior que refleja el orden 
 
 | Pestaña | Contenido |
 |---|---|
-| `[1] Registro de la Iniciativa` | Datos iniciales de la Ficha IDI y cuadro de financiamiento. |
+| `[1] Registro de la Iniciativa` | Identificación de la iniciativa, localización y antecedentes de postulación/oficio; los campos varían según el formulario. |
 | `[2] Evaluación y sus Resultados` | Dictamen, observaciones, estado, iteraciones y bloques de respuesta/reevaluación. |
 | `[3] Ficha de Evaluación (PDF)` | Vista de la ficha oficial de la iteración en curso; al imprimir, solo esta sección se exporta. |
 | `[4] Registro Documental Evaluación` | Constancia documental (N° registro, oficio, validador). |
 
 Los controles del formulario (`no-print`) se ocultan al generar el PDF; únicamente la ficha oficial se muestra.
+La aplicación actual es una interfaz cliente: el botón de generación produce un payload JSON, pero no guarda registros de forma persistente en una base de datos ni cambia por sí mismo el estado de una iniciativa en un sistema central.
 
 ## Flujo General del Proceso
 
@@ -32,14 +33,14 @@ El proceso de evaluación es **iterativo** y se describe en cuatro pasos:
              └──── la unidad formuladora responde ◄── resultado con OBSERVACIONES
 ```
 
-1. **Registro de la Iniciativa** *(grabar datos)*: se graban los datos tomados de la Ficha IDI del Banco Integrado de Proyectos (BIP / MDSF): código BIP/IDI, nombre oficial, unidad formuladora, unidad técnica, localización (provincia, comuna), sector, etapa postulada, más el proceso presupuestario y el cuadro de financiamiento. **Se registra una sola vez por iniciativa.**
+1. **Registro de la Iniciativa** *(grabar datos)*: se identifican la iniciativa y sus antecedentes de postulación. Según el formulario, incluye proceso presupuestario, código BIP/IDI, nombre, unidades formuladora y técnica, sector o subtítulo, localización, etapa, costo total y antecedentes del oficio de postulación. Estos datos se mantienen separados de la evaluación de cada iteración.
 2. **Evaluación y sus Resultados** *(grabar datos)*: el profesional evaluador registra el dictamen técnico, las observaciones por área, el estado resultante, el N° de iteración y el historial de iteraciones. Como salida de este paso se genera la **Ficha de Evaluación en PDF**, documento oficial de la DIPLADER.
 3. **Ficha de Evaluación (PDF)**: se visualiza y exporta la ficha oficial de la iteración en curso; en impresión se ocultan los controles del formulario y se muestra únicamente esta sección.
 4. **Registro Documental Evaluación** *(grabar datos)*: se deja constancia documental de la ficha emitida: N° de registro, fecha de registro, profesional que registra, referencia del oficio asociado en la instancia de Oficios y enlace validador Ley N° 19.799.
 
-### Cierre del proceso
+### Avance y cierre del proceso
 
-Al cerrar el **Registro Documental Evaluación** se determina el resultado del ciclo:
+El estado registrado en **Evaluación y sus Resultados** determina si corresponde habilitar otra instancia. El botón **"Continuar a la siguiente instancia"** lleva a **Responde Observaciones** cuando el resultado contiene observaciones; desde esa instancia abre **Reevaluación** en las líneas que la admiten. Si el resultado no exige observaciones, el ciclo termina con la emisión de la ficha oficial.
 
 | Resultado | Consecuencia |
 |---|---|
@@ -62,29 +63,41 @@ Cada resultado que exige observaciones devuelve la iniciativa al postulante y ab
 |---|---|---|---|
 | Evaluación de Pertinencia | Disponible | Disponible | **No aplica** |
 | Circular N° 33 | Disponible | Disponible | Disponible |
-| Iniciativas < 5.000 UTM | Disponible | Disponible | Disponible |
+| Iniciativas Menores a 5.000 UTM | Disponible | Disponible | Disponible |
 | Evaluación de Programas | Disponible | Disponible | Disponible |
 
 En cada formulario, el selector **"Instancia de Evaluación"** determina qué bloques se muestran y qué se imprime. El botón **"Continuar a la siguiente instancia"** calcula la instancia siguiente a partir del estado registrado: si el estado contiene observaciones habilita "Responde Observaciones" y, desde esa instancia, "Reevaluación" en las líneas que la admiten.
 
 ---
 
-## Estructura Estandarizada de los Módulos
+## Estructura de los Formularios
 
-Los cuatro módulos comparten la misma arquitectura del flujo general:
+Los cuatro formularios comparten la navegación y el ciclo de evaluación, pero los campos del registro se adaptan a cada línea. El orden de captura vigente es:
 
-1. **Paso 1: Registro de la Iniciativa**
-   - **Proceso Presupuestario (Año)** aplicado transversalmente (ej. 2026, 2027).
-   - Insumos de la **Ficha IDI** del Banco Integrado de Proyectos (BIP / MDSF): Código BIP/IDI, Nombre oficial, Unidad formuladora, unidad técnica, Localización (Provincia, Comuna), Sector, Etapa postulada.
-   - Cuadro de Financiamiento Solicitado al FNDR con cálculo dinámico de totales.
+| Formulario | Orden y campos del Registro de la Iniciativa |
+|---|---|
+| **Evaluación de Pertinencia** | Proceso presupuestario (año), etapa a la que postula, código BIP/IDI y nombre de la iniciativa, unidad formuladora y unidad técnica, sector/tipología y costo total, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
+| **Circular N° 33** | Proceso presupuestario (año) y subtítulo, código BIP/IDI y nombre de iniciativa/acción, unidad formuladora y unidad técnica, sector y costo total, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
+| **Iniciativas Menores a 5.000 UTM** | Proceso presupuestario (año) y etapa a la que postula (opciones: Diseño y Ejecución), código IDI/BIP y nombre de la iniciativa, unidad formuladora y unidad técnica, sector y costo total, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
+| **Evaluación de Programas** | Proceso presupuestario (año) y sector, código IDI/BIP y nombre del programa, unidad formuladora y unidad técnica, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación; costo total se conserva al final del registro. |
+
+Los campos de oficio y sus fechas de ingreso se capturan como antecedentes de la iniciativa. La etapa postulada solo está incluida en Pertinencia y en el formulario **Menores a 5.000 UTM**; en este último el selector ofrece únicamente **Diseño** y **Ejecución**. El subtítulo corresponde a Circular N° 33. No se debe asumir que los cuatro formularios tienen un cuadro común de financiamiento FNDR.
+
+La grilla mantiene juntos los campos que forman pares o grupos —por ejemplo, código y nombre, unidades, localización y fechas— en pantallas amplias; en pantallas pequeñas los campos se apilan para facilitar su captura.
+
+La arquitectura restante del flujo es:
+
+1. **Paso 1: Registro de la Iniciativa**, con la estructura propia indicada arriba.
 2. **Paso 2: Evaluación y sus Resultados**
    - Selector de instancia e indicador del N° de iteración en curso.
    - Dictamen técnico, desglose de observaciones sectoriales específicas, estado de la evaluación (OBSERVADO / RECOMENDADO / SIN OBSERVACIONES / PERTINENTE), profesional evaluador y fecha.
    - Bloque **2.1 Respuesta del Postulante a Observaciones**, activo desde la instancia N° 2.
    - Bloque **2.2 Reevaluación**, activo sólo en la instancia N° 3 y en las líneas que la admiten.
    - Tabla **2.3 Historial de Iteraciones** con las iteraciones previas de la iniciativa.
-   - **Salida del paso: Ficha de Evaluación (PDF)**, documento oficial de la DIPLADER, que se previsualiza en la cuarta pestaña del formulario.
-3. **Paso 3: Registro Documental Evaluación**
+   - **Salida del paso: Ficha de Evaluación (PDF)**, documento oficial de la DIPLADER, que se previsualiza en la tercera pestaña del formulario.
+3. **Paso 3: Ficha de Evaluación (PDF)**
+   - Vista e impresión de la ficha oficial correspondiente a la iteración en curso.
+4. **Paso 4: Registro Documental Evaluación**
    - N° de registro documental, fecha de registro y profesional que registra.
    - Referencia del oficio asociado en la instancia de Oficios de la DIPLADER.
    - Enlace validador Ley N° 19.799 y constancia del registro.
@@ -140,6 +153,12 @@ Los cuatro módulos comparten la misma arquitectura del flujo general:
 7. **Generar Payload JSON para Base de Datos**
    - El botón **"Generar carga útil JSON"** serializa la información completa en formato JSON estructurado, agregando el bloque `proceso` con la instancia activa, el número de iteración y el historial. Listo para enviar a la API REST o base de datos.
 
+## Retroalimentación de colegas
+
+El repositorio del proyecto es privado. Una vez que el administrador invite a un colega como colaborador y este acepte, podrá abrir la pestaña **Issues** del repositorio, seleccionar **Retroalimentación sobre formularios** y describir el formulario, sección, observación y mejora propuesta. La plantilla permite distinguir problemas de campos, presentación, comportamiento y textos.
+
+La retroalimentación debe usar ejemplos ficticios. No adjuntar ni incluir datos personales, información reservada o antecedentes de casos reales en los comentarios. El acceso al repositorio también permite consultar los archivos y materiales de referencia que contiene.
+
 ---
 
 ## Contrato de Datos (extracto)
@@ -150,7 +169,7 @@ El payload generado por cada formulario incluye, además de los datos de la inic
 {
   "proceso": {
     "modelo": "FichaEvaluacion5000UTM",
-    "linea_evaluacion": "Iniciativas menores a 5.000 UTM",
+    "linea_evaluacion": "Iniciativas Menores a 5.000 UTM",
     "instancia_evaluacion": "Reevaluación",
     "clave_instancia": "REEVALUACION",
     "numero_iteracion": 3,

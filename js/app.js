@@ -159,7 +159,7 @@ function createJsonModal() {
    iniciativa vuelve a evaluación. Instancias formales del ciclo:
      PRIMER_INGRESO            (todas las líneas)
      RESPONDE_OBSERVACIONES    (todas las líneas)
-     REEVALUACION              (Circular 33, < 5.000 UTM y Programas)
+     REEVALUACION              (Circular 33, Menores a 5.000 UTM y Programas)
    ========================================================================== */
 
 const AppIteracion = {
