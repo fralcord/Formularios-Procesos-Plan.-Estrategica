@@ -1,0 +1,366 @@
+﻿/**
+ * ============================================================================
+ * ESQUEMAS DE DATOS Y CONTRATOS DE API (PARA DESARROLLO DE BACKEND Y BASE DE DATOS)
+ * GOBIERNO REGIONAL DE LOS LAGOS - DIVISIÓN DE PLANIFICACIÓN (DIPLADER)
+ * ============================================================================
+ * Este archivo define los modelos y payloads JSON formales generados por la suite
+ * de formularios, basados en la carpeta "Referencia de los procesos".
+ *
+ * FLUJO DEL PROCESO DE EVALUACIÓN (idéntico en las cuatro líneas):
+ *   1. Registro de la iniciativa   -> graba datos de la Ficha IDI (BIP/MDSF)
+ *   2. Evaluación y sus resultados -> graba el dictamen de la instancia activa
+ *   3. Generación de la ficha de evaluación -> documento oficial imprimible (PDF)
+ *
+ * CICLO DE ITERACIONES (el proceso es iterativo):
+ *   - PRIMER_INGRESO          -> iteración N° 1 (todas las líneas)
+ *   - RESPONDE_OBSERVACIONES  -> iteración N° 2 (todas las líneas)
+ *   - REEVALUACION            -> iteración N° 3 (Circular 33, < 5.000 UTM y Programas)
+ *   Cuando el estado resultante contiene observaciones, la iniciativa vuelve a
+ *   evaluación por una nueva iteración; cada vuelta queda registrada en el
+ *   arreglo "iteraciones" y se imprime en la ficha oficial.
+ *
+ * NOTA METODOLÓGICA:
+ * La "Ficha IDI" no es un formulario del GORE, sino la ficha base de referencia
+ * emitida por el Banco Integrado de Proyectos (BIP) del Ministerio de Desarrollo
+ * Social y Familia (MDSF) del Estado de Chile. Los procesos del GORE son:
+ * 1. Evaluación de Pertinencia (para postular al MDSF o devolver a municipios)
+ * 2. Evaluación Circular 33 (Postulación Anexo 1 y Evaluación Técnica DIPLADER)
+ * 3. Evaluación Iniciativas Menores a 5.000 UTM (Revisiones con observaciones)
+ * 4. Evaluación de Programas (Transferencias Subt. 24 y 33)
+ * 5. Seguimiento y Control de Cartera (Matriz de plazos de 15 días y oficios)
+ */
+
+/** Bloque común a los cuatro modelos: estado de la iteración en curso. */
+const BLOQUE_PROCESO_EVALUACION = {
+  linea_evaluacion: { tipo: "string" },
+  instancia_evaluacion: {
+    tipo: "string",
+    enum: ["Primer Ingreso", "Responde Observaciones", "Reevaluación"]
+  },
+  clave_instancia: {
+    tipo: "string",
+    enum: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"]
+  },
+  numero_iteracion: { tipo: "integer", minimo: 1 },
+  admite_reevaluacion: { tipo: "boolean", descripcion: "true en Circular 33, < 5.000 UTM y Programas" },
+  iteraciones_registradas: { tipo: "integer", descripcion: "Cantidad de iteraciones previas en el historial" }
+};
+
+/** Respuesta del postulante a las observaciones de la iteración anterior. */
+const BLOQUE_RESPUESTA_OBSERVACIONES = {
+  fecha_respuesta: { tipo: "string", formato: "date", condicional: "instancia_evaluacion != PRIMER_INGRESO" },
+  numero_documento: { tipo: "string", descripcion: "N° de ORD o documento recibido" },
+  fecha_ingreso_diplader: { tipo: "string", formato: "date" },
+  detalle_respuesta: { tipo: "text", descripcion: "Punto por punto, qué observación se subsanó y con qué documento" }
+};
+
+/** Resultado de la reevaluación, sólo en líneas que la admiten. */
+const BLOQUE_REEVALUACION = {
+  admite_reevaluacion: { tipo: "boolean", valor_esperado: true },
+  verificacion_subsanacion: { tipo: "text", condicional: "clave_instancia = REEVALUACION" },
+  fundamento_resultado: { tipo: "text", condicional: "clave_instancia = REEVALUACION" }
+};
+
+/** Historial completo de las iteraciones de la evaluación. */
+const HISTORIAL_ITERACIONES = [
+  {
+    numero: { tipo: "integer" },
+    fecha: { tipo: "string", formato: "date" },
+    instancia: { tipo: "string", enum: ["Primer Ingreso", "Responde Observaciones", "Reevaluación"] },
+    estado: { tipo: "string", descripcion: "Estado o resultado de esa iteración" },
+    detalle: { tipo: "text", descripcion: "Síntesis o fundamento del resultado" }
+  }
+];
+
+/**
+ * Paso 3 del flujo: constancia documental de la ficha de evaluación emitida.
+ * La firma electrónica y la emisión de oficios ocurren en otra instancia, por
+ * lo que aquí sólo se referencia el registro y su identificador.
+ */
+const BLOQUE_REGISTRO_DOCUMENTAL = {
+  numero_registro: { tipo: "string", descripcion: "N° de registro documental interno de la DIPLADER" },
+  fecha_registro: { tipo: "string", formato: "date" },
+  registrado_por: { tipo: "string", descripcion: "Profesional que realiza el registro documental" },
+  referencia_oficio: {
+    tipo: "string",
+    opcional: true,
+    descripcion: "N° de oficio u ORD emitido en la instancia de Oficios de la DIPLADER"
+  },
+  fecha_oficio: { tipo: "string", formato: "date", opcional: true },
+  fecha_ingreso_oficina_partes: { tipo: "string", formato: "date", opcional: true },
+  fecha_ingreso_evaluacion: { tipo: "string", formato: "date", opcional: true },
+  url_validador_docdigital: { tipo: "string", opcional: true, descripcion: "Enlace validador Ley N° 19.799" },
+  constancia_registro: { tipo: "text", opcional: true, descripcion: "Dónde se conserva, a quién se remitió, observaciones de archivo" }
+};
+
+/** Cierre del ciclo evaluativo al registrar documentalmente la ficha. */
+const BLOQUE_CIERRE_CICLO = {
+  resultado_ciclo: {
+    tipo: "string",
+    enum: ["RECOMENDADO", "CON_OBSERVACIONES"],
+    descripcion: "RECOMENDADO cierra el proceso; CON_OBSERVACIONES abre una nueva iteración"
+  },
+  fin_de_proceso: { tipo: "boolean", descripcion: "true cuando el resultado es RECOMENDADO" },
+  detalle_cierre: { tipo: "text", opcional: true }
+};
+
+window.AppSchemas = {
+
+  /**
+   * 1. EVALUACIÓN DE PERTINENCIA REGIONAL
+   * Base de entrada: Datos de Ficha IDI (BIP / MDSF)
+   * Salida GORE: Dictamen de pertinencia regional, coherencia ERD / Plan Gobernador y emisión de ORD/Oficio.
+   */
+  pertinencia: {
+    nombre_modelo: "EvaluacionPertinenciaRegional",
+    descripcion: "Dictamen de pertinencia regional FNDR con base en la Ficha IDI del BIP/MDSF",
+    referencia_base: "Ficha IDI (Banco Integrado de Proyectos - MDSF)",
+    flujo: ["Registro de la iniciativa", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
+    instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES"],
+    campos: {
+      proceso_presupuestario_ano: { tipo: "integer", descripcion: "Año presupuestario (ej: 2026 / 2027)" },
+      codigo_bip: { tipo: "string", descripcion: "Código BIP con dígito verificador ej: '40052180-0'" },
+nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha IDI" },
+      etapa_postulacion: { tipo: "string", enum: ["Ejecución", "Diseño", "Factibilidad", "Prefactibilidad"] },
+      sector: { tipo: "string", descripcion: "Agua Potable Rural (SSR), Salud, Deportes, Seguridad, etc." },
+      unidad_formuladora: { tipo: "string", descripcion: "Nombre de la unidad formuladora" },
+      unidad_tecnica: { tipo: "string", descripcion: "Unidad técnica responsable de la revisión (ej: DOH MOP, DIPLADER)" },
+      localizacion: {
+        provincia: { tipo: "string", enum: ["CHILOÉ", "LLANQUIHUE", "OSORNO", "PALENA", "REGIONAL"] },
+        comuna: { tipo: "string", enum: ["Ancud", "Castro", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Llanquihue", "Los Muermos", "Maullín", "Puerto Montt", "Puerto Varas", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena", "Provincial", "Regional"] },
+        localidad: { tipo: "string", opcional: true }
+      },
+      oficio_postulacion: {
+        numero: { tipo: "string", opcional: true, descripcion: "N° de oficio de postulación (puede incluir letras)" },
+        fecha: { tipo: "string", formato: "date", opcional: true },
+        fecha_ingreso_oficina_partes: { tipo: "string", formato: "date", opcional: true },
+        fecha_ingreso_evaluacion: { tipo: "string", formato: "date", opcional: true }
+      },
+
+      costo_total: { tipo: "number" },
+      // Evaluación Estratégica Regional GORE Los Lagos
+evaluacion_pertinencia: {
+        erd_lineamiento: { tipo: "string", descripcion: "Lineamiento estratégico ERD (campo de texto libre)" },
+        erd_item: { tipo: "string" },
+        erd_objetivo: { tipo: "string" },
+        erd_actividad: { tipo: "string" },
+        gob_pilar: { tipo: "string", descripcion: "Pilar 1 a 6 del Programa Regional del Gobernador (campo de texto libre)" },
+        gob_letra: { tipo: "string", descripcion: "Letra/Eje específico del programa" },
+        gob_fundamento: { tipo: "text", descripcion: "Justificación de la articulación con el plan del Gobernador" },
+        analisis_tecnico: { tipo: "text", descripcion: "Dictamen de viabilidad territorial y priorización FNDR" }
+      },
+      // Resolución y Acto Administrativo
+      resolucion: {
+        estado_pertinencia: { tipo: "string", enum: ["PERTINENTE_A_MDSF", "CON_OBSERVACIONES"] },
+        oficio_numero: { tipo: "string", descripcion: "ej: ORD. GR. N° 1628 o Oficio N° 1644" },
+        oficio_fecha: { tipo: "string", formato: "date" },
+        oficio_destinatario: { tipo: "string", descripcion: "ej: SEREMI MDSF Los Lagos o Municipalidad" },
+        oficio_materia: { tipo: "string" },
+        observaciones_devolucion: { tipo: "text", opcional: true, descripcion: "Requerimientos para subsanación del municipio" }
+      },
+      // Trazabilidad de Trámite y Control 15 Días
+trazabilidad: {
+        ord_ingreso_numero: { tipo: "string" },
+        fecha_ord_ingreso: { tipo: "string", formato: "date" },
+        fecha_ingreso_oficina_partes: { tipo: "string", formato: "date" },
+        evaluador_nombre: { tipo: "string" },
+        fecha_derivacion_evaluador: { tipo: "string", formato: "date" },
+        fecha_evaluacion: { tipo: "string", formato: "date" },
+        cumple_15_dias_habiles: { tipo: "boolean" }
+      },
+      // Estado de la iteración en curso (registro / evaluación / ficha PDF)
+      proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
+      // Instancia N° 2: respuesta del postulante a las observaciones
+      respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,
+      // Historial de iteraciones de la evaluación
+      iteraciones: HISTORIAL_ITERACIONES,
+      // Paso 3: Registro Documental Evaluación y cierre del ciclo
+      registro_documental_evaluacion: BLOQUE_REGISTRO_DOCUMENTAL,
+      cierre_ciclo: BLOQUE_CIERRE_CICLO
+    }
+  },
+
+  /**
+   * 2. EVALUACIÓN Y FICHA RESUMEN CIRCULAR 33
+   * Referencia: Subtítulo 22 (Estudios Básicos), Subtítulo 29 (Activos No Financieros) y Emergencias.
+   */
+  circular33: {
+    nombre_modelo: "Circular33Iniciativa",
+    descripcion: "Ficha Resumen (Anexo N° 1) y Ficha de Evaluación Técnica Circular 33",
+    flujo: ["Registro de la iniciativa (Anexo 1)", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
+    instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"],
+    campos: {
+      subtitulo: { tipo: "integer", enum: [22, 29, 31] },
+      codigo_bip: { tipo: "string" },
+      nombre_accion: { tipo: "string" },
+      region: { tipo: "string", default: "Región de Los Lagos" },
+      provincia: { tipo: "string" },
+      comuna: { tipo: "string" },
+      unidad_formuladora: { tipo: "string" },
+      unidad_tecnica: { tipo: "string" },
+      costo_total: { tipo: "number" },
+      cronograma: {
+        fecha_licitacion_mes_ano: { tipo: "string" },
+        fecha_adjudicacion_mes_ano: { tipo: "string" },
+        fecha_inicio_mes_ano: { tipo: "string" }
+      },
+      evaluacion_c33: {
+        item: { tipo: "string" },
+        estado: { tipo: "string", enum: ["OBSERVADO", "RECOMENDADO", "RECHAZADO"] },
+        texto_observaciones: { tipo: "text" },
+        evaluador_nombre: { tipo: "string" },
+        fecha_evaluacion: { tipo: "string", formato: "date" },
+        url_validador: { tipo: "string", opcional: true }
+      },
+      proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
+      respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,
+      reevaluacion: BLOQUE_REEVALUACION,
+      iteraciones: HISTORIAL_ITERACIONES,
+      // Paso 3: Registro Documental Evaluación y cierre del ciclo
+      registro_documental_evaluacion: BLOQUE_REGISTRO_DOCUMENTAL,
+      cierre_ciclo: BLOQUE_CIERRE_CICLO
+    }
+  },
+
+  /**
+   * 3. FICHA DE EVALUACIÓN INICIATIVAS MENORES A 5.000 UTM
+   * Referencia: Rev-2 (Observaciones sectoriales) y Rev-6 (Sin observaciones / Recomendado)
+   */
+  evaluacion5000Utm: {
+    nombre_modelo: "FichaEvaluacion5000UTM",
+    descripcion: "Evaluación técnica de iniciativas que no superan 5.000 UTM",
+    flujo: ["Registro de la iniciativa", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
+    instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"],
+    campos: {
+      ano_postulacion: { tipo: "integer" },
+      codigo_idi: { tipo: "string" },
+      nombre_iniciativa: { tipo: "string" },
+      provincia: { tipo: "string" },
+      comuna: { tipo: "string" },
+      unidad_formuladora: { tipo: "string" },
+      unidad_tecnica: { tipo: "string" },
+      costo_total: { tipo: "number" },
+      evaluacion_tecnica: {
+        estado_resultado: { tipo: "string", enum: ["SIN OBSERVACIONES", "OBSERVADO", "RECOMENDADO", "RECHAZADO"] },
+        observaciones_presupuesto: { tipo: "text" },
+        observaciones_ttr_eett: { tipo: "text" },
+        observaciones_planos_ingenieria: { tipo: "text" },
+        observaciones_anexos: { tipo: "text" },
+        observaciones_terreno_otros: { tipo: "text" },
+        sintesis_evaluacion: { tipo: "text" }
+      },
+      control_evaluacion: {
+        evaluador_nombre: { tipo: "string" },
+        evaluador_cargo: { tipo: "string" },
+        fecha_ingreso_evaluacion: { tipo: "string", formato: "date" },
+        fecha_termino_evaluacion: { tipo: "string", formato: "date" },
+        jefe_division_nombre: { tipo: "string" },
+        jefe_division_cargo: { tipo: "string" },
+        url_validador_firma: { tipo: "string", opcional: true }
+      },
+      proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
+      respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,
+      reevaluacion: BLOQUE_REEVALUACION,
+      iteraciones: HISTORIAL_ITERACIONES,
+      // Paso 3: Registro Documental Evaluación y cierre del ciclo
+      registro_documental_evaluacion: BLOQUE_REGISTRO_DOCUMENTAL,
+      cierre_ciclo: BLOQUE_CIERRE_CICLO
+    }
+  },
+
+  /**
+   * 4. EVALUACIÓN Y PERTINENCIA DE PROGRAMAS
+   * Referencia: Subtítulo 24 (Transferencias Corrientes) y Subtítulo 33 (Transferencias de Capital)
+   */
+  evaluacionProgramas: {
+    nombre_modelo: "EvaluacionProgramasRegional",
+    descripcion: "Evaluación y pertinencia de programas de salud, medio ambiente y fomento",
+    flujo: ["Registro de la iniciativa", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
+    instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"],
+    campos: {
+      ano_postulacion: { tipo: "integer" },
+      codigo_idi: { tipo: "string" },
+      localizacion: { provincia: { tipo: "string" }, comuna: { tipo: "string" } },
+      sector: { tipo: "string" },
+      nombre_programa: { tipo: "string" },
+      unidad_formuladora: { tipo: "string" },
+      unidad_tecnica: { tipo: "string" },
+      costo_total: { tipo: "number" },
+      evaluacion: {
+        estado: { tipo: "string", enum: ["RECOMENDADO", "OBSERVADO", "RECHAZADO"] },
+        fecha: { tipo: "string", formato: "date" },
+        texto_evaluacion: { tipo: "text" },
+        evaluador_nombre: { tipo: "string" },
+        url_validador_firma: { tipo: "string", opcional: true }
+      },
+      proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
+      respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,
+      reevaluacion: BLOQUE_REEVALUACION,
+      iteraciones: HISTORIAL_ITERACIONES,
+      // Paso 3: Registro Documental Evaluación y cierre del ciclo
+      registro_documental_evaluacion: BLOQUE_REGISTRO_DOCUMENTAL,
+      cierre_ciclo: BLOQUE_CIERRE_CICLO
+    }
+  },
+
+  /**
+   * 5. SEGUIMIENTO DE CARTERA Y MATRIZ GENERAL
+   * Referencia: Archivos Excel de control de gestión y plazos de 15 días hábiles
+   */
+  seguimientoCartera: {
+    nombre_modelo: "SeguimientoIniciativaCartera",
+    descripcion: "Registro de control de ingreso, alineación ERD/Gobernador y plazos de 15 días",
+    campos: {
+      numero_correlativo: { tipo: "integer" },
+      codigo_bip: { tipo: "string" },
+      verificador: { tipo: "string" },
+      nombre_iniciativa: { tipo: "string" },
+      provincia: { tipo: "string" },
+      comuna: { tipo: "string" },
+      sector: { tipo: "string" },
+      etapa: { tipo: "string" },
+      monto_propuesto_m: { tipo: "number" },
+      monto_recomendado_m: { tipo: "number" },
+      alineamiento_erd: {
+        lineamiento: { tipo: "string" },
+        item: { tipo: "string" },
+        objetivo: { tipo: "string" },
+        actividad: { tipo: "string" }
+      },
+      plan_gobernador: {
+        pilar: { tipo: "string" },
+        letra_linea: { tipo: "string" },
+        descripcion_enlace: { tipo: "text" }
+      },
+      beneficiarios: {
+        hombres: { tipo: "integer" },
+        mujeres: { tipo: "integer" },
+        total: { tipo: "integer" }
+      },
+      ingreso: {
+        unidad_tecnica: { tipo: "string" },
+        unidad_formuladora: { tipo: "string" },
+        ord_ingreso_numero: { tipo: "string" },
+        fecha_ord_ingreso: { tipo: "string", formato: "date" },
+        fecha_ingreso_oficina_partes: { tipo: "string", formato: "date" }
+      },
+      evaluacion_tramite: {
+        evaluador_asignado: { tipo: "string" },
+        fecha_derivacion_evaluador: { tipo: "string", formato: "date" },
+        cumple_15_dias_habiles: { tipo: "boolean" },
+        numero_iteraciones: { tipo: "integer" },
+        estado_proyecto: { tipo: "string", enum: ["Recomendado", "Observado", "En Trámite", "Pendiente"] },
+        fecha_recomendacion_final: { tipo: "string", formato: "date", opcional: true }
+      },
+      iteraciones: [
+        {
+          ord_gore_observaciones: { tipo: "string" },
+          fecha_ord_gore: { tipo: "string", formato: "date" },
+          ord_respuesta_observaciones: { tipo: "string" },
+          fecha_ord_respuesta: { tipo: "string", formato: "date" },
+          estado_iteracion: { tipo: "string", enum: ["OBSERVADO", "SIN OBSERVACIONES"] }
+        }
+      ]
+    }
+  }
+};

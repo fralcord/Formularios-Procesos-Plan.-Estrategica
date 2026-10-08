@@ -1,0 +1,971 @@
+/* ==========================================================================
+   FORMULARIOS DE PROCESOS - PLANIFICACIÓN ESTRATÉGICA (GORE LOS LAGOS)
+   Estilos Corporativos e Interfaz de Formularios HTML5
+   ========================================================================== */
+
+:root {
+  --primary: #003e6b;
+  --primary-hover: #002d4f;
+  --primary-light: #e6f0fa;
+  --secondary: #0284c7;
+  --accent: #0284c7;
+  --success: #15803d;
+  --success-light: #dcfce7;
+  --warning: #b45309;
+  --warning-light: #fef3c7;
+  --danger: #b91c1c;
+  --danger-light: #fee2e2;
+  --info: #0369a1;
+  --info-light: #e0f2fe;
+
+  --bg-page: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-input: #ffffff;
+  --border-color: #cbd5e1;
+  --border-focus: #0284c7;
+
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
+
+  --font-sans: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  --font-mono: 'Consolas', 'Courier New', monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+}
+
+/* ------------------------------------------------------------------ */
+/* Selector de Instancia de Evaluación                                  */
+/* ------------------------------------------------------------------ */
+.instancia-selector {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-left: 5px solid var(--secondary);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+
+.instancia-selector-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+.instancia-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.instancia-option {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: #ffffff;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.instancia-option:has(input:checked) {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0,62,107,0.25);
+}
+
+.instancia-option input[type="radio"] {
+  display: none;
+}
+
+/* Descripción de la instancia activa y acción de avance */
+.instancia-selector-help {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 0.3rem 0.65rem;
+  background: #ffffff;
+  border: 1px dashed #bae6fd;
+  border-radius: var(--radius-sm);
+}
+
+.instancia-selector-help strong {
+  color: var(--primary);
+}
+
+.instancia-next-btn {
+  margin-left: auto;
+}
+
+/* Bloques propios de una iteración (respuesta / reevaluación) */
+.bloque-iteracion {
+  border-left: 5px solid var(--warning);
+}
+
+.bloque-iteracion .section-header h3 {
+  color: var(--warning);
+}
+
+/* Etiqueta de instancia en la ficha imprimible */
+.instancia-print-tag {
+  display: inline-block;
+  background: #0f2942;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.2rem 0.75rem;
+  border-radius: 20px;
+  margin-top: 0.4rem;
+}
+
+.instancia-print-tag.iteracion-tag {
+  background: var(--secondary);
+  margin-left: 0.35rem;
+}
+
+/* Fila de la iteración en curso dentro del historial impreso */
+.fila-iteracion-actual td {
+  background-color: #e0f2fe;
+  font-weight: 700;
+  color: #0f2942;
+}
+
+/* Pestañas de Proceso (1. Identificación | 2. Evaluación) */
+.process-step-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--bg-card);
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.step-tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.step-tab-btn:hover {
+  background: #f8fafc;
+  color: var(--primary);
+}
+
+.step-tab-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.step-tab-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.08);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.step-tab-btn.active .step-tab-number {
+  background: rgba(255,255,255,0.25);
+  color: #ffffff;
+}
+
+/* Ficha Oficial Imprimible (GORE Los Lagos) */
+.official-sheet {
+  background: #ffffff;
+  color: #111827;
+  padding: 2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-md);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.official-header {
+  border-bottom: 2px solid #0f2942;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.official-header .org-name {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.official-header .sheet-main-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f2942;
+  margin: 0.25rem 0;
+  letter-spacing: -0.3px;
+}
+
+.official-header .budget-process-tag {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0284c7;
+}
+
+.sheet-section-title {
+  background: #f1f5f9;
+  color: #0f2942;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  padding: 0.35rem 0.6rem;
+  border-left: 4px solid #0f2942;
+  margin: 1rem 0 0.5rem;
+  letter-spacing: 0.3px;
+}
+
+.sheet-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.sheet-summary-cell {
+  padding: 0.45rem 0.6rem;
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sheet-summary-cell:last-child {
+  border-right: none;
+}
+
+.sheet-summary-cell .label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 0.15rem;
+}
+
+.sheet-summary-cell .val {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.sheet-box-text {
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.8rem;
+  background: #ffffff;
+  color: #1e293b;
+  white-space: pre-wrap;
+  margin-bottom: 0.75rem;
+}
+
+.sheet-signatures-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #cbd5e1;
+}
+
+.sheet-signature-col {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.signature-line {
+  width: 80%;
+  height: 1px;
+  background: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.signature-name {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #0f172a;
+}
+
+.signature-title {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.signature-docdigital-badge {
+  font-size: 0.68rem;
+  background: #f1f5f9;
+  color: #0369a1;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+}
+
+/* Resultado del ciclo mostrado al cerrar el Registro Documental */
+.cierre-ciclo-box {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-left: 5px solid var(--success);
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+/* Nota al pie de la ficha oficial: firmas y oficios se gestionan aparte */
+.sheet-footer-note {
+  margin-top: 1.25rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #cbd5e1;
+  font-size: 0.68rem;
+  color: #64748b;
+  font-style: italic;
+  text-align: center;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  line-height: 1.5;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Header & Barra Superior */
+.top-nav {
+  background: var(--primary);
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.top-nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.brand-logo-badge {
+  background: #ffffff;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: -0.5px;
+}
+
+.brand-info h1 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.brand-info p {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  color: #e2e8f0;
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+/* Contenedor Principal */
+.main-container {
+  max-width: 1280px;
+  margin: 1.5rem auto;
+  padding: 0 1rem 3rem;
+}
+
+/* Banner de Cabecera del Formulario */
+.form-header-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 16px;
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  border-top: 5px solid var(--secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.form-header-title {
+  flex: 1;
+  min-width: 280px;
+}
+
+.form-category-pill {
+  display: inline-block;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  margin-bottom: 0.5rem;
+}
+
+.form-header-title h2 {
+  font-size: 1.5rem;
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.form-header-title p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.form-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  line-height: 1.2;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: #ffffff;
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background: #f8fafc;
+  border-color: var(--text-subtle);
+}
+
+.btn-success {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.btn-success:hover {
+  background: #166534;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.78rem;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+}
+
+/* Secciones y Tarjetas de Formulario */
+.form-section-card {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  border-radius: 18px;
+  padding: 1.75rem 1.8rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.04);
+}
+
+.section-header {
+  border-bottom: 2px solid #edf4fb;
+  padding-bottom: 0.8rem;
+  margin-bottom: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.section-header h3 {
+  font-size: 1.12rem;
+  color: var(--primary);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.section-badge {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: #f1f5f9;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Grillas del Formulario */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1.2rem 1.4rem;
+  align-items: start;
+}
+
+.col-12 { grid-column: span 12; }
+.col-8 { grid-column: span 8; }
+.col-6 { grid-column: span 6; }
+.col-4 { grid-column: span 4; }
+.col-3 { grid-column: span 3; }
+.col-2 { grid-column: span 2; }
+
+@media (max-width: 1100px) {
+  .col-3 { grid-column: span 6; }
+  .col-2 { grid-column: span 6; }
+}
+
+@media (max-width: 900px) {
+  .col-8, .col-6, .col-4, .col-3, .col-2 { grid-column: span 12; }
+  .main-container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* Controles de Formulario */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  height: 100%;
+}
+
+.form-label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.15rem;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+.form-label .required {
+  color: var(--danger);
+  margin-left: 2px;
+}
+
+.form-hint {
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  font-weight: normal;
+}
+
+.form-control {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.7rem 0.8rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: var(--text-main);
+  background: linear-gradient(180deg, #ffffff 0%, #fdfefe 100%);
+  border: 1px solid rgba(148, 163, 184, 0.9);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.02);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15), 0 4px 12px rgba(2, 132, 199, 0.08);
+}
+
+.costo-total-burdeo {
+  border: 3px solid #800020;
+}
+
+.costo-total-burdeo:focus {
+  border-color: #800020;
+  box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.18);
+}
+
+.form-control:disabled, .form-control[readonly] {
+  background-color: #f8fafc;
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+select.form-control {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1em;
+  padding-right: 2.2rem;
+  appearance: none;
+}
+
+/* Tablas Dinámicas */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin: 0.75rem 0;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: #f8fafc;
+  color: var(--text-muted);
+  font-weight: 700;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 2px solid var(--border-color);
+  border-right: 1px solid #e2e8f0;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.3px;
+}
+
+.data-table td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.data-table td .form-control {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.data-table tr.total-row {
+  background-color: #f1f5f9;
+  font-weight: 700;
+}
+
+.data-table tr.total-row td {
+  border-top: 2px solid var(--border-color);
+  color: var(--primary);
+}
+
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Badges de Estado */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.status-badge.rs, .status-badge.recomendado {
+  background-color: var(--success-light);
+  color: var(--success);
+}
+
+.status-badge.observado, .status-badge.ot {
+  background-color: var(--warning-light);
+  color: var(--warning);
+}
+
+.status-badge.rechazado, .status-badge.fi {
+  background-color: var(--danger-light);
+  color: var(--danger);
+}
+
+.status-badge.revision, .status-badge.info {
+  background-color: var(--info-light);
+  color: var(--info);
+}
+
+.status-badge.warning {
+  background-color: var(--warning-light);
+  color: var(--warning);
+}
+
+.status-badge.success {
+  background-color: var(--success-light);
+  color: var(--success);
+}
+
+.status-badge.danger {
+  background-color: var(--danger-light);
+  color: var(--danger);
+}
+
+/* Avisos y Notas de Orientación */
+.callout {
+  padding: 0.85rem 1.15rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  font-size: 0.82rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  border-left: 4px solid transparent;
+}
+
+.callout-info {
+  background-color: var(--info-light);
+  color: #0c4a6e;
+  border-left-color: var(--secondary);
+}
+
+.callout-warning {
+  background-color: var(--warning-light);
+  color: #78350f;
+  border-left-color: var(--warning);
+}
+
+/* Footer de Acciones del Formulario */
+.form-footer-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  bottom: 1rem;
+  z-index: 50;
+}
+
+.form-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.form-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+/* Modal y Visor de Payload JSON */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 800px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 1rem 1.5rem;
+  background: var(--primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h4 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.modal-body {
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+}
+
+.json-viewer {
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 0.75rem 1.5rem;
+  background: #f8fafc;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Indicador de campo de sólo lectura o autocalculado */
+.auto-calc {
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: var(--primary);
+}

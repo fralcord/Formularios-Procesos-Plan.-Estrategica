@@ -1,0 +1,612 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Formularios y Procesos - Planificación Estratégica | GORE Los Lagos</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .portal-hero {
+      background: linear-gradient(135deg, #003e6b 0%, #002744 100%);
+      color: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 2.25rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-sm);
+      border-left: 5px solid var(--secondary);
+    }
+    .portal-hero h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.3px;
+    }
+    .portal-hero p {
+      font-size: 0.95rem;
+      opacity: 0.92;
+      max-width: 900px;
+      line-height: 1.6;
+    }
+
+    .info-callout-portal {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-left: 4px solid var(--secondary);
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-sm);
+      margin-top: 1.25rem;
+      font-size: 0.85rem;
+    }
+
+    .status-dashboard-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.75rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .status-dashboard-header {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.9rem;
+    }
+    .status-dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .status-card {
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      padding: 1rem 1.1rem;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .status-card strong {
+      font-size: 1.6rem;
+      line-height: 1.1;
+      color: var(--primary);
+    }
+    .status-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      color: var(--text-subtle);
+    }
+    .status-card-info { background: #eff6ff; }
+    .status-card-warning { background: #fff7ed; }
+    .status-card-alert { background: #fff1f2; }
+    .status-card-success { background: #ecfdf5; }
+
+    .process-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .process-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .process-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--secondary);
+    }
+    .process-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+    }
+    .card-code {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--secondary);
+      margin-bottom: 0.4rem;
+    }
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+    .card-meta {
+      border-top: 1px solid #f1f5f9;
+      padding-top: 0.85rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .tech-guide-box {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .tech-guide-box h3 {
+      color: #38bdf8;
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+    }
+    .schema-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .schema-tab-btn {
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .schema-tab-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+      font-weight: 600;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Flujograma General del Proceso de Evaluación                        */
+    /* ------------------------------------------------------------------ */
+    .flow-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .flow-panel h3 {
+      font-size: 1.15rem;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .flow-panel > p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      max-width: 950px;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .flow-track {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .flow-track { grid-template-columns: 1fr; }
+    }
+
+    .flow-node {
+      position: relative;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-top: 4px solid var(--secondary);
+      border-radius: var(--radius-md);
+      padding: 1.1rem 1.25rem;
+    }
+
+    .flow-node.flow-registro { border-top-color: var(--primary); }
+    .flow-node.flow-evaluacion { border-top-color: var(--warning); }
+    .flow-node.flow-salida { border-top-color: var(--success); }
+
+    .flow-node .flow-step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .flow-node h4 {
+      font-size: 0.98rem;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .flow-node p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .flow-node .flow-tag {
+      display: inline-block;
+      margin-top: 0.6rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+    }
+
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--border-focus);
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .flow-arrow { transform: rotate(90deg); padding: 0.25rem 0; }
+    }
+
+    .flow-loop {
+      margin-top: 1.5rem;
+      border: 1px dashed var(--warning);
+      border-left: 5px solid var(--warning);
+      background: var(--warning-light);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+    }
+
+    .flow-loop h4 {
+      font-size: 0.9rem;
+      color: #78350f;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .flow-loop-track {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .flow-chip {
+      background: #ffffff;
+      border: 1px solid #fcd34d;
+      border-radius: 20px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #78350f;
+    }
+
+    .flow-chip.chip-observado { border-color: var(--warning); color: var(--warning); }
+    .flow-chip.chip-final { border-color: var(--success); color: var(--success); }
+    .flow-loop-note { font-size: 0.8rem; color: #78350f; }
+
+    .flow-matrix {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.83rem;
+    }
+
+    .flow-matrix th {
+      text-align: left;
+      background: #ffffff;
+      color: #78350f;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      padding: 0.5rem 0.6rem;
+      border-bottom: 1px solid #fcd34d;
+    }
+
+    .flow-matrix td {
+      padding: 0.5rem 0.6rem;
+      border-bottom: 1px solid rgba(180, 83, 9, 0.15);
+      color: #78350f;
+      font-weight: 600;
+    }
+
+    .flow-matrix td.yes { color: var(--success); }
+    .flow-matrix td.no { color: var(--text-subtle); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+  <!-- Barra Superior -->
+  <header class="top-nav">
+    <div class="top-nav-inner">
+      <a href="index.html" class="brand-wrapper">
+        <span class="brand-logo-badge">GORE</span>
+        <div class="brand-info">
+          <h1>Gobierno Regional de Los Lagos</h1>
+          <p>División de Planificación y Desarrollo Regional (DIPLADER)</p>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link active">Panel Principal</a>
+        <a href="pertinencia.html" class="nav-link">Evaluación de Pertinencia</a>
+        <a href="circular-33.html" class="nav-link">Circular 33</a>
+        <a href="evaluacion-5000-utm.html" class="nav-link">Evaluación &lt; 5.000 UTM</a>
+        <a href="evaluacion-programas.html" class="nav-link">Evaluación Programas</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-container">
+    
+    <!-- Hero / Bienvenida -->
+    <div class="portal-hero">
+      <h2>Módulo de Formularios de Planificación Estratégica</h2>
+      <p>
+        Plataforma estandarizada de formularios web para las cuatro líneas de evaluación técnica del Gobierno Regional de Los Lagos.
+        Cada módulo implementa la estructura reglamentaria en dos fases: <strong>1. Identificación de la Iniciativa</strong> (con Proceso Presupuestario y referencia de Ficha IDI del Banco Integrado de Proyectos) y <strong>2. Evaluación Técnica Sectorial</strong>, permitiendo la generación de la <strong>ficha oficial imprimible</strong> con identificación acotada de antecedentes.
+      </p>
+      <div class="info-callout-portal">
+        <strong>Tarea del funcionario:</strong> evaluar. El registro de la iniciativa se graba una sola vez y las
+        <strong>evaluaciones se reiteran</strong> tantas veces como el postulante responda las observaciones,
+        hasta que la iniciativa queda recomendada o rechazada. En cada iteración se genera la ficha de evaluación en PDF.
+      </div>
+    </div>
+
+    <div class="status-dashboard-panel">
+      <div class="status-dashboard-header">Seguimiento de procesos</div>
+      <div id="dashboardProcesos"></div>
+    </div>
+
+    <!-- Flujograma General del Proceso -->
+    <div class="flow-panel">
+      <h3>Flujograma General del Proceso</h3>
+      <p>
+        El proceso es iterativo: cada resultado con observaciones devuelve la iniciativa al postulante y activa una
+        nueva instancia de evaluación. La trazabilidad de cada vuelta queda registrada en el historial de iteraciones
+        de la ficha oficial.
+      </p>
+
+      <div class="flow-track">
+        <div class="flow-node flow-registro">
+          <span class="flow-step">1</span>
+          <h4>Registro de la Iniciativa</h4>
+          <p>
+            Se graban los datos tomados de la Ficha IDI del BIP/MDSF: código BIP/IDI, nombre oficial,
+            unidad formuladora, unidad técnica, localización (provincia, comuna), sector, etapa postulada,
+            y el cuadro de financiamiento. Se registra una sola vez.
+          </p>
+          <span class="flow-tag">Grabar datos</span>
+        </div>
+
+        <div class="flow-arrow">&rarr;</div>
+
+        <div class="flow-node flow-evaluacion">
+          <span class="flow-step">2</span>
+          <h4>Evaluación y sus Resultados</h4>
+          <p>
+            El profesional evalúa según los criterios de la línea y registra el dictamen, las observaciones y el estado
+            resultante. Es la instancia activa: <strong>Primer Ingreso</strong>, <strong>Responde Observaciones</strong>
+            o <strong>Reevaluación</strong>. Como salida genera la <strong>Ficha de Evaluación en PDF</strong>.
+          </p>
+          <span class="flow-tag">Grabar datos &middot; Ficha de Evaluación (PDF)</span>
+        </div>
+
+        <div class="flow-arrow">&rarr;</div>
+
+        <div class="flow-node flow-salida">
+          <span class="flow-step">3</span>
+          <h4>Registro Documental Evaluación</h4>
+          <p>
+            Se deja constancia documental de la ficha emitida: N° de registro, fecha, profesional que registra,
+            referencia del oficio en la instancia de Oficios y enlace validador Ley N° 19.799.
+          </p>
+          <span class="flow-tag">Grabar datos</span>
+        </div>
+      </div>
+
+      <div class="flow-loop">
+        <h4>Cierre del Ciclo</h4>
+        <div class="flow-loop-track">
+          <span class="flow-chip">Resultado RECOMENDADO</span>
+          <span class="flow-loop-note">&rarr;</span>
+          <span class="flow-chip chip-final">Fin del proceso</span>
+        </div>
+        <div class="flow-loop-track" style="margin-top: 0.6rem;">
+          <span class="flow-chip chip-observado">Resultado con OBSERVACIONES</span>
+          <span class="flow-loop-note">&rarr;</span>
+          <span class="flow-chip">El postulante responde</span>
+          <span class="flow-loop-note">&rarr;</span>
+          <span class="flow-chip chip-observado">Nueva iteración de evaluación</span>
+        </div>
+
+        <table class="flow-matrix">
+          <thead>
+            <tr>
+              <th style="width: 34%;">Línea de evaluación</th>
+              <th style="width: 22%;">Primer Ingreso</th>
+              <th style="width: 22%;">Responde Observaciones</th>
+              <th style="width: 22%;">Reevaluación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Evaluación de Pertinencia</td>
+              <td class="yes">Disponible</td>
+              <td class="yes">Disponible</td>
+              <td class="no">No aplica</td>
+            </tr>
+            <tr>
+              <td>Circular N° 33</td>
+              <td class="yes">Disponible</td>
+              <td class="yes">Disponible</td>
+              <td class="yes">Disponible</td>
+            </tr>
+            <tr>
+              <td>Iniciativas &lt; 5.000 UTM</td>
+              <td class="yes">Disponible</td>
+              <td class="yes">Disponible</td>
+              <td class="yes">Disponible</td>
+            </tr>
+            <tr>
+              <td>Evaluación de Programas</td>
+              <td class="yes">Disponible</td>
+              <td class="yes">Disponible</td>
+              <td class="yes">Disponible</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tarjetas de Procesos -->
+    <div class="process-cards-grid">
+
+      <!-- Tarjeta 1: Pertinencia -->
+      <div class="process-card">
+        <div>
+          <div class="card-code">Línea 01 &bull; DIPLADER</div>
+          <h3 class="card-title">Evaluación de Pertinencia</h3>
+          <p class="card-desc">
+            Dictamen oficial de pertinencia regional FNDR. Identifica la iniciativa a partir de la Ficha IDI del BIP/MDSF, analiza su coherencia con la Estrategia Regional de Desarrollo y el Programa del Gobernador, y formaliza el envío de oficio al Ministerio de Desarrollo Social y Familia o de observaciones a la unidad formuladora.
+          </p>
+          <div class="card-meta">
+            <span><strong>Flujo:</strong> Registro &bull; Evaluación y sus Resultados (Ficha PDF) &bull; Registro Documental</span>
+            <span><strong>Iteraciones:</strong> Primer Ingreso &bull; Responde Observaciones</span>
+            <span><strong>Documento:</strong> Ficha de Evaluación de Pertinencia Regional</span>
+          </div>
+        </div>
+        <a href="pertinencia.html" class="btn btn-primary" style="width: 100%;">Acceder al Formulario &rarr;</a>
+      </div>
+
+      <!-- Tarjeta 2: Circular 33 -->
+      <div class="process-card">
+        <div>
+          <div class="card-code">Línea 02 &bull; DIPLADER</div>
+          <h3 class="card-title">Circular N° 33</h3>
+          <p class="card-desc">
+            Comprende la Identificación de la Acción (Anexo N° 1) para estudios básicos (Subtítulo 22), adquisición de activos no financieros (Subtítulo 29) con Costo Anual Equivalente (C.A.E.) y situaciones de emergencia, junto a la Ficha de Evaluación Técnica emitida por la División de Planificación.
+          </p>
+          <div class="card-meta">
+            <span><strong>Flujo:</strong> Registro (Anexo 1) &bull; Evaluación y sus Resultados (Ficha PDF) &bull; Registro Documental</span>
+            <span><strong>Iteraciones:</strong> Primer Ingreso &bull; Responde Observaciones &bull; Reevaluación</span>
+            <span><strong>Documento:</strong> Ficha de Evaluación Circular N° 33</span>
+          </div>
+        </div>
+        <a href="circular-33.html" class="btn btn-primary" style="width: 100%;">Acceder al Formulario &rarr;</a>
+      </div>
+
+      <!-- Tarjeta 3: Menores a 5.000 UTM -->
+      <div class="process-card">
+        <div>
+          <div class="card-code">Línea 03 &bull; DIPLADER</div>
+          <h3 class="card-title">Evaluación &lt; 5.000 UTM</h3>
+          <p class="card-desc">
+            Revisión técnica de proyectos de inversión menor a 5.000 UTM. Contempla el desglose fundado de observaciones sectoriales en materias de Presupuesto, Términos de Referencia / EETT, Planimetría e Ingeniería, Anexos / Factibilidades y Dominio de Terrenos.
+          </p>
+          <div class="card-meta">
+            <span><strong>Flujo:</strong> Registro &bull; Evaluación y sus Resultados (Ficha PDF) &bull; Registro Documental</span>
+            <span><strong>Iteraciones:</strong> Primer Ingreso &bull; Responde Observaciones &bull; Reevaluación</span>
+            <span><strong>Documento:</strong> Ficha de Evaluación &lt; 5.000 UTM (Revisiones con/sin obs.)</span>
+          </div>
+        </div>
+        <a href="evaluacion-5000-utm.html" class="btn btn-primary" style="width: 100%;">Acceder al Formulario &rarr;</a>
+      </div>
+
+      <!-- Tarjeta 4: Programas -->
+      <div class="process-card">
+        <div>
+          <div class="card-code">Línea 04 &bull; DIPLADER</div>
+          <h3 class="card-title">Evaluación de Programas</h3>
+          <p class="card-desc">
+            Evaluación técnica y de pertinencia para programas de inversión y transferencias corrientes o de capital (Subtítulo 24 y Subtítulo 33) en salud pública, programas de inclusión social, fomento productivo, medio ambiente y cuidados de la comunidad.
+          </p>
+          <div class="card-meta">
+            <span><strong>Flujo:</strong> Registro &bull; Evaluación y sus Resultados (Ficha PDF) &bull; Registro Documental</span>
+            <span><strong>Iteraciones:</strong> Primer Ingreso &bull; Responde Observaciones &bull; Reevaluación</span>
+            <span><strong>Documento:</strong> Ficha de Evaluación de Programas</span>
+          </div>
+        </div>
+        <a href="evaluacion-programas.html" class="btn btn-primary" style="width: 100%;">Acceder al Formulario &rarr;</a>
+      </div>
+
+    </div>
+
+    <!-- Guía Técnica para el Equipo de Backend y Base de Datos -->
+    <div class="tech-guide-box">
+      <h3>Especificación Técnica de Integración (Base de Datos y Backend)</h3>
+      <p style="color: #cbd5e1; font-size: 0.88rem; margin-bottom: 1.25rem; line-height: 1.5;">
+        Los formularios operan de forma desacoplada y cuentan con la función de serialización para generar cargas útiles estandarizadas (Payload JSON). Esto permite su ingesta directa por controladores API REST o persistencia en motores relacionales (PostgreSQL / MySQL) o documentales.
+      </p>
+
+      <div class="schema-tabs">
+        <button type="button" class="schema-tab-btn active" onclick="mostrarEsquema('pertinencia', this)">Evaluación de Pertinencia</button>
+        <button type="button" class="schema-tab-btn" onclick="mostrarEsquema('circular33', this)">Circular 33</button>
+        <button type="button" class="schema-tab-btn" onclick="mostrarEsquema('evaluacion5000Utm', this)">Evaluación &lt; 5.000 UTM</button>
+        <button type="button" class="schema-tab-btn" onclick="mostrarEsquema('evaluacionProgramas', this)">Evaluación de Programas</button>
+      </div>
+
+      <pre id="schemaCodeViewer" class="json-viewer" style="background:#020617; border: 1px solid #1e293b; max-height: 350px;"></pre>
+    </div>
+
+  </main>
+
+  <script src="js/schemas.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function mostrarEsquema(modeloKey, btn) {
+      document.querySelectorAll('.schema-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const schema = window.AppSchemas[modeloKey];
+      document.getElementById('schemaCodeViewer').textContent = JSON.stringify(schema, null, 2);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('schemaCodeViewer').textContent = JSON.stringify(window.AppSchemas.pertinencia, null, 2);
+    });
+  </script>
+</body>
+</html>

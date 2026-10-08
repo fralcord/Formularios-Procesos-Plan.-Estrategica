@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha de Evaluación Menores a 5.000 UTM - GORE Los Lagos</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+</head>
+<body>
+
+  <!-- Barra Superior -->
+  <header class="top-nav">
+    <div class="top-nav-inner">
+      <a href="index.html" class="brand-wrapper">
+        <span class="brand-logo-badge">GORE</span>
+        <div class="brand-info">
+          <h1>Gobierno Regional de Los Lagos</h1>
+          <p>División de Planificación y Desarrollo Regional (DIPLADER)</p>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Inicio / Panel</a>
+        <a href="pertinencia.html" class="nav-link">Evaluación de Pertinencia</a>
+        <a href="circular-33.html" class="nav-link">Circular 33</a>
+        <a href="evaluacion-5000-utm.html" class="nav-link active">Evaluación &lt; 5.000 UTM</a>
+        <a href="evaluacion-programas.html" class="nav-link">Evaluación Programas</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-container">
+    
+    <!-- Encabezado del Formulario -->
+    <section class="form-header-card">
+      <div class="form-header-title">
+        <span class="form-category-pill">Control y Evaluación Técnica GORE</span>
+        <h2>FICHA DE EVALUACIÓN INICIATIVAS MENORES A 5.000 UTM</h2>
+        <p>
+          Instrumento oficial de revisión técnica sectorial.
+          Flujo del proceso: <strong>Registro de la Iniciativa</strong> (grabar datos) &rarr;
+          <strong>Evaluación y sus Resultados</strong> (grabar datos, genera la Ficha de Evaluación en PDF) &rarr;
+          <strong>Registro Documental Evaluación</strong> (grabar datos). Las revisiones con observaciones se reiteran
+          mediante <strong>reevaluación</strong> hasta la resolución de la iniciativa.
+        </p>
+      </div>
+      <div class="form-header-actions">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemplo5000UtmConObs()">
+          <span>Cargar referencia: Rev-2 (Con observaciones)</span>
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemplo5000UtmSinObs()">
+          <span>Cargar referencia: Rev-6 (Sin observaciones)</span>
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="imprimirFichaOficial5000()">
+          <span>Imprimir documento / Exportar a PDF</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Selector de Instancia de Evaluación -->
+    <div class="instancia-selector no-print" id="selectorInstancia"
+         data-nombre-campo="instancia_evaluacion"
+         data-permite-reevaluacion="true"
+         data-bloque-respuesta="bloqueRespuestaObs5000"
+         data-bloque-reevaluacion="bloqueReevaluacion5000"
+         data-campo-iteracion="ut5000_num_iteracion"
+         data-tag-print="print_instancia_5000"
+         data-tag-iteracion="print_iteracion_5000"
+         data-paso-evaluacion="evaluacion">
+      <span class="instancia-selector-label">Instancia de Evaluación:</span>
+      <div class="instancia-options">
+        <label class="instancia-option">
+          <input type="radio" name="instancia_evaluacion" value="Primer Ingreso" checked onchange="actualizarFichaImprimible5000()">
+          <span>Primer Ingreso</span>
+        </label>
+        <label class="instancia-option">
+          <input type="radio" name="instancia_evaluacion" value="Responde Observaciones" onchange="actualizarFichaImprimible5000()">
+          <span>Responde Observaciones</span>
+        </label>
+        <label class="instancia-option">
+          <input type="radio" name="instancia_evaluacion" value="Reevaluación" onchange="actualizarFichaImprimible5000()">
+          <span>Reevaluación</span>
+        </label>
+      </div>
+      <span class="instancia-selector-help">
+        Instancia activa: <strong id="instanciaDescripcion5000">Primer Ingreso</strong>
+      </span>
+      <button type="button" class="btn btn-secondary btn-sm instancia-next-btn" onclick="avanzarInstancia5000()">
+        Continuar a la siguiente instancia &rarr;
+      </button>
+    </div>
+
+    <!-- Selector de Pasos -->
+    <div class="process-step-tabs no-print">
+      <button type="button" class="step-tab-btn active" id="tabBtn1" onclick="cambiarPaso5000('identificacion')">
+        <span class="step-tab-number">1</span>
+        <span>Registro de la Iniciativa</span>
+      </button>
+      <button type="button" class="step-tab-btn" id="tabBtn2" onclick="cambiarPaso5000('evaluacion')">
+        <span class="step-tab-number">2</span>
+        <span>Evaluación y sus Resultados</span>
+      </button>
+      <button type="button" class="step-tab-btn" id="tabBtn3" onclick="cambiarPaso5000('imprimible')">
+        <span class="step-tab-number">3</span>
+        <span>Ficha de Evaluación (PDF)</span>
+      </button>
+      <button type="button" class="step-tab-btn" id="tabBtn4" onclick="cambiarPaso5000('documental')">
+        <span class="step-tab-number">4</span>
+        <span>Registro Documental Evaluación</span>
+      </button>
+    </div>
+
+    <!-- FORMULARIO DE EVALUACIÓN 5000 UTM -->
+    <form id="formEvaluacion5000" oninput="actualizarFichaImprimible5000()">
+
+      <!-- ================= PASO 1: REGISTRO DE LA INICIATIVA ================= -->
+      <div id="pasoIdentificacion5000" class="paso-contenedor">
+        <section class="form-section-card">
+          <div class="section-header">
+            <h3>1. Registro de la Iniciativa (grabar datos)</h3>
+            <span class="section-badge">Proceso Presupuestario</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="col-3">
+              <div class="form-group">
+                <label class="form-label" for="ano_postulacion">Proceso Presupuestario (Año) <span class="required">*</span></label>
+                <input type="number" id="ano_postulacion" name="proceso_presupuestario_ano" class="form-control" value="2026" required>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label class="form-label" for="codigo_idi">Código IDI / BIP <span class="required">*</span></label>
+                <input type="text" id="codigo_idi" name="codigo_idi" class="form-control" placeholder="Ej: 40078509-0" required>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label class="form-label" for="provincia_5000">Provincia <span class="required">*</span></label>
+                <select id="provincia_5000" name="provincia" class="form-control" required>
+                  <option value="">Seleccione provincia...</option>
+                  <option value="OSORNO">OSORNO</option>
+                  <option value="LLANQUIHUE">LLANQUIHUE</option>
+                  <option value="CHILOÉ">CHILOÉ</option>
+                  <option value="PALENA">PALENA</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label class="form-label" for="comuna_5000">Comuna <span class="required">*</span></label>
+                <select id="comuna_5000" name="comuna" class="form-control" required>
+                  <option value="">Seleccione comuna...</option>
+                  <option value="Ancud">Ancud</option>
+                  <option value="Castro">Castro</option>
+                  <option value="Chonchi">Chonchi</option>
+                  <option value="Curaco de Vélez">Curaco de Vélez</option>
+                  <option value="Dalcahue">Dalcahue</option>
+                  <option value="Puqueldón">Puqueldón</option>
+                  <option value="Queilén">Queilén</option>
+                  <option value="Quellón">Quellón</option>
+                  <option value="Quemchi">Quemchi</option>
+                  <option value="Quinchao">Quinchao</option>
+                  <option value="Calbuco">Calbuco</option>
+                  <option value="Cochamó">Cochamó</option>
+                  <option value="Fresia">Fresia</option>
+                  <option value="Frutillar">Frutillar</option>
+                  <option value="Llanquihue">Llanquihue</option>
+                  <option value="Los Muermos">Los Muermos</option>
+                  <option value="Maullín">Maullín</option>
+                  <option value="Puerto Montt">Puerto Montt</option>
+                  <option value="Puerto Varas">Puerto Varas</option>
+                  <option value="Osorno">Osorno</option>
+                  <option value="Puerto Octay">Puerto Octay</option>
+                  <option value="Purranque">Purranque</option>
+                  <option value="Puyehue">Puyehue</option>
+                  <option value="Río Negro">Río Negro</option>
+                  <option value="San Juan de la Costa">San Juan de la Costa</option>
+                  <option value="San Pablo">San Pablo</option>
+                  <option value="Chaitén">Chaitén</option>
+                  <option value="Futaleufú">Futaleufú</option>
+                  <option value="Hualaihué">Hualaihué</option>
+                  <option value="Palena">Palena</option>
+                  <option value="Provincial">Provincial</option>
+                  <option value="Regional">Regional</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-8">
+              <div class="form-group">
+                <label class="form-label" for="nombre_iniciativa">Nombre de la Iniciativa <span class="required">*</span></label>
+                <input type="text" id="nombre_iniciativa" name="nombre_iniciativa" class="form-control" placeholder="Ej: CONSTRUCCION INFRAESTRUCTURA RECREATIVA Y AREA VERDE SECTOR PILMAIQUEN, COMUNA DE PUYEHUE" required>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="unidad_formuladora_5000">Unidad Formuladora <span class="required">*</span></label>
+                <input type="text" id="unidad_formuladora_5000" name="unidad_formuladora" class="form-control" placeholder="Ej: MUNICIPALIDAD DE PUYEHUE" required>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="unidad_tecnica_5000">Unidad Técnica <span class="required">*</span></label>
+                <input type="text" id="unidad_tecnica_5000" name="unidad_tecnica" class="form-control" placeholder="Ej: DIPLADER / SECOPLAN" required>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_oficio_postulacion">N° de Oficio de Postulación</label>
+                <input type="text" id="ut5000_oficio_postulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: ORD. GR. N° 1234 / 01-2026">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_oficio_postulacion_fecha">Fecha de Oficio de Postulación</label>
+                <input type="date" id="ut5000_oficio_postulacion_fecha" name="oficio_postulacion.fecha" class="form-control">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_ingreso_oficina_partes">Ingreso de Oficio a Oficina de Partes</label>
+                <input type="date" id="ut5000_ingreso_oficina_partes" name="oficio_postulacion.fechaIngresoOficinaPartes" class="form-control">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_ingreso_evaluacion">Ingreso a Evaluación</label>
+                <input type="date" id="ut5000_ingreso_evaluacion" name="oficio_postulacion.fechaIngresoEvaluacion" class="form-control">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="costo_total">Costo Total</label>
+                <input type="number" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" min="0">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="table-actions">
+          <button type="button" class="btn btn-primary btn-sm" onclick="cambiarPaso5000('evaluacion')">Continuar a Evaluación &rarr;</button>
+        </div>
+      </div>
+
+      <!-- ================= PASO 2: EVALUACIÓN Y RESULTADOS ================= -->
+      <div id="pasoEvaluacion5000" class="paso-contenedor" style="display: none;">
+        <section class="form-section-card">
+          <div class="section-header">
+            <h3>2. Evaluación y Resultados (grabar datos)</h3>
+            <span class="section-badge">Criterios de Revisión</span>
+          </div>
+
+          <div class="callout callout-info">
+            <span>Instancia en registro: <strong id="instanciaDescripcionEval5000">Primer Ingreso</strong>. Al registrar observaciones, active <strong>&laquo;Continuar a la siguiente instancia&raquo;</strong> para incorporar la respuesta del postulante y su reevaluación.</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="col-3">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_num_iteracion">N° de Iteración <span class="required">*</span></label>
+                <input type="number" id="ut5000_num_iteracion" name="proceso.numero_iteracion" class="form-control" min="1" value="1" required oninput="this.dataset.editado='1'">
+                <span class="form-hint">Se completa según la instancia activa.</span>
+              </div>
+            </div>
+            <div class="col-9">
+              <div class="callout callout-warning" style="margin-bottom:0;">
+                <span id="ayudaInstancia5000">Se registra la primera revisión técnica de la iniciativa.</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="estado_resultado_evaluacion">Estado o Resultado de la Evaluación <span class="required">*</span></label>
+                <select id="estado_resultado_evaluacion" name="evaluacion_tecnica.estado_resultado" class="form-control" required onchange="actualizarBadgeResultado5000(this.value)">
+                  <option value="OBSERVADO">OBSERVADO (Con Observaciones pendientes)</option>
+                  <option value="SIN OBSERVACIONES">SIN OBSERVACIONES (Recomendado)</option>
+                  <option value="RECOMENDADO">RECOMENDADO TÉCNICAMENTE</option>
+                  <option value="RECHAZADO">RECHAZADO</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6" style="display: flex; align-items: flex-end; padding-bottom: 0.5rem;">
+              <span class="status-badge observado" id="badgePreview5000">ESTADO: OBSERVADO</span>
+            </div>
+
+            <!-- Desglose por Áreas Oficiales -->
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="obs_presupuesto">
+                  <span>A. Presupuesto</span>
+                  <span class="form-hint">Aritmética de partidas, consistencia de subtotales, precios unitarios</span>
+                </label>
+                <textarea id="obs_presupuesto" name="evaluacion_tecnica.observaciones_presupuesto" rows="3" class="form-control" placeholder="Indicar observaciones de presupuesto..."></textarea>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="obs_ttr_eett">
+                  <span>B. TTR y/o EETT</span>
+                  <span class="form-hint">Términos de referencia, especificaciones técnicas, partidas especiales</span>
+                </label>
+                <textarea id="obs_ttr_eett" name="evaluacion_tecnica.observaciones_ttr_eett" rows="3" class="form-control" placeholder="Indicar observaciones de TTR / EETT..."></textarea>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="obs_planos">
+                  <span>C. Planos e Ingeniería</span>
+                  <span class="form-hint">Planimetría de arquitectura, accesibilidad universal, geotextil, renders</span>
+                </label>
+                <textarea id="obs_planos" name="evaluacion_tecnica.observaciones_planos_ingenieria" rows="3" class="form-control" placeholder="Indicar observaciones de planos e ingeniería..."></textarea>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="obs_anexos">
+                  <span>D. Anexos y Factibilidades</span>
+                  <span class="form-hint">Factibilidad sanitaria, eléctrica, certificado DOM, patentes profesionales</span>
+                </label>
+                <textarea id="obs_anexos" name="evaluacion_tecnica.observaciones_anexos" rows="3" class="form-control" placeholder="Indicar observaciones de anexos y certificados..."></textarea>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="obs_terreno">
+                  <span>E. Terreno y Otros</span>
+                  <span class="form-hint">Plano de subdivisión, título de dominio vigente, rol municipal</span>
+                </label>
+                <textarea id="obs_terreno" name="evaluacion_tecnica.observaciones_terreno_otros" rows="3" class="form-control" placeholder="Indicar observaciones de terreno..."></textarea>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="sintesis_evaluacion">
+                  <span>Síntesis o Conclusiones de la Evaluación</span>
+                </label>
+                <textarea id="sintesis_evaluacion" name="evaluacion_tecnica.sintesis_evaluacion" rows="3" class="form-control" placeholder="Texto resumen que se remitirá a la municipalidad o constará en el archivo..."></textarea>
+              </div>
+            </div>
+
+            <!-- Trazabilidad y Firmas -->
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="evaluador_nombre">Evaluado por (Profesional) <span class="required">*</span></label>
+                <input type="text" id="evaluador_nombre" name="control_evaluacion.evaluador_nombre" class="form-control" placeholder="Ej: Diego Castro Henríquez" required>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="fecha_ingreso_ev">Fecha Ingreso a Evaluación <span class="required">*</span></label>
+                <input type="date" id="fecha_ingreso_ev" name="control_evaluacion.fecha_ingreso_evaluacion" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="fecha_termino_ev">Fecha Término Evaluación <span class="required">*</span></label>
+                <input type="date" id="fecha_termino_ev" name="control_evaluacion.fecha_termino_evaluacion" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="jefe_division_nombre">Jefatura Validadora</label>
+                <input type="text" id="jefe_division_nombre" name="control_evaluacion.jefe_division_nombre" class="form-control" value="Washington Alejandro Montaña Ampuero">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="url_validador_firma">Enlace Validador DocDigital Ley N° 19.799</label>
+                <input type="url" id="url_validador_firma" name="control_evaluacion.url_validador_firma" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- BLOQUE: RESPUESTA DEL POSTULANTE A OBSERVACIONES -->
+        <section class="form-section-card bloque-iteracion" id="bloqueRespuestaObs5000" style="display: none;">
+          <div class="section-header">
+            <h3>2.1 Respuesta del Postulante a Observaciones</h3>
+            <span class="section-badge">Instancia N° 2</span>
+          </div>
+          <div class="callout callout-warning">
+            <span>Instancia <strong>&laquo;Responde Observaciones&raquo;</strong>. Registre los antecedentes y documentos con que la unidad formuladora subsana cada observación emitida en la revisión anterior.</span>
+          </div>
+          <div class="form-grid">
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_resp_fecha">Fecha de Respuesta del Postulante</label>
+                <input type="date" id="ut5000_resp_fecha" name="respuesta_observaciones.fecha_respuesta" class="form-control">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_resp_documento">N° de Documento / ORD Recibido</label>
+                <input type="text" id="ut5000_resp_documento" name="respuesta_observaciones.numero_documento" class="form-control" placeholder="Ej: ORD. GR. N° 1745">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_resp_entrada">Fecha de Ingreso a DIPLADER</label>
+                <input type="date" id="ut5000_resp_entrada" name="respuesta_observaciones.fecha_ingreso_diplader" class="form-control">
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_resp_detalle">Detalle de la Respuesta y Documentos Adjuntos</label>
+                <textarea id="ut5000_resp_detalle" name="respuesta_observaciones.detalle_respuesta" rows="4" class="form-control" placeholder="Punto por punto: qué observación se subsanó y con qué documento..."></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- BLOQUE: REEVALUACIÓN -->
+        <section class="form-section-card bloque-iteracion" id="bloqueReevaluacion5000" style="display: none;">
+          <div class="section-header">
+            <h3>2.2 Reevaluación de la Iniciativa</h3>
+            <span class="section-badge">Instancia N° 3</span>
+          </div>
+          <div class="callout callout-info">
+            <span>Instancia <strong>&laquo;Reevaluación&raquo;</strong>. Verifique la subsanación de las observaciones y registre el resultado de esta nueva revisión técnica.</span>
+          </div>
+          <div class="form-grid">
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reev_verificacion">Verificación de lo Subsanado</label>
+                <textarea id="ut5000_reev_verificacion" name="reevaluacion.verificacion_subsanacion" rows="4" class="form-control" placeholder="Observaciones resueltas y observaciones que permanecen..."></textarea>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reev_fundamento">Fundamento del Resultado de la Reevaluación</label>
+                <textarea id="ut5000_reev_fundamento" name="reevaluacion.fundamento_resultado" rows="4" class="form-control" placeholder="Fundamento técnico que sustenta el estado asignado en esta revisión..."></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- HISTORIAL DE ITERACIONES -->
+        <section class="form-section-card">
+          <div class="section-header">
+            <h3>2.3 Historial de Iteraciones de la Evaluación</h3>
+            <span class="section-badge">Trazabilidad</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="tablaIteraciones5000" data-table-id="iteraciones">
+              <thead>
+                <tr>
+                  <th style="width: 10%;">N°</th>
+                  <th style="width: 15%;">Fecha</th>
+                  <th style="width: 22%;">Instancia</th>
+                  <th style="width: 18%;">Estado</th>
+                  <th style="width: 27%;">Síntesis / Fundamento</th>
+                  <th style="width: 8%; text-align: center;"></th>
+                </tr>
+              </thead>
+              <tbody id="tbodyIteraciones5000">
+                <tr data-table-row>
+                  <td><input type="text" class="form-control" data-field="numero" placeholder="N°"></td>
+                  <td><input type="date" class="form-control" data-field="fecha"></td>
+                  <td>
+                    <select class="form-control" data-field="instancia">
+                      <option value="">-</option>
+                      <option>Primer Ingreso</option>
+                      <option>Responde Observaciones</option>
+                      <option>Reevaluación</option>
+                    </select>
+                  </td>
+                  <td><input type="text" class="form-control" data-field="estado" placeholder="OBSERVADO / SIN OBSERVACIONES"></td>
+                  <td><input type="text" class="form-control" data-field="detalle" placeholder="Resumen del resultado"></td>
+                  <td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" onclick="removeTableRow(this)">Eliminar</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-actions">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaIteracion5000()">+ Agregar Iteración Anterior</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarPaso5000('imprimible')">Ver Ficha de Evaluación (PDF) &rarr;</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="cambiarPaso5000('documental')">Continuar a Registro Documental &rarr;</button>
+          </div>
+        </section>
+      </div>
+
+<!-- ================= PASO 3: FICHA DE EVALUACIÓN (PDF) ================= -->
+      <div id="seccionImprimibleOficial5000" style="display: none;">
+        <div class="official-sheet">
+          <div class="official-header">
+            <div class="org-name">Gobierno Regional de la Región de Los Lagos</div>
+            <div style="font-size: 0.78rem; color: #64748b;">División de Planificación y Desarrollo Regional (DIPLADER)</div>
+            <div class="sheet-main-title">FICHA DE EVALUACION INICIATIVAS MENORES A 5.000 UTM</div>
+            <div class="budget-process-tag">PROCESO PRESUPUESTARIO <span id="print_5000_ano">2026</span></div>
+            <div>
+              <span class="instancia-print-tag" id="print_instancia_5000">PRIMER INGRESO</span>
+              <span class="instancia-print-tag iteracion-tag" id="print_iteracion_5000">N° 1</span>
+            </div>
+          </div>
+
+          <div class="sheet-section-title">ANTECEDENTES DE LA INICIATIVA:</div>
+          <div class="sheet-summary-grid">
+            <div class="sheet-summary-cell" style="grid-column: span 3;">
+              <span class="label">PROVINCIA</span>
+              <span class="val" id="print_5000_provincia">-</span>
+            </div>
+            <div class="sheet-summary-cell" style="grid-column: span 3;">
+              <span class="label">COMUNA</span>
+              <span class="val" id="print_5000_comuna">-</span>
+            </div>
+            <div class="sheet-summary-cell" style="grid-column: span 3;">
+              <span class="label">AÑO POSTULACIÓN</span>
+              <span class="val" id="print_5000_ano_post">-</span>
+            </div>
+            <div class="sheet-summary-cell" style="grid-column: span 3;">
+              <span class="label">CÓDIGO IDI</span>
+              <span class="val" id="print_5000_bip">-</span>
+            </div>
+            <div class="sheet-summary-cell" style="grid-column: span 12;">
+              <span class="label">NOMBRE DE LA INICIATIVA</span>
+              <span class="val" id="print_5000_nombre">-</span>
+            </div>
+            <div class="sheet-summary-cell" style="grid-column: span 6;">
+              <span class="label">UNIDAD FORMULADORA</span>
+              <span class="val" id="print_5000_unidad_formuladora">-</span>
+            </div>
+            <div class="sheet-summary-cell" style="grid-column: span 6;">
+              <span class="label">UNIDAD TÉCNICA</span>
+              <span class="val" id="print_5000_unidad_tecnica">-</span>
+            </div>
+            <div class="sheet-summary-cell" style="grid-column: span 3;">
+              <span class="label">COSTO TOTAL</span>
+              <span class="val" id="print_5000_costo_total">-</span>
+            </div>
+          </div>
+
+          <div class="sheet-section-title" style="margin-top: 1.25rem;">EVALUACIÓN:</div>
+          <div class="sheet-box-text" id="print_5000_evaluacion_bloque"></div>
+
+          <!-- Respuesta del postulante (instancia N° 2) -->
+          <div id="print_respuesta_observaciones_5000" style="display: none;">
+            <div class="sheet-section-title">RESPUESTA DEL POSTULANTE A OBSERVACIONES:</div>
+            <div class="sheet-summary-grid">
+              <div class="sheet-summary-cell" style="grid-column: span 6;">
+                <span class="label">FECHA DE RESPUESTA</span>
+                <span class="val" id="print_5000_resp_fecha">-</span>
+              </div>
+              <div class="sheet-summary-cell" style="grid-column: span 6;">
+                <span class="label">DOCUMENTO / ORD RECIBIDO</span>
+                <span class="val" id="print_5000_resp_documento">-</span>
+              </div>
+            </div>
+            <div class="sheet-box-text" id="print_5000_resp_detalle">-</div>
+          </div>
+
+          <!-- Reevaluación (instancia N° 3) -->
+          <div id="print_reevaluacion_5000" style="display: none;">
+            <div class="sheet-section-title">REEVALUACIÓN:</div>
+            <div class="sheet-box-text" id="print_5000_reevaluacion_bloque">-</div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin: 0.75rem 0; font-size: 0.82rem;">
+            <div><strong>ESTADO:</strong> <span class="status-badge observado" id="print_5000_estado_badge">OBSERVADO</span></div>
+            <div><strong>INGRESO:</strong> <span id="print_5000_fechas_tramite">-</span></div>
+            <div><strong>EVALUACIÓN:</strong> <span id="print_5000_evaluador_texto">-</span></div>
+          </div>
+
+          <div class="sheet-section-title">HISTORIAL DE ITERACIONES DE LA EVALUACIÓN:</div>
+          <table class="data-table" id="tablaPrintIteraciones5000">
+            <thead>
+              <tr>
+                <th style="width: 8%;">N°</th>
+                <th style="width: 14%;">FECHA</th>
+                <th style="width: 22%;">INSTANCIA</th>
+                <th style="width: 20%;">ESTADO</th>
+                <th style="width: 36%;">SÍNTESIS / FUNDAMENTO</th>
+              </tr>
+            </thead>
+            <tbody id="print_5000_tbody_iteraciones"></tbody>
+          </table>
+
+          <!-- Las firmas y las referencias a oficios se gestionan en otra instancia -->
+          <div class="sheet-footer-note">
+            Las firmas electrónicas Ley N° 19.799 y las referencias a oficios asociadas
+            se registran en la instancia de Oficios de la DIPLADER.
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= PASO 4: REGISTRO DOCUMENTAL EVALUACIÓN ================= -->
+      <div id="pasoDocumental5000" class="paso-contenedor" style="display: none;">
+        <section class="form-section-card">
+          <div class="section-header">
+            <h3>4. Registro Documental Evaluación (grabar datos)</h3>
+            <span class="section-badge">Constancia documental</span>
+          </div>
+          <div class="callout callout-info">
+            <span>Deja constancia de la Ficha de Evaluación emitida en el paso anterior. La firma electrónica y la
+            emisión de oficios se realizan en la instancia de Oficios de la DIPLADER.</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reg_numero">N° de Registro Documental <span class="required">*</span></label>
+                <input type="text" id="ut5000_reg_numero" name="registro_documental.numeroRegistro" class="form-control" placeholder="Ej: REG-DIP-2026-0301" required>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reg_fecha">Fecha de Registro Documental <span class="required">*</span></label>
+                <input type="date" id="ut5000_reg_fecha" name="registro_documental.fechaRegistro" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reg_registrado_por">Registrado por (Profesional) <span class="required">*</span></label>
+                <input type="text" id="ut5000_reg_registrado_por" name="registro_documental.registradoPor" class="form-control" placeholder="Nombre del profesional" required>
+              </div>
+            </div>
+
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reg_oficio">Referencia de Oficio (Instancia de Oficios)</label>
+                <input type="text" id="ut5000_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: ORD. GR. N° 1742">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reg_oficio_fecha">Fecha del Oficio</label>
+                <input type="date" id="ut5000_reg_oficio_fecha" name="registro_documental.fechaOficio" class="form-control">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reg_ingreso_oficina_partes">Ingreso de Oficio a Oficina de Partes</label>
+                <input type="date" id="ut5000_reg_ingreso_oficina_partes" name="registro_documental.fechaIngresoOficinaPartes" class="form-control">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reg_ingreso_evaluacion">Ingreso a Evaluación</label>
+                <input type="date" id="ut5000_reg_ingreso_evaluacion" name="registro_documental.fechaIngresoEvaluacion" class="form-control">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reg_validador">Enlace Validador DocDigital (Ley N° 19.799)</label>
+                <input type="url" id="ut5000_reg_validador" name="registro_documental.urlValidadorDocDigital" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reg_observaciones">Constancia y Observaciones del Registro</label>
+                <textarea id="ut5000_reg_observaciones" name="registro_documental.constanciaRegistro" rows="3" class="form-control" placeholder="Dónde se conserva el documento, a quién se remitió, observaciones de archivo..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="cierre-ciclo-box" id="cierreCiclo5000">
+            <strong>Resultado del ciclo:</strong> <span id="cierreResultado5000">-</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- Barra de Acciones Final -->
+      <div class="form-footer-bar no-print">
+        <div class="form-footer-left">
+          <span>Proceso: Registro de la Iniciativa &bull; Evaluación y sus Resultados (Ficha PDF) &bull; Registro Documental Evaluación.</span>
+        </div>
+        <div class="form-footer-right">
+          <button type="reset" class="btn btn-secondary">Limpiar campos</button>
+          <button type="button" class="btn btn-primary" onclick="guardarFormulario5000()">
+            <span>Generar carga útil JSON</span>
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/schemas.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function cambiarPaso5000(paso) {
+      ['tabBtn1', 'tabBtn2', 'tabBtn3', 'tabBtn4'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+
+      document.getElementById('pasoIdentificacion5000').style.display = 'none';
+      document.getElementById('pasoEvaluacion5000').style.display = 'none';
+      document.getElementById('pasoDocumental5000').style.display = 'none';
+      document.getElementById('seccionImprimibleOficial5000').style.display = 'none';
+
+      if (paso === 'identificacion') {
+        document.getElementById('tabBtn1').classList.add('active');
+        document.getElementById('pasoIdentificacion5000').style.display = 'block';
+      } else if (paso === 'evaluacion') {
+        document.getElementById('tabBtn2').classList.add('active');
+        document.getElementById('pasoEvaluacion5000').style.display = 'block';
+      } else if (paso === 'imprimible') {
+        document.getElementById('tabBtn3').classList.add('active');
+        actualizarFichaImprimible5000();
+        document.getElementById('seccionImprimibleOficial5000').style.display = 'block';
+      } else if (paso === 'documental') {
+        document.getElementById('tabBtn4').classList.add('active');
+        document.getElementById('pasoDocumental5000').style.display = 'block';
+      }
+    }
+
+    function actualizarBadgeResultado5000(val) {
+      const badge = document.getElementById('badgePreview5000');
+      badge.className = 'status-badge';
+      if (val === 'OBSERVADO') {
+        badge.classList.add('observado');
+        badge.textContent = 'ESTADO: OBSERVADO';
+      } else if (val === 'SIN OBSERVACIONES' || val === 'RECOMENDADO') {
+        badge.classList.add('recomendado');
+        badge.textContent = 'ESTADO: ' + val;
+      } else {
+        badge.classList.add('rechazado');
+        badge.textContent = 'ESTADO: ' + val;
+      }
+      actualizarFichaImprimible5000();
+    }
+
+    function actualizarFichaImprimible5000() {
+      AppIteracion.aplicar();
+      const getVal = id => document.getElementById(id)?.value || '';
+      const claveInstancia = AppIteracion.actual();
+
+      const etiquetaInstancia = AppIteracion.ETIQUETAS[claveInstancia];
+      ['instanciaDescripcion5000', 'instanciaDescripcionEval5000'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = etiquetaInstancia;
+      });
+      const ayuda = document.getElementById('ayudaInstancia5000');
+      if (ayuda) {
+        ayuda.textContent = claveInstancia === 'PRIMER_INGRESO'
+          ? 'Se registra la primera revisión técnica de la iniciativa.'
+          : (claveInstancia === 'REEVALUACION'
+            ? 'Reevaluación: se verifica la subsanación y se emite un nuevo resultado de revisión.'
+            : 'La unidad formuladora respondió las observaciones; corresponde verificar la subsanación.');
+      }
+
+      document.getElementById('print_5000_ano').textContent = getVal('ano_postulacion') || '2026';
+      document.getElementById('print_5000_provincia').textContent = getVal('provincia_5000') || '-';
+      document.getElementById('print_5000_comuna').textContent = getVal('comuna_5000') || '-';
+      document.getElementById('print_5000_ano_post').textContent = getVal('ano_postulacion') || '-';
+      document.getElementById('print_5000_bip').textContent = getVal('codigo_idi') || '-';
+      document.getElementById('print_5000_nombre').textContent = getVal('nombre_iniciativa') || '-';
+      document.getElementById('print_5000_unidad_formuladora').textContent = getVal('unidad_formuladora_5000') || '-';
+      document.getElementById('print_5000_unidad_tecnica').textContent = getVal('unidad_tecnica_5000') || '-';
+      document.getElementById('print_5000_costo_total').textContent = getVal('costo_total') || '-';
+
+      // Desglose de Evaluación
+      const estado = getVal('estado_resultado_evaluacion');
+      let evalText = '';
+
+      if (estado === 'SIN OBSERVACIONES') {
+        evalText = 'Sin Observaciones.\n\n' + (getVal('sintesis_evaluacion') || 'Iniciativa recomendada satisfactoriamente.');
+      } else {
+        const p = getVal('obs_presupuesto');
+        const eett = getVal('obs_ttr_eett');
+        const planos = getVal('obs_planos');
+        const anexos = getVal('obs_anexos');
+        const terr = getVal('obs_terreno');
+        const sin = getVal('sintesis_evaluacion');
+
+        if (p) evalText += `Presupuesto:\n${p}\n\n`;
+        if (eett) evalText += `TTR y/o EETT:\n${eett}\n\n`;
+        if (planos) evalText += `PLANOS E INGENIERÍA:\n${planos}\n\n`;
+        if (anexos) evalText += `ANEXOS:\n${anexos}\n\n`;
+        if (terr) evalText += `TERRENO Y OTROS:\n${terr}\n\n`;
+        if (sin) evalText += `Síntesis:\n${sin}`;
+        if (!evalText) evalText = 'Sin observaciones registradas.';
+      }
+
+      document.getElementById('print_5000_evaluacion_bloque').textContent = evalText;
+
+      // Badge Estado
+      const badge = document.getElementById('print_5000_estado_badge');
+      if (estado === 'SIN OBSERVACIONES' || estado === 'RECOMENDADO') {
+        badge.className = 'status-badge recomendado';
+        badge.textContent = estado;
+      } else {
+        badge.className = 'status-badge observado';
+        badge.textContent = estado;
+      }
+
+      const fIng = getVal('fecha_ingreso_ev');
+      const fTer = getVal('fecha_termino_ev');
+      document.getElementById('print_5000_fechas_tramite').textContent = `Ingreso: ${fIng} | Término: ${fTer}`;
+
+      document.getElementById('print_5000_evaluador_texto').textContent =
+        getVal('evaluador_nombre') || 'Profesional Evaluador';
+
+      // Resultado del ciclo al cerrar el Registro Documental
+      const cierre = document.getElementById('cierreResultado5000');
+      if (cierre) {
+        cierre.textContent = AppIteracion.exigeIteracion(getVal('estado_resultado_evaluacion'))
+          ? 'Resultado con OBSERVACIONES: el postulante responde y se abre una nueva iteración de evaluación.'
+          : 'Resultado RECOMENDADO / SIN OBSERVACIONES: fin del proceso.';
+      }
+
+      // Respuesta del postulante (instancia N° 2)
+      const bloqueRespuesta = document.getElementById('print_respuesta_observaciones_5000');
+      if (bloqueRespuesta) {
+        bloqueRespuesta.style.display = claveInstancia === 'PRIMER_INGRESO' ? 'none' : 'block';
+        document.getElementById('print_5000_resp_fecha').textContent = getVal('ut5000_resp_fecha') || '-';
+        document.getElementById('print_5000_resp_documento').textContent = getVal('ut5000_resp_documento') || '-';
+        document.getElementById('print_5000_resp_detalle').textContent = getVal('ut5000_resp_detalle') || 'Sin respuesta registrada.';
+      }
+
+      // Reevaluación (instancia N° 3)
+      const bloqueReeval = document.getElementById('print_reevaluacion_5000');
+      if (bloqueReeval) {
+        bloqueReeval.style.display = claveInstancia === 'REEVALUACION' ? 'block' : 'none';
+        const verif = getVal('ut5000_reev_verificacion');
+        const fund = getVal('ut5000_reev_fundamento');
+        document.getElementById('print_5000_reevaluacion_bloque').textContent =
+          (verif ? 'Verificación de lo subsanado:\n' + verif + '\n\n' : '') +
+          (fund ? 'Fundamento del resultado:\n' + fund : '') ||
+          'Sin registro de reevaluación.';
+      }
+
+      // Historial de iteraciones
+      renderHistorialIteraciones(
+        'tablaIteraciones5000',
+        'print_5000_tbody_iteraciones',
+        COLUMNAS_ITERACIONES_5000,
+        filaIteracionActual({
+          campoIteracion: 'ut5000_num_iteracion',
+          campoFecha: 'fecha_termino_ev',
+          campoEstado: 'estado_resultado_evaluacion',
+          campoDetalle: 'sintesis_evaluacion'
+        })
+      );
+    }
+
+    const COLUMNAS_ITERACIONES_5000 = [
+      { campo: 'numero', label: 'N°' },
+      { campo: 'fecha', label: 'Fecha' },
+      { campo: 'instancia', label: 'Instancia' },
+      { campo: 'estado', label: 'Estado' },
+      { campo: 'detalle', label: 'Síntesis' }
+    ];
+
+    /** Avanza al ciclo de iteraciones: responde observaciones -> reevaluación. */
+    function avanzarInstancia5000() {
+      const estado = document.getElementById('estado_resultado_evaluacion')?.value || '';
+      AppIteracion.avanzar(estado, {
+        actualizar: actualizarFichaImprimible5000,
+        irAlPaso: cambiarPaso5000
+      });
+    }
+
+    function imprimirFichaOficial5000() {
+      actualizarFichaImprimible5000();
+      mostrarSoloFicha(
+        ['pasoIdentificacion5000', 'pasoEvaluacion5000', 'pasoDocumental5000'],
+        'seccionImprimibleOficial5000'
+      );
+      window.print();
+    }
+
+    function agregarFilaIteracion5000() {
+      const template = `
+        <tr data-table-row>
+          <td><input type="text" class="form-control" data-field="numero" placeholder="N°"></td>
+          <td><input type="date" class="form-control" data-field="fecha"></td>
+          <td>
+            <select class="form-control" data-field="instancia">
+              <option value="">-</option>
+              <option>Primer Ingreso</option>
+              <option>Responde Observaciones</option>
+              <option>Reevaluación</option>
+            </select>
+          </td>
+          <td><input type="text" class="form-control" data-field="estado" placeholder="OBSERVADO / SIN OBSERVACIONES"></td>
+          <td><input type="text" class="form-control" data-field="detalle" placeholder="Resumen del resultado"></td>
+          <td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" onclick="removeTableRow(this)">Eliminar</button></td>
+        </tr>
+      `;
+      addTableRow('tablaIteraciones5000', template);
+      actualizarFichaImprimible5000();
+    }
+
+    function guardarFormulario5000() {
+      const data = serializarEvaluacion('formEvaluacion5000', {
+        modelo: 'FichaEvaluacion5000UTM',
+        linea: 'Iniciativas menores a 5.000 UTM'
+      });
+      showJsonModal('Ficha de Evaluación 5.000 UTM - Payload para Backend', data);
+    }
+
+    function cargarEjemplo5000UtmConObs() {
+      document.getElementById('ano_postulacion').value = 2026;
+      document.getElementById('codigo_idi').value = "40078509-0";
+      document.getElementById('unidad_formuladora_5000').value = "MUNICIPALIDAD DE PUYEHUE";
+      document.getElementById('unidad_tecnica_5000').value = "DIPLADER / SECOPLAN";
+      document.getElementById('nombre_iniciativa').value = "CONSTRUCCION INFRAESTRUCTURA RECREATIVA Y AREA VERDE SECTOR PILMAIQUEN, COMUNA DE PUYEHUE";
+      document.getElementById('provincia_5000').value = "OSORNO";
+      document.getElementById('comuna_5000').value = "PUYEHUE";
+
+      document.getElementById('costo_total').value = "193063";
+
+      document.getElementById('estado_resultado_evaluacion').value = "OBSERVADO";
+      actualizarBadgeResultado5000("OBSERVADO");
+
+      document.getElementById('obs_presupuesto').value = "1. Corregir error aritmético en cerrajería: suma real $179.202 vs impreso $156.202.\n2. Eliminar fila redundante de TOTAL al final del presupuesto.";
+      document.getElementById('obs_ttr_eett').value = "1. EETT no indica partidas de pozo absorbente.\n2. Desglosar elementos de conexión a central de televigilancia.";
+      document.getElementById('obs_planos').value = "1. Indicar ubicación de cámara de inspección en arquitectura.\n2. Corregir radio de giro que impide acceso a estacionamiento accesible.\n3. Incorporar geotextil en pozo absorbente.\n4. Incluir Render.";
+      document.getElementById('obs_anexos').value = "- Adjuntar certificado sanitario.\n- Potencia insuficiente en factibilidad eléctrica.\n- Certificado DOM y patentes al día de profesionales.";
+      document.getElementById('obs_terreno').value = "Adjuntar plano de subdivisión 10304-102-C.R.";
+      document.getElementById('sintesis_evaluacion').value = "Se remiten observaciones a la unidad formuladora para su oportuna subsanación.";
+
+      document.getElementById('evaluador_nombre').value = "Diego Alexis Castro Henríquez";
+      document.getElementById('fecha_ingreso_ev').value = "2026-08-05";
+      document.getElementById('fecha_termino_ev').value = "2026-08-05";
+      document.getElementById('url_validador_firma').value = "https://doc.digital.gob.cl/validador/BIJFVM-278";
+
+      // Registro documental de la ficha emitida
+      document.getElementById('ut5000_reg_numero').value = "REG-DIP-2026-0288";
+      document.getElementById('ut5000_reg_fecha').value = "2026-08-05";
+      document.getElementById('ut5000_reg_registrado_por').value = "Diego Alexis Castro Henríquez";
+      document.getElementById('ut5000_reg_oficio').value = "ORD. GR. N° 1739";
+      document.getElementById('ut5000_reg_oficio_fecha').value = "2026-08-05";
+      document.getElementById('ut5000_reg_observaciones').value = "Rev-2 con observaciones, remitida a la Municipalidad de Puyehue. Se espera respuesta de la unidad formuladora.";
+
+      actualizarFichaImprimible5000();
+    }
+
+    function cargarEjemplo5000UtmSinObs() {
+      cargarEjemplo5000UtmConObs();
+      document.getElementById('estado_resultado_evaluacion').value = "SIN OBSERVACIONES";
+      actualizarBadgeResultado5000("SIN OBSERVACIONES");
+      document.getElementById('obs_presupuesto').value = "";
+      document.getElementById('obs_ttr_eett').value = "";
+      document.getElementById('obs_planos').value = "";
+      document.getElementById('obs_anexos').value = "";
+      document.getElementById('obs_terreno').value = "";
+      document.getElementById('sintesis_evaluacion').value = "Sin Observaciones. Cumple cabalmente los requerimientos técnicos y se recomienda su financiamiento.";
+      document.getElementById('fecha_ingreso_ev').value = "2026-08-28";
+      document.getElementById('fecha_termino_ev').value = "2026-08-28";
+
+      // La Rev-6 es el resultado de la reevaluación previa respuesta a las
+      // observaciones de la Rev-2.
+      AppIteracion.establecer('REEVALUACION', actualizarFichaImprimible5000);
+      document.getElementById('ut5000_resp_fecha').value = "2026-08-20";
+      document.getElementById('ut5000_resp_documento').value = "ORD. GR. N° 1742";
+      document.getElementById('ut5000_resp_entrada').value = "2026-08-25";
+      document.getElementById('ut5000_resp_detalle').value = "Se corrigió la aritmética de la cerrajería, se eliminó la fila de TOTAL duplicada, se desglosaron las partidas de pozo absorbente y televigilancia, se incorporaron render y geotextil, certificado sanitario y certificado DOM vigente, y se adjuntó el plano de subdivisión 10304-102-C.R.";
+      document.getElementById('ut5000_reev_verificacion').value = "Las 14 observaciones de la Rev-2 fueron verificadas y se consideran cumplidas en su totalidad.";
+      document.getElementById('ut5000_reev_fundamento').value = "La documentación subsanada cumple con los criterios técnicos exigidos, corresponde emitir la ficha sin observaciones y recomendar el financiamiento.";
+
+      // Registro documental de la ficha emitida (cierre del proceso)
+      document.getElementById('ut5000_reg_numero').value = "REG-DIP-2026-0296";
+      document.getElementById('ut5000_reg_fecha').value = "2026-08-28";
+      document.getElementById('ut5000_reg_registrado_por').value = "Diego Alexis Castro Henríquez";
+      document.getElementById('ut5000_reg_oficio').value = "ORD. GR. N° 1751";
+      document.getElementById('ut5000_reg_oficio_fecha').value = "2026-08-28";
+      document.getElementById('ut5000_reg_observaciones').value = "Rev-6 sin observaciones. Proceso finalizado con recomendación técnica favorable al financiamiento.";
+
+      // Iteración anterior (Rev-2) en el historial
+      const filaPrevia = document.querySelector('#tbodyIteraciones5000 tr:first-child');
+      if (filaPrevia) {
+        filaPrevia.querySelector('[data-field="numero"]').value = "1";
+        filaPrevia.querySelector('[data-field="fecha"]').value = "2026-08-05";
+        filaPrevia.querySelector('[data-field="instancia"]').value = "Primer Ingreso";
+        filaPrevia.querySelector('[data-field="estado"]').value = "OBSERVADO";
+        filaPrevia.querySelector('[data-field="detalle"]').value = "Rev-2: se remiten observaciones en Presupuesto, TTR/EETT, Planos, Anexos y Terreno.";
+      }
+
+      actualizarFichaImprimible5000();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      actualizarFichaImprimible5000();
+    });
+  </script>
+</body>
+</html>
