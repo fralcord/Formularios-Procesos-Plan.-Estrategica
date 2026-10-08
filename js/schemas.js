@@ -87,8 +87,6 @@ const BLOQUE_REGISTRO_DOCUMENTAL = {
     descripcion: "N° de oficio u ORD emitido en la instancia de Oficios de la DIPLADER"
   },
   fecha_oficio: { tipo: "string", formato: "date", opcional: true },
-  fecha_ingreso_oficina_partes: { tipo: "string", formato: "date", opcional: true },
-  fecha_ingreso_evaluacion: { tipo: "string", formato: "date", opcional: true },
   url_validador_docdigital: { tipo: "string", opcional: true, descripcion: "Enlace validador Ley N° 19.799" },
   constancia_registro: { tipo: "text", opcional: true, descripcion: "Dónde se conserva, a quién se remitió, observaciones de archivo" }
 };
@@ -122,7 +120,7 @@ window.AppSchemas = {
       codigo_bip: { tipo: "string", descripcion: "Código BIP con dígito verificador ej: '40052180-0'" },
 nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha IDI" },
       etapa_postulacion: { tipo: "string", enum: ["Ejecución", "Diseño", "Factibilidad", "Prefactibilidad"] },
-      sector: { tipo: "string", descripcion: "Agua Potable Rural (SSR), Salud, Deportes, Seguridad, etc." },
+      sector: { tipo: "string", enum: ["Salud", "Agua Potable Rural (SSR)", "Deporte", "Seguridad", "Educación", "Recursos Naturales y Medio Ambiente", "Multisectorial", "Fomento Productivo", "Desarrollo Social", "Otros"] },
       unidad_formuladora: { tipo: "string", descripcion: "Nombre de la unidad formuladora" },
       unidad_tecnica: { tipo: "string", descripcion: "Unidad técnica responsable de la revisión (ej: DOH MOP, DIPLADER)" },
       localizacion: {
@@ -133,8 +131,8 @@ nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha ID
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true, descripcion: "N° de oficio de postulación (puede incluir letras)" },
         fecha: { tipo: "string", formato: "date", opcional: true },
-        fecha_ingreso_oficina_partes: { tipo: "string", formato: "date", opcional: true },
-        fecha_ingreso_evaluacion: { tipo: "string", formato: "date", opcional: true }
+        fechaIngresoOficinaPartes: { tipo: "string", formato: "date", opcional: true },
+        fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
       },
 
       costo_total: { tipo: "number" },
@@ -190,15 +188,26 @@ trazabilidad: {
     flujo: ["Registro de la iniciativa (Anexo 1)", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
     instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"],
     campos: {
+      proceso_presupuestario_ano: { tipo: "integer", descripcion: "Año presupuestario de postulación" },
       subtitulo: { tipo: "integer", enum: [22, 29, 31] },
       codigo_bip: { tipo: "string" },
       nombre_accion: { tipo: "string" },
       region: { tipo: "string", default: "Región de Los Lagos" },
+      sector: { tipo: "string", enum: ["Salud", "Agua Potable Rural (SSR)", "Deporte", "Seguridad", "Educación", "Recursos Naturales y Medio Ambiente", "Multisectorial", "Fomento Productivo", "Desarrollo Social", "Otros"] },
       provincia: { tipo: "string" },
       comuna: { tipo: "string" },
+      localizacion: {
+        localidad: { tipo: "string", opcional: true }
+      },
       unidad_formuladora: { tipo: "string" },
       unidad_tecnica: { tipo: "string" },
       costo_total: { tipo: "number" },
+      oficio_postulacion: {
+        numero: { tipo: "string", opcional: true },
+        fecha: { tipo: "string", formato: "date", opcional: true },
+        fechaIngresoOficinaPartes: { tipo: "string", formato: "date", opcional: true },
+        fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
+      },
       cronograma: {
         fecha_licitacion_mes_ano: { tipo: "string" },
         fecha_adjudicacion_mes_ano: { tipo: "string" },
@@ -235,11 +244,21 @@ trazabilidad: {
       ano_postulacion: { tipo: "integer" },
       codigo_idi: { tipo: "string" },
       nombre_iniciativa: { tipo: "string" },
+      sector: { tipo: "string", enum: ["Salud", "Agua Potable Rural (SSR)", "Deporte", "Seguridad", "Educación", "Recursos Naturales y Medio Ambiente", "Multisectorial", "Fomento Productivo", "Desarrollo Social", "Otros"] },
       provincia: { tipo: "string" },
       comuna: { tipo: "string" },
+      localizacion: {
+        localidad: { tipo: "string", opcional: true }
+      },
       unidad_formuladora: { tipo: "string" },
       unidad_tecnica: { tipo: "string" },
       costo_total: { tipo: "number" },
+      oficio_postulacion: {
+        numero: { tipo: "string", opcional: true },
+        fecha: { tipo: "string", formato: "date", opcional: true },
+        fechaIngresoOficinaPartes: { tipo: "string", formato: "date", opcional: true },
+        fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
+      },
       evaluacion_tecnica: {
         estado_resultado: { tipo: "string", enum: ["SIN OBSERVACIONES", "OBSERVADO", "RECOMENDADO", "RECHAZADO"] },
         observaciones_presupuesto: { tipo: "text" },

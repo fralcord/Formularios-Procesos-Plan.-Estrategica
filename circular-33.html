@@ -122,25 +122,17 @@
           </div>
 
           <div class="callout callout-info">
-            <span>Los antecedentes de esta sección corresponden a la identificación de la iniciativa y su postulación a Circular 33. Se registran una sola vez por iniciativa; la evaluación se realiza sobre estos mismos datos en cada iteración.</span>
+            <span>Los antecedentes de esta sección identifican la iniciativa que postula a Circular 33. Se registran una sola vez por iniciativa y se utilizan durante las etapas de evaluación.</span>
           </div>
 
           <div class="form-grid">
-            <div class="col-3">
+            <div class="col-6 c33-registro-field c33-orden-1">
               <div class="form-group">
                 <label class="form-label" for="c33_proceso_ano">Proceso Presupuestario (Año) <span class="required">*</span></label>
                 <input type="number" id="c33_proceso_ano" name="proceso_presupuestario_ano" class="form-control" value="2026" required>
               </div>
             </div>
-
-            <div class="col-3">
-              <div class="form-group">
-                <label class="form-label" for="codigo_bip">Código BIP / IDI <span class="required">*</span></label>
-                <input type="text" id="codigo_bip" name="codigo_bip" class="form-control" placeholder="Ej: 40059805-0" required>
-              </div>
-            </div>
-
-            <div class="col-3">
+            <div class="col-6 c33-registro-field c33-orden-2">
               <div class="form-group">
                 <label class="form-label" for="subtitulo">Subtítulo <span class="required">*</span></label>
                 <select id="subtitulo" name="subtitulo" class="form-control" required>
@@ -151,28 +143,32 @@
                 </select>
               </div>
             </div>
-
-            <div class="col-6">
+            <div class="col-4 c33-registro-field c33-orden-3">
+              <div class="form-group">
+                <label class="form-label" for="codigo_bip">Código BIP / IDI <span class="required">*</span></label>
+                <input type="text" id="codigo_bip" name="codigo_bip" class="form-control" placeholder="Ej: 40059805-0" required>
+              </div>
+            </div>
+            <div class="col-8 c33-registro-field c33-orden-4">
               <div class="form-group">
                 <label class="form-label" for="nombre_accion">Nombre de la Iniciativa / Acción <span class="required">*</span></label>
                 <input type="text" id="nombre_accion" name="nombre_accion" class="form-control" placeholder="Ej: ADQUISICION CAMION ALJIBE, COMUNA DE LOS MUERMOS" required>
               </div>
             </div>
 
-            <div class="col-6">
+            <div class="col-6 c33-registro-field c33-orden-5">
               <div class="form-group">
                 <label class="form-label" for="c33_unidad_formuladora">Unidad Formuladora <span class="required">*</span></label>
                 <input type="text" id="c33_unidad_formuladora" name="unidad_formuladora" class="form-control" placeholder="Ej: ILUSTRE MUNICIPALIDAD DE LOS MUERMOS" required>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-6 c33-registro-field c33-orden-6">
               <div class="form-group">
                 <label class="form-label" for="c33_unidad_tecnica">Unidad Técnica <span class="required">*</span></label>
                 <input type="text" id="c33_unidad_tecnica" name="unidad_tecnica" class="form-control" placeholder="Ej: DIPLADER / SECOPLAN" required>
               </div>
             </div>
-
-            <div class="col-6">
+            <div class="col-6 c33-registro-field c33-orden-7">
               <div class="form-group">
                 <label class="form-label" for="c33_sector">Sector <span class="required">*</span></label>
                 <select id="c33_sector" name="sector" class="form-control" required>
@@ -182,18 +178,21 @@
                   <option value="Deporte">Deporte</option>
                   <option value="Seguridad">Seguridad</option>
                   <option value="Educación">Educación</option>
+                  <option value="Recursos Naturales y Medio Ambiente">Recursos Naturales y Medio Ambiente</option>
+                  <option value="Multisectorial">Multisectorial</option>
+                  <option value="Fomento Productivo">Fomento Productivo</option>
+                  <option value="Desarrollo Social">Desarrollo Social</option>
                   <option value="Otros">Otros</option>
                 </select>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-6 c33-registro-field c33-orden-8">
               <div class="form-group">
                 <label class="form-label" for="costo_total">Costo Total</label>
                 <input type="number" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" min="0">
               </div>
             </div>
-
-            <div class="col-4">
+            <div class="col-4 c33-registro-field c33-orden-9">
               <div class="form-group">
                 <label class="form-label" for="provincia">Provincia <span class="required">*</span></label>
                 <select id="provincia" name="provincia" class="form-control" required>
@@ -206,7 +205,7 @@
                 </select>
               </div>
             </div>
-            <div class="col-4">
+            <div class="col-4 c33-registro-field c33-orden-10">
               <div class="form-group">
                 <label class="form-label" for="comuna">Comuna <span class="required">*</span></label>
                 <select id="comuna" name="comuna" class="form-control" required>
@@ -245,32 +244,34 @@
                 </select>
               </div>
             </div>
-            <div class="col-4">
+            <div class="col-4 c33-registro-field c33-orden-11">
               <div class="form-group">
                 <label class="form-label" for="c33_localidad">Localidad o Sector</label>
                 <input type="text" id="c33_localidad" name="localizacion.localidad" class="form-control" placeholder="Ej: Sector Tehuaco">
               </div>
             </div>
 
-            <div class="col-3">
+            <div class="col-12 c33-registro-field c33-orden-12 form-grid-divider"></div>
+
+            <div class="col-6 c33-registro-field c33-orden-13">
               <div class="form-group">
                 <label class="form-label" for="c33_oficio_postulacion">N° de Oficio de Postulación</label>
                 <input type="text" id="c33_oficio_postulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: ORD. GR. N° 1234 / 01-2026">
               </div>
             </div>
-            <div class="col-3">
+            <div class="col-6 c33-registro-field c33-orden-14">
               <div class="form-group">
                 <label class="form-label" for="c33_oficio_postulacion_fecha">Fecha de Oficio de Postulación</label>
                 <input type="date" id="c33_oficio_postulacion_fecha" name="oficio_postulacion.fecha" class="form-control">
               </div>
             </div>
-            <div class="col-3">
+            <div class="col-6 c33-registro-field c33-orden-15">
               <div class="form-group">
                 <label class="form-label" for="c33_ingreso_oficina_partes">Ingreso de Oficio a Oficina de Partes</label>
                 <input type="date" id="c33_ingreso_oficina_partes" name="oficio_postulacion.fechaIngresoOficinaPartes" class="form-control">
               </div>
             </div>
-            <div class="col-3">
+            <div class="col-6 c33-registro-field c33-orden-16">
               <div class="form-group">
                 <label class="form-label" for="c33_ingreso_evaluacion">Ingreso a Evaluación</label>
                 <input type="date" id="c33_ingreso_evaluacion" name="oficio_postulacion.fechaIngresoEvaluacion" class="form-control">
@@ -619,18 +620,6 @@
             </div>
             <div class="col-4">
               <div class="form-group">
-                <label class="form-label" for="c33_reg_ingreso_oficina_partes">Ingreso de Oficio a Oficina de Partes</label>
-                <input type="date" id="c33_reg_ingreso_oficina_partes" name="registro_documental.fechaIngresoOficinaPartes" class="form-control">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="c33_reg_ingreso_evaluacion">Ingreso a Evaluación</label>
-                <input type="date" id="c33_reg_ingreso_evaluacion" name="registro_documental.fechaIngresoEvaluacion" class="form-control">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
                 <label class="form-label" for="c33_reg_validador">Enlace Validador DocDigital (Ley N° 19.799)</label>
                 <input type="url" id="c33_reg_validador" name="registro_documental.urlValidadorDocDigital" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
               </div>
@@ -871,7 +860,7 @@
       document.getElementById('c33_sector').value = "Otros";
       document.getElementById('provincia').value = "CHILOÉ";
       document.getElementById('comuna').value = "Castro";
-      document.getElementById('c33_localidad').value = "Sector rural";
+      document.getElementById('c33_localidad').value = "";
       document.getElementById('costo_total').value = "230000";
 
       document.getElementById('c33_estado').value = "RECOMENDADO";
@@ -902,7 +891,7 @@
       document.getElementById('c33_sector').value = "Agua Potable Rural (SSR)";
       document.getElementById('provincia').value = "LLANQUIHUE";
       document.getElementById('comuna').value = "Los Muermos";
-      document.getElementById('c33_localidad').value = "Sector rural";
+      document.getElementById('c33_localidad').value = "";
       document.getElementById('costo_total').value = "210148";
 
       document.getElementById('c33_estado').value = "OBSERVADO";
