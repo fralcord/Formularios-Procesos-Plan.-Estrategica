@@ -22,11 +22,11 @@ La aplicación actual es una interfaz cliente: el botón de generación produce 
 
 ## Publicación en línea
 
-El sitio público alojado en el repositorio `fralcord/Formularios-Procesos-Plan-Estrategica-Publico` se actualiza automáticamente cuando se publica un cambio en `main` de este repositorio. El flujo **Publish sanitized site to GitHub Pages** copia sólo los formularios, estilos, scripts y recursos necesarios; el repositorio público ejecuta su propio despliegue de GitHub Pages. La actualización tarda lo que duren ambos flujos, no es instantánea al guardar un archivo.
+El sitio se publica desde este repositorio con **GitHub Pages** cuando se envían cambios a `main` o se ejecuta manualmente el flujo **Deploy forms to GitHub Pages** en Actions. El flujo publica sólo la portada, los cuatro formularios, estilos, scripts y recursos necesarios; no publica el README ni la carpeta `Referencia de los procesos`. La actualización tarda lo que dure el flujo, no es instantánea al guardar un archivo.
 
-`https://fralcord.github.io/Formularios-Procesos-Plan-Estrategica-Publico/`
+`https://fralcord.github.io/Formularios-Procesos-Plan.-Estrategica/`
 
-La página publicada es **pública** y accesible para cualquier persona en Internet. Antes de publicar, mantén los ejemplos ficticios: el flujo no sube el README privado ni la carpeta `Referencia de los procesos`, pero sí publica el código y los datos de muestra presentes en los formularios. Los formularios no envían ni guardan registros en un servidor: cada usuario trabaja en su propio navegador y genera su propio JSON. Para habilitar la sincronización, configura el secreto `PUBLIC_SITE_TOKEN` en **Settings → Secrets and variables → Actions** de este repositorio. Debe ser un token con permiso de escritura de contenidos en el repositorio público; no lo guardes en el código ni lo compartas en chats.
+La página publicada es **pública** y accesible para cualquier persona en Internet. Antes de publicar, mantén los ejemplos ficticios: el flujo publica el código y los datos de muestra presentes en los formularios. Los formularios no envían ni guardan registros en un servidor: cada usuario trabaja en su propio navegador y genera su propio JSON. En **Settings → Pages** de este repositorio, selecciona **GitHub Actions** como fuente de publicación. GitHub Pages requiere que el repositorio sea público en los planes GitHub Free; los planes que admiten Pages para repositorios privados pueden mantener privado el código fuente mientras el sitio publicado sigue siendo público.
 
 ## Flujo General del Proceso
 

@@ -1,4 +1,4 @@
-name: Publish sanitized site to GitHub Pages
+name: Deploy forms to GitHub Pages
 
 on:
   push:
@@ -8,101 +8,37 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: public-site-sync
-  cancel-in-progress: false
+  group: github-pages
+  cancel-in-progress: true
 
 jobs:
-  publish:
+  deploy:
+    environment:
+      name: github-pages
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
         uses: actions/checkout@v4
 
-      - name: Verify public repository token is configured
-        env:
-          PUBLIC_SITE_TOKEN: ${{ secrets.PUBLIC_SITE_TOKEN }}
-        run: |
-          if [ -z "$PUBLIC_SITE_TOKEN" ]; then
-            echo "::error::Configure PUBLIC_SITE_TOKEN in this repository's Actions secrets."
-            exit 1
-          fi
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
 
-      - name: Check out public Pages repository
-        uses: actions/checkout@v4
+      - name: Prepare website files
+        run: |
+          mkdir _site
+          cp index.html pertinencia.html circular-33.html evaluacion-5000-utm.html evaluacion-programas.html _site/
+          cp -R css js assets _site/
+          touch _site/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          repository: fralcord/Formularios-Procesos-Plan-Estrategica-Publico
-          token: ${{ secrets.PUBLIC_SITE_TOKEN }}
-          path: public-site
+          path: _site
 
-      - name: Sync public application files
-        run: |
-          cp index.html pertinencia.html circular-33.html evaluacion-5000-utm.html evaluacion-programas.html public-site/
-          rm -rf public-site/css public-site/js public-site/assets
-          cp -R css js assets public-site/
-          touch public-site/.nojekyll
-          mkdir -p public-site/.github/workflows
-          rm -f public-site/.github/workflows/static.yml
-          rm -f public-site/.github/ISSUE_TEMPLATE/retroalimentacion.yml
-          cat > public-site/README.md <<'EOF'
-          # Formularios de evaluación
-
-          Sitio público de demostración de formularios de evaluación. Los botones de ejemplo usan datos ficticios; no ingrese antecedentes de casos reales.
-
-          Los datos escritos permanecen en el navegador y no se guardan ni se envían a un servidor. La generación de JSON permite revisar la estructura de los datos, pero no crea un registro en una base de datos.
-          EOF
-          cat > public-site/.github/workflows/pages.yml <<'EOF'
-          name: Deploy public forms
-
-          on:
-            push:
-              branches: [main]
-            workflow_dispatch:
-
-          permissions:
-            contents: read
-            pages: write
-            id-token: write
-
-          concurrency:
-            group: pages
-            cancel-in-progress: true
-
-          jobs:
-            deploy:
-              environment:
-                name: github-pages
-              runs-on: ubuntu-latest
-              steps:
-                - name: Check out public site
-                  uses: actions/checkout@v4
-                - name: Configure GitHub Pages
-                  uses: actions/configure-pages@v5
-                - name: Prepare website files
-                  run: |
-                    mkdir _site
-                    cp index.html pertinencia.html circular-33.html evaluacion-5000-utm.html evaluacion-programas.html _site/
-                    cp -R css js assets _site/
-                    touch _site/.nojekyll
-                - name: Upload website artifact
-                  uses: actions/upload-pages-artifact@v3
-                  with:
-                    path: _site
-                - name: Deploy to GitHub Pages
-                  id: deployment
-                  uses: actions/deploy-pages@v4
-          EOF
-
-      - name: Commit and push public site changes
-        working-directory: public-site
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          if ! git diff --cached --quiet; then
-            git commit -m "Deploy sanitized forms from main"
-            git push
-          else
-            echo "Public site is already up to date."
-          fi
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
