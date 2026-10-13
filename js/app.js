@@ -7,7 +7,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   initAutoCalculations();
   initCurrencyInputs();
-  initModalJsonViewer();
 });
 
 /**
