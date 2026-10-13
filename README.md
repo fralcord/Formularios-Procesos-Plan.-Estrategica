@@ -20,6 +20,14 @@ Cada formulario cuenta con una barra de pestañas superior que refleja el orden 
 Los controles del formulario (`no-print`) se ocultan al generar el PDF; únicamente la ficha oficial se muestra.
 La aplicación actual es una interfaz cliente: el botón de generación produce un payload JSON, pero no guarda registros de forma persistente en una base de datos ni cambia por sí mismo el estado de una iniciativa en un sistema central.
 
+## Publicación en línea
+
+El sitio se despliega automáticamente en GitHub Pages cuando hay cambios en `main` o se ejecuta manualmente el flujo **Deploy static forms to GitHub Pages** desde la pestaña **Actions**. Una vez que el administrador habilite GitHub Pages con **GitHub Actions** como fuente, el sitio estará en:
+
+`https://fralcord.github.io/Formularios-Procesos-Plan.-Estrategica/`
+
+La página publicada es **pública** y accesible para cualquier persona en Internet. El despliegue incluye sólo la portada, los cuatro formularios, estilos, scripts y logotipos; excluye el README y la carpeta `Referencia de los procesos`. Los formularios no envían ni guardan registros en un servidor: cada usuario trabaja en su propio navegador y genera su propio JSON. Para compartir cambios de la aplicación, estos deben subirse a `main`; el sitio se actualizará al terminar correctamente el flujo de despliegue.
+
 ## Flujo General del Proceso
 
 La plataforma organiza la captura en módulos independientes, no en una secuencia obligatoria. El **Registro de la Iniciativa**, la **Evaluación y sus Resultados** y el **Registro Documental** se pueden completar en cualquier orden. El ciclo iterativo aplica sólo a las instancias de evaluación:
@@ -159,14 +167,6 @@ La arquitectura restante del flujo es:
    - En **Pertinencia**, la ficha presenta los antecedentes del proyecto en una tabla, la evaluación numerada y los datos del profesional y fecha. Utiliza los campos disponibles; no incorpora descripción del proyecto ni fuente y montos de financiamiento, que no se capturan actualmente.
 7. **Generar Payload JSON para Base de Datos**
    - El botón **"Generar carga útil JSON"** serializa la información en formato JSON estructurado, agregando el bloque `proceso` con la instancia activa y el número de iteración, además de los snapshots archivados. El payload está destinado a persistencia en la API REST o base de datos y posterior consulta por el dashboard.
-
-## Retroalimentación de colegas
-
-El repositorio del proyecto es privado. Una vez que el administrador invite a un colega como colaborador y este acepte, podrá abrir la pestaña **Issues** del repositorio, seleccionar **Retroalimentación sobre formularios** y describir el formulario, sección, observación y mejora propuesta. La plantilla permite distinguir problemas de campos, presentación, comportamiento y textos.
-
-El repositorio privado permite compartir el código y recibir comentarios, pero no publica una vista web interactiva. Para probar los formularios, el colega debe descargar o clonar el repositorio autorizado y abrir `index.html` en un navegador; luego puede registrar la retroalimentación en Issues.
-
-La retroalimentación debe usar ejemplos ficticios. No adjuntar ni incluir datos personales, información reservada o antecedentes de casos reales en los comentarios. El acceso al repositorio también permite consultar los archivos y materiales de referencia que contiene.
 
 ---
 
