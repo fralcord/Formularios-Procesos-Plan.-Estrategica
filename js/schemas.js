@@ -296,6 +296,8 @@ trazabilidad: {
       },
       evaluacion_tecnica: {
         estado_resultado: { tipo: "string", enum: ["SIN OBSERVACIONES", "OBSERVADO", "RECOMENDADO", "RECHAZADO"] },
+        observaciones_generales: { tipo: "text" },
+        observaciones_estudio_preinversional: { tipo: "text" },
         observaciones_presupuesto: { tipo: "text" },
         observaciones_ttr_eett: { tipo: "text" },
         observaciones_planos_ingenieria: { tipo: "text" },

@@ -330,8 +330,26 @@
             <!-- Desglose por Áreas Oficiales -->
             <div class="col-12">
               <div class="form-group">
+                <label class="form-label" for="obs_generales">
+                  <span>A. Generales</span>
+                </label>
+                <textarea id="obs_generales" name="evaluacion_tecnica.observaciones_generales" rows="3" class="form-control" placeholder="Indicar observaciones generales..."></textarea>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="obs_estudio_preinversional">
+                  <span>B. Estudio Preinversional</span>
+                </label>
+                <textarea id="obs_estudio_preinversional" name="evaluacion_tecnica.observaciones_estudio_preinversional" rows="3" class="form-control" placeholder="Indicar observaciones del estudio preinversional..."></textarea>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
                 <label class="form-label" for="obs_presupuesto">
-                  <span>A. Presupuesto</span>
+                  <span>C. Presupuesto</span>
                   <span class="form-hint">Aritmética de partidas, consistencia de subtotales, precios unitarios</span>
                 </label>
                 <textarea id="obs_presupuesto" name="evaluacion_tecnica.observaciones_presupuesto" rows="3" class="form-control" placeholder="Indicar observaciones de presupuesto..."></textarea>
@@ -341,7 +359,7 @@
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="obs_ttr_eett">
-                  <span>B. TTR y/o EETT</span>
+                  <span>D. TTR y/o EETT</span>
                   <span class="form-hint">Términos de referencia, especificaciones técnicas, partidas especiales</span>
                 </label>
                 <textarea id="obs_ttr_eett" name="evaluacion_tecnica.observaciones_ttr_eett" rows="3" class="form-control" placeholder="Indicar observaciones de TTR / EETT..."></textarea>
@@ -351,7 +369,7 @@
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="obs_planos">
-                  <span>C. Planos e Ingeniería</span>
+                  <span>E. Planos e Ingeniería</span>
                   <span class="form-hint">Planimetría de arquitectura, accesibilidad universal, geotextil, renders</span>
                 </label>
                 <textarea id="obs_planos" name="evaluacion_tecnica.observaciones_planos_ingenieria" rows="3" class="form-control" placeholder="Indicar observaciones de planos e ingeniería..."></textarea>
@@ -361,7 +379,7 @@
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="obs_anexos">
-                  <span>D. Anexos y Factibilidades</span>
+                  <span>F. Anexos y Factibilidades</span>
                   <span class="form-hint">Factibilidad sanitaria, eléctrica, certificado DOM, patentes profesionales</span>
                 </label>
                 <textarea id="obs_anexos" name="evaluacion_tecnica.observaciones_anexos" rows="3" class="form-control" placeholder="Indicar observaciones de anexos y certificados..."></textarea>
@@ -371,7 +389,7 @@
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="obs_terreno">
-                  <span>E. Terreno y Otros</span>
+                  <span>G. Terreno y Otros</span>
                   <span class="form-hint">Plano de subdivisión, título de dominio vigente, rol municipal</span>
                 </label>
                 <textarea id="obs_terreno" name="evaluacion_tecnica.observaciones_terreno_otros" rows="3" class="form-control" placeholder="Indicar observaciones de terreno..."></textarea>
@@ -703,6 +721,8 @@
       if (estado === 'SIN OBSERVACIONES') {
         evalText = 'Sin Observaciones.\n\n' + (getVal('sintesis_evaluacion') || 'Iniciativa recomendada satisfactoriamente.');
       } else {
+        const generales = getVal('obs_generales');
+        const preinversional = getVal('obs_estudio_preinversional');
         const p = getVal('obs_presupuesto');
         const eett = getVal('obs_ttr_eett');
         const planos = getVal('obs_planos');
@@ -710,11 +730,13 @@
         const terr = getVal('obs_terreno');
         const sin = getVal('sintesis_evaluacion');
 
-        if (p) evalText += `Presupuesto:\n${p}\n\n`;
-        if (eett) evalText += `TTR y/o EETT:\n${eett}\n\n`;
-        if (planos) evalText += `PLANOS E INGENIERÍA:\n${planos}\n\n`;
-        if (anexos) evalText += `ANEXOS:\n${anexos}\n\n`;
-        if (terr) evalText += `TERRENO Y OTROS:\n${terr}\n\n`;
+        if (generales) evalText += `A. Generales:\n${generales}\n\n`;
+        if (preinversional) evalText += `B. Estudio Preinversional:\n${preinversional}\n\n`;
+        if (p) evalText += `C. Presupuesto:\n${p}\n\n`;
+        if (eett) evalText += `D. TTR y/o EETT:\n${eett}\n\n`;
+        if (planos) evalText += `E. Planos e Ingeniería:\n${planos}\n\n`;
+        if (anexos) evalText += `F. Anexos y Factibilidades:\n${anexos}\n\n`;
+        if (terr) evalText += `G. Terreno y Otros:\n${terr}\n\n`;
         if (sin) evalText += `Síntesis:\n${sin}`;
         if (!evalText) evalText = 'Sin observaciones registradas.';
       }

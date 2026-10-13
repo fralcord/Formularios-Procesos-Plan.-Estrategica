@@ -121,7 +121,7 @@ La arquitectura restante del flujo es:
 ├── index.html                   # Portal, flujograma general y panel central de las 4 líneas
 ├── pertinencia.html             # 1. Evaluación de Pertinencia Regional (ORD a MDSF u Oficio con Observaciones)
 ├── circular-33.html             # 2. Circular N° 33 (Anexo 1 con C.A.E. y Evaluación DIPLADER de Vehículos/Maquinarias)
-├── evaluacion-5000-utm.html     # 3. Evaluación Menores a 5.000 UTM (Presupuesto, EETT, Planos, Anexos, Terreno)
+├── evaluacion-5000-utm.html     # 3. Evaluación Menores a 5.000 UTM (Generales, Estudio Preinversional, Presupuesto, EETT, Planos, Anexos y Terreno)
 ├── evaluacion-programas.html    # 4. Evaluación de Programas (Transferencias Subtítulo 24 y Subtítulo 33)
 ├── css/
 │   ├── styles.css               # Estilos institucionales GORE Los Lagos (responsivo, grillas, tabs, flujograma)
