@@ -46,10 +46,10 @@
       </div>
       <div class="form-header-actions">
         <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemplo5000UtmConObs()">
-          <span>Cargar referencia: Rev-2 (Con observaciones)</span>
+          <span>Cargar ejemplo: Iniciativa con observaciones</span>
         </button>
         <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemplo5000UtmSinObs()">
-          <span>Cargar referencia: Rev-6 (Sin observaciones)</span>
+          <span>Cargar ejemplo: Iniciativa reevaluada</span>
         </button>
         <button type="button" class="btn btn-primary btn-sm" onclick="imprimirFichaOficial5000()">
           <span>Imprimir documento / Exportar a PDF</span>
@@ -140,25 +140,25 @@
             <div class="col-4 ut5000-registro-field ut5000-orden-3">
               <div class="form-group">
                 <label class="form-label" for="codigo_idi">Código IDI / BIP <span class="required">*</span></label>
-                <input type="text" id="codigo_idi" name="codigo_idi" class="form-control" placeholder="Ej: 40078509-0" required>
+                <input type="text" id="codigo_idi" name="codigo_idi" class="form-control" placeholder="Ej: 00000000-0" required>
               </div>
             </div>
             <div class="col-8 ut5000-registro-field ut5000-orden-4">
               <div class="form-group">
                 <label class="form-label" for="nombre_iniciativa">Nombre de la Iniciativa según Ficha IDI <span class="required">*</span></label>
-                <input type="text" id="nombre_iniciativa" name="nombre_iniciativa" class="form-control" placeholder="Ej: CONSTRUCCION INFRAESTRUCTURA RECREATIVA Y AREA VERDE SECTOR PILMAIQUEN, COMUNA DE PUYEHUE" required>
+                <input type="text" id="nombre_iniciativa" name="nombre_iniciativa" class="form-control" placeholder="Ej: MEJORAMIENTO DEMOSTRATIVO DE ESPACIO COMUNITARIO" required>
               </div>
             </div>
             <div class="col-6 ut5000-registro-field ut5000-orden-5">
               <div class="form-group">
                 <label class="form-label" for="unidad_formuladora_5000">Unidad Formuladora <span class="required">*</span></label>
-                <input type="text" id="unidad_formuladora_5000" name="unidad_formuladora" class="form-control" placeholder="Ej: MUNICIPALIDAD DE PUYEHUE" required>
+                <input type="text" id="unidad_formuladora_5000" name="unidad_formuladora" class="form-control" placeholder="Ej: ENTIDAD FORMULADORA DE EJEMPLO" required>
               </div>
             </div>
             <div class="col-6 ut5000-registro-field ut5000-orden-6">
               <div class="form-group">
                 <label class="form-label" for="unidad_tecnica_5000">Unidad Técnica <span class="required">*</span></label>
-                <input type="text" id="unidad_tecnica_5000" name="unidad_tecnica" class="form-control" placeholder="Ej: DIPLADER / SECOPLAN" required>
+                <input type="text" id="unidad_tecnica_5000" name="unidad_tecnica" class="form-control" placeholder="Ej: UNIDAD TÉCNICA DE EJEMPLO" required>
               </div>
             </div>
             <div class="col-6 ut5000-registro-field ut5000-orden-7">
@@ -242,13 +242,13 @@
             <div class="col-4 ut5000-registro-field ut5000-orden-11">
               <div class="form-group">
                 <label class="form-label" for="localidad_5000">Localidad o Sector</label>
-                <input type="text" id="localidad_5000" name="localizacion.localidad" class="form-control" placeholder="Ej: Sector Tehuaco">
+                <input type="text" id="localidad_5000" name="localizacion.localidad" class="form-control" placeholder="Ej: LOCALIDAD DE EJEMPLO">
               </div>
             </div>
             <div class="col-6 ut5000-registro-field ut5000-orden-12">
               <div class="form-group">
                 <label class="form-label" for="ut5000_oficio_postulacion">N° de Oficio de Postulación</label>
-                <input type="text" id="ut5000_oficio_postulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: ORD. GR. N° 1234 / 01-2026">
+                <input type="text" id="ut5000_oficio_postulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0001">
               </div>
             </div>
             <div class="col-6 ut5000-registro-field ut5000-orden-13">
@@ -375,7 +375,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="evaluador_nombre">Evaluado por (Profesional) <span class="required">*</span></label>
-                <input type="text" id="evaluador_nombre" name="control_evaluacion.evaluador_nombre" class="form-control" placeholder="Ej: Diego Castro Henríquez" required>
+                <input type="text" id="evaluador_nombre" name="control_evaluacion.evaluador_nombre" class="form-control" placeholder="Ej: Profesional evaluador" required>
               </div>
             </div>
             <div class="col-4">
@@ -498,7 +498,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="ut5000_reg_numero">N° de Registro Documental <span class="required">*</span></label>
-                <input type="text" id="ut5000_reg_numero" name="registro_documental.numeroRegistro" class="form-control" placeholder="Ej: REG-DIP-2026-0301" required>
+                <input type="text" id="ut5000_reg_numero" name="registro_documental.numeroRegistro" class="form-control" placeholder="Ej: REG-EJEMPLO-0001" required>
               </div>
             </div>
             <div class="col-4">
@@ -517,7 +517,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="ut5000_reg_oficio">Referencia de Oficio (Instancia de Oficios)</label>
-                <input type="text" id="ut5000_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: ORD. GR. N° 1742">
+                <input type="text" id="ut5000_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0002">
               </div>
             </div>
             <div class="col-4">
@@ -727,36 +727,36 @@
 
     function cargarEjemplo5000UtmConObs() {
       document.getElementById('ano_postulacion').value = 2026;
-      document.getElementById('codigo_idi').value = "40078509-0";
-      document.getElementById('unidad_formuladora_5000').value = "MUNICIPALIDAD DE PUYEHUE";
-      document.getElementById('unidad_tecnica_5000').value = "DIPLADER / SECOPLAN";
-      document.getElementById('nombre_iniciativa').value = "CONSTRUCCION INFRAESTRUCTURA RECREATIVA Y AREA VERDE SECTOR PILMAIQUEN, COMUNA DE PUYEHUE";
+      document.getElementById('codigo_idi').value = "00000004-0";
+      document.getElementById('unidad_formuladora_5000').value = "ENTIDAD FORMULADORA DE EJEMPLO";
+      document.getElementById('unidad_tecnica_5000').value = "UNIDAD TÉCNICA DE EJEMPLO";
+      document.getElementById('nombre_iniciativa').value = "MEJORAMIENTO DEMOSTRATIVO DE ESPACIO COMUNITARIO";
       document.getElementById('sector_5000').value = "Deporte";
-      document.getElementById('provincia_5000').value = "OSORNO";
-      document.getElementById('comuna_5000').value = "Puyehue";
-      document.getElementById('localidad_5000').value = "Sector Pilmaiquén";
+      document.getElementById('provincia_5000').value = "PALENA";
+      document.getElementById('comuna_5000').value = "Palena";
+      document.getElementById('localidad_5000').value = "Localidad de ejemplo";
 
       document.getElementById('costo_total').value = "193063000";
 
       document.getElementById('estado_resultado_evaluacion').value = "OBSERVADO";
       actualizarBadgeResultado5000("OBSERVADO");
 
-      document.getElementById('obs_presupuesto').value = "1. Corregir error aritmético en cerrajería: suma real $179.202 vs impreso $156.202.\n2. Eliminar fila redundante de TOTAL al final del presupuesto.";
-      document.getElementById('obs_ttr_eett').value = "1. EETT no indica partidas de pozo absorbente.\n2. Desglosar elementos de conexión a central de televigilancia.";
-      document.getElementById('obs_planos').value = "1. Indicar ubicación de cámara de inspección en arquitectura.\n2. Corregir radio de giro que impide acceso a estacionamiento accesible.\n3. Incorporar geotextil en pozo absorbente.\n4. Incluir Render.";
-      document.getElementById('obs_anexos').value = "- Adjuntar certificado sanitario.\n- Potencia insuficiente en factibilidad eléctrica.\n- Certificado DOM y patentes al día de profesionales.";
-      document.getElementById('obs_terreno').value = "Adjuntar plano de subdivisión 10304-102-C.R.";
-      document.getElementById('sintesis_evaluacion').value = "Se remiten observaciones a la unidad formuladora para su oportuna subsanación.";
+      document.getElementById('obs_presupuesto').value = "1. Revisar el cálculo de los montos de ejemplo.\n2. Completar el desglose presupuestario.";
+      document.getElementById('obs_ttr_eett').value = "1. Completar las especificaciones técnicas demostrativas.\n2. Adjuntar antecedentes complementarios.";
+      document.getElementById('obs_planos').value = "1. Incorporar los planos de ejemplo.\n2. Revisar la consistencia entre los documentos.";
+      document.getElementById('obs_anexos').value = "- Adjuntar antecedentes ficticios de respaldo.\n- Completar los campos pendientes.";
+      document.getElementById('obs_terreno').value = "Adjuntar plano demostrativo.";
+      document.getElementById('sintesis_evaluacion').value = "Se remiten observaciones de ejemplo a la entidad formuladora.";
 
-      document.getElementById('evaluador_nombre').value = "Diego Alexis Castro Henríquez";
+      document.getElementById('evaluador_nombre').value = "Profesional de ejemplo";
       document.getElementById('fecha_evaluacion').value = "2026-08-05";
       // Registro documental de la ficha emitida
-      document.getElementById('ut5000_reg_numero').value = "REG-DIP-2026-0288";
+      document.getElementById('ut5000_reg_numero').value = "REG-EJEMPLO-0003";
       document.getElementById('ut5000_reg_fecha').value = "2026-08-05";
-      document.getElementById('ut5000_reg_registrado_por').value = "Diego Alexis Castro Henríquez";
-      document.getElementById('ut5000_reg_oficio').value = "ORD. GR. N° 1739";
+      document.getElementById('ut5000_reg_registrado_por').value = "Profesional de ejemplo";
+      document.getElementById('ut5000_reg_oficio').value = "OFICIO DE EJEMPLO N° 0007";
       document.getElementById('ut5000_reg_oficio_fecha').value = "2026-08-05";
-      document.getElementById('ut5000_reg_observaciones').value = "Rev-2 con observaciones, remitida a la Municipalidad de Puyehue. Se espera respuesta de la unidad formuladora.";
+      document.getElementById('ut5000_reg_observaciones').value = "Evaluación de ejemplo con observaciones remitida a la entidad formuladora.";
 
       actualizarFichaImprimible5000();
     }
@@ -770,19 +770,19 @@
       document.getElementById('obs_planos').value = "";
       document.getElementById('obs_anexos').value = "";
       document.getElementById('obs_terreno').value = "";
-      document.getElementById('sintesis_evaluacion').value = "Sin Observaciones. Cumple cabalmente los requerimientos técnicos y se recomienda su financiamiento.";
+      document.getElementById('sintesis_evaluacion').value = "Ejemplo sin observaciones. Cumple los requisitos demostrativos y se recomienda su financiamiento.";
       document.getElementById('fecha_evaluacion').value = "2026-08-28";
 
       // Registrar el tipo de entrada de esta evaluación en el atributo de instancia.
       AppIteracion.establecer('REEVALUACION', actualizarFichaImprimible5000);
 
       // Registro documental de la ficha emitida (cierre del proceso)
-      document.getElementById('ut5000_reg_numero').value = "REG-DIP-2026-0296";
+      document.getElementById('ut5000_reg_numero').value = "REG-EJEMPLO-0004";
       document.getElementById('ut5000_reg_fecha').value = "2026-08-28";
-      document.getElementById('ut5000_reg_registrado_por').value = "Diego Alexis Castro Henríquez";
-      document.getElementById('ut5000_reg_oficio').value = "ORD. GR. N° 1751";
+      document.getElementById('ut5000_reg_registrado_por').value = "Profesional de ejemplo";
+      document.getElementById('ut5000_reg_oficio').value = "OFICIO DE EJEMPLO N° 0008";
       document.getElementById('ut5000_reg_oficio_fecha').value = "2026-08-28";
-      document.getElementById('ut5000_reg_observaciones').value = "Rev-6 sin observaciones. Proceso finalizado con recomendación técnica favorable al financiamiento.";
+      document.getElementById('ut5000_reg_observaciones').value = "Evaluación demostrativa sin observaciones y con recomendación favorable.";
 
       // Iteración anterior (Rev-2) en el historial
       const filaPrevia = document.querySelector('#tbodyIteraciones5000 tr:first-child');
@@ -791,7 +791,7 @@
         filaPrevia.querySelector('[data-field="fecha"]').value = "2026-08-05";
         filaPrevia.querySelector('[data-field="instancia"]').value = "Primer Ingreso";
         filaPrevia.querySelector('[data-field="estado"]').value = "OBSERVADO";
-        filaPrevia.querySelector('[data-field="detalle"]').value = "Rev-2: se remiten observaciones en Presupuesto, TTR/EETT, Planos, Anexos y Terreno.";
+        filaPrevia.querySelector('[data-field="detalle"]').value = "Primera evaluación de ejemplo: se remiten observaciones para subsanar.";
       }
 
       actualizarFichaImprimible5000();

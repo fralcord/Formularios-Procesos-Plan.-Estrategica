@@ -46,10 +46,10 @@
       </div>
       <div class="form-header-actions">
         <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploProgramaSalud()">
-          <span>Cargar referencia: Salud Osorno (40065461-0)</span>
+          <span>Cargar ejemplo: Programa recomendado</span>
         </button>
         <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploProgramaRenal()">
-          <span>Cargar referencia: Cuidados Renales (40080639-0)</span>
+          <span>Cargar ejemplo: Programa preventivo</span>
         </button>
         <button type="button" class="btn btn-primary btn-sm" onclick="imprimirFichaOficialProg()">
           <span>Imprimir documento / Exportar a PDF</span>
@@ -143,7 +143,7 @@
             <div class="col-4 prog-registro-field prog-orden-3">
               <div class="form-group">
                 <label class="form-label" for="prog_codigo_idi">Código IDI / BIP <span class="required">*</span></label>
-                <input type="text" id="prog_codigo_idi" name="codigo_idi" class="form-control" placeholder="Ej: 40065461-0" required>
+                <input type="text" id="prog_codigo_idi" name="codigo_idi" class="form-control" placeholder="Ej: 00000000-0" required>
               </div>
             </div>
             <div class="col-8 prog-registro-field prog-orden-4">
@@ -155,13 +155,13 @@
             <div class="col-6 prog-registro-field prog-orden-5">
               <div class="form-group">
                 <label class="form-label" for="prog_unidad_formuladora">Unidad Formuladora <span class="required">*</span></label>
-                <input type="text" id="prog_unidad_formuladora" name="unidad_formuladora" class="form-control" placeholder="Ej: Servicio de Salud Osorno" required>
+                <input type="text" id="prog_unidad_formuladora" name="unidad_formuladora" class="form-control" placeholder="Ej: Entidad formuladora" required>
               </div>
             </div>
             <div class="col-6 prog-registro-field prog-orden-6">
               <div class="form-group">
                 <label class="form-label" for="prog_unidad_tecnica">Unidad Técnica <span class="required">*</span></label>
-                <input type="text" id="prog_unidad_tecnica" name="unidad_tecnica" class="form-control" placeholder="Ej: DIPLADER / SEREMI de Salud" required>
+                <input type="text" id="prog_unidad_tecnica" name="unidad_tecnica" class="form-control" placeholder="Ej: Unidad técnica responsable" required>
               </div>
             </div>
             <div class="col-4 prog-registro-field prog-orden-7">
@@ -220,13 +220,13 @@
             <div class="col-4 prog-registro-field prog-orden-9">
               <div class="form-group">
                 <label class="form-label" for="prog_localidad">Localidad o Sector</label>
-                <input type="text" id="prog_localidad" name="localizacion.localidad" class="form-control" placeholder="Ej: Sector Tehuaco">
+                <input type="text" id="prog_localidad" name="localizacion.localidad" class="form-control" placeholder="Ej: Localidad de ejemplo">
               </div>
             </div>
             <div class="col-6 prog-registro-field prog-orden-10">
               <div class="form-group">
                 <label class="form-label" for="prog_oficio_postulacion">N° de Oficio de Postulación</label>
-                <input type="text" id="prog_oficio_postulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: ORD. GR. N° 1234 / 01-2026">
+                <input type="text" id="prog_oficio_postulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0001">
               </div>
             </div>
             <div class="col-6 prog-registro-field prog-orden-11">
@@ -305,7 +305,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="prog_evaluador">Evaluado por (Profesional) <span class="required">*</span></label>
-                <input type="text" id="prog_evaluador" name="evaluacion.evaluador_nombre" class="form-control" placeholder="Ej: Nicole Rosas" required>
+                <input type="text" id="prog_evaluador" name="evaluacion.evaluador_nombre" class="form-control" placeholder="Ej: Profesional evaluador" required>
               </div>
             </div>
             <div class="col-4">
@@ -415,7 +415,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="prog_reg_numero">N° de Registro Documental <span class="required">*</span></label>
-                <input type="text" id="prog_reg_numero" name="registro_documental.numeroRegistro" class="form-control" placeholder="Ej: REG-DIP-2026-0410" required>
+                <input type="text" id="prog_reg_numero" name="registro_documental.numeroRegistro" class="form-control" placeholder="Ej: REG-EJEMPLO-0001" required>
               </div>
             </div>
             <div class="col-4">
@@ -434,7 +434,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="prog_reg_oficio">Referencia de Oficio (Instancia de Oficios)</label>
-                <input type="text" id="prog_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: ORD. GR. N° 1763">
+                <input type="text" id="prog_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0002">
               </div>
             </div>
             <div class="col-4">
@@ -617,61 +617,59 @@
     }
 
     function cargarEjemploProgramaSalud() {
-      // Caso Real: Ficha 40065461-0
       document.getElementById('prog_ano_postulacion').value = 2026;
-      document.getElementById('prog_codigo_idi').value = "40065461-0";
+      document.getElementById('prog_codigo_idi').value = "00000005-0";
       document.getElementById('prog_provincia').value = "OSORNO";
       document.getElementById('prog_sector').value = "Salud";
-      document.getElementById('prog_nombre').value = "Atención Integral e Inclusión Social para niños, niñas y adolescentes con necesidades en salud con especial énfasis en NANEAS";
-      document.getElementById('prog_unidad_formuladora').value = "Servicio de Salud Osorno";
-      document.getElementById('prog_unidad_tecnica').value = "SEREMI de Salud Los Lagos";
+      document.getElementById('prog_nombre').value = "Programa demostrativo de atención comunitaria";
+      document.getElementById('prog_unidad_formuladora').value = "Entidad formuladora de ejemplo";
+      document.getElementById('prog_unidad_tecnica').value = "Unidad técnica de ejemplo";
 
       document.getElementById('costo_total').value = "1304793570";
 
       document.getElementById('prog_estado_evaluacion').value = "RECOMENDADO";
       actualizarBadgeProg("RECOMENDADO");
       document.getElementById('prog_fecha_evaluacion').value = "2026-04-30";
-      document.getElementById('prog_evaluador').value = "Nicole Rosas";
-      document.getElementById('prog_analisis').value = "El programa cumple cabalmente con los lineamientos de la ERD en materia de inclusión social, permitiendo reducir las listas de espera en rehabilitación para menores con necesidades especiales en la Provincia de Osorno.";
-      document.getElementById('prog_validador').value = "https://doc.digital.gob.cl/validador/SAJSRW-309";
+      document.getElementById('prog_evaluador').value = "Profesional de ejemplo";
+      document.getElementById('prog_analisis').value = "El programa demostrativo cumple los requisitos de ejemplo y contribuye al bienestar de la comunidad.";
+      document.getElementById('prog_validador').value = "";
 
       // Registro documental de la ficha emitida
-      document.getElementById('prog_reg_numero').value = "REG-DIP-2026-0405";
+      document.getElementById('prog_reg_numero').value = "REG-EJEMPLO-0005";
       document.getElementById('prog_reg_fecha').value = "2026-04-30";
-      document.getElementById('prog_reg_registrado_por').value = "Nicole Rosas";
-      document.getElementById('prog_reg_oficio').value = "ORD. GR. N° 1712";
+      document.getElementById('prog_reg_registrado_por').value = "Profesional de ejemplo";
+      document.getElementById('prog_reg_oficio').value = "OFICIO DE EJEMPLO N° 0009";
       document.getElementById('prog_reg_oficio_fecha').value = "2026-04-30";
-      document.getElementById('prog_reg_observaciones').value = "Programa recomendado. Registro favorable y remisión al Servicio de Salud Osorno para ejecución.";
+      document.getElementById('prog_reg_observaciones').value = "Programa demostrativo recomendado y remitido a la entidad formuladora.";
 
       actualizarFichaImprimibleProg();
     }
 
     function cargarEjemploProgramaRenal() {
-      // Caso Real: Ficha 40080639-0
       document.getElementById('prog_ano_postulacion').value = 2027;
-      document.getElementById('prog_codigo_idi').value = "40080639-0";
+      document.getElementById('prog_codigo_idi').value = "00000006-0";
       document.getElementById('prog_provincia').value = "LLANQUIHUE";
       document.getElementById('prog_sector').value = "Salud";
-      document.getElementById('prog_nombre').value = "PREVENCION CUIDADOS CONTINUOS RENALES";
-      document.getElementById('prog_unidad_formuladora').value = "ILUSTRE MUNICIPALIDAD DE PUERTO MONTT";
-      document.getElementById('prog_unidad_tecnica').value = "SEREMI de Salud Los Lagos";
+      document.getElementById('prog_nombre').value = "Programa demostrativo de prevención comunitaria";
+      document.getElementById('prog_unidad_formuladora').value = "Entidad formuladora de ejemplo";
+      document.getElementById('prog_unidad_tecnica').value = "Unidad técnica de ejemplo";
 
       document.getElementById('costo_total').value = "400000000";
 
       document.getElementById('prog_estado_evaluacion').value = "RECOMENDADO";
       actualizarBadgeProg("RECOMENDADO");
       document.getElementById('prog_fecha_evaluacion').value = "2026-08-15";
-      document.getElementById('prog_evaluador').value = "Nicole Rosas";
-      document.getElementById('prog_analisis').value = "Programa prioritario alineado con el pilar de salud preventiva del Gobierno Regional. Se emite recomendación técnica favorable.";
-      document.getElementById('prog_validador').value = "https://doc.digital.gob.cl/validador/13LQDX-846";
+      document.getElementById('prog_evaluador').value = "Profesional de ejemplo";
+      document.getElementById('prog_analisis').value = "Programa demostrativo alineado con objetivos de desarrollo comunitario. Se emite recomendación técnica favorable.";
+      document.getElementById('prog_validador').value = "";
 
       // Registro documental de la ficha emitida
-      document.getElementById('prog_reg_numero').value = "REG-DIP-2026-0433";
+      document.getElementById('prog_reg_numero').value = "REG-EJEMPLO-0006";
       document.getElementById('prog_reg_fecha').value = "2026-08-15";
-      document.getElementById('prog_reg_registrado_por').value = "Nicole Rosas";
-      document.getElementById('prog_reg_oficio').value = "ORD. GR. N° 1768";
+      document.getElementById('prog_reg_registrado_por').value = "Profesional de ejemplo";
+      document.getElementById('prog_reg_oficio').value = "OFICIO DE EJEMPLO N° 0010";
       document.getElementById('prog_reg_oficio_fecha').value = "2026-08-15";
-      document.getElementById('prog_reg_observaciones').value = "Programa recomendado. Registro favorable y remisión a la Municipalidad de Puerto Montt para ejecución.";
+      document.getElementById('prog_reg_observaciones').value = "Programa demostrativo recomendado y remitido a la entidad formuladora.";
 
       actualizarFichaImprimibleProg();
     }

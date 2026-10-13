@@ -22,11 +22,11 @@ La aplicación actual es una interfaz cliente: el botón de generación produce 
 
 ## Publicación en línea
 
-El sitio se despliega automáticamente en GitHub Pages cuando hay cambios en `main` o se ejecuta manualmente el flujo **Deploy static forms to GitHub Pages** desde la pestaña **Actions**. Una vez que el administrador habilite GitHub Pages con **GitHub Actions** como fuente, el sitio estará en:
+El sitio público alojado en el repositorio `fralcord/Formularios-Procesos-Plan-Estrategica-Publico` se actualiza automáticamente cuando se publica un cambio en `main` de este repositorio. El flujo **Publish sanitized site to GitHub Pages** copia sólo los formularios, estilos, scripts y recursos necesarios; el repositorio público ejecuta su propio despliegue de GitHub Pages. La actualización tarda lo que duren ambos flujos, no es instantánea al guardar un archivo.
 
-`https://fralcord.github.io/Formularios-Procesos-Plan.-Estrategica/`
+`https://fralcord.github.io/Formularios-Procesos-Plan-Estrategica-Publico/`
 
-La página publicada es **pública** y accesible para cualquier persona en Internet. El despliegue incluye sólo la portada, los cuatro formularios, estilos, scripts y logotipos; excluye el README y la carpeta `Referencia de los procesos`. Los formularios no envían ni guardan registros en un servidor: cada usuario trabaja en su propio navegador y genera su propio JSON. Para compartir cambios de la aplicación, estos deben subirse a `main`; el sitio se actualizará al terminar correctamente el flujo de despliegue.
+La página publicada es **pública** y accesible para cualquier persona en Internet. Antes de publicar, mantén los ejemplos ficticios: el flujo no sube el README privado ni la carpeta `Referencia de los procesos`, pero sí publica el código y los datos de muestra presentes en los formularios. Los formularios no envían ni guardan registros en un servidor: cada usuario trabaja en su propio navegador y genera su propio JSON. Para habilitar la sincronización, configura el secreto `PUBLIC_SITE_TOKEN` en **Settings → Secrets and variables → Actions** de este repositorio. Debe ser un token con permiso de escritura de contenidos en el repositorio público; no lo guardes en el código ni lo compartas en chats.
 
 ## Flujo General del Proceso
 

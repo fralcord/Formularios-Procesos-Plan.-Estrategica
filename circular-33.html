@@ -46,10 +46,10 @@
       </div>
       <div class="form-header-actions">
         <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploCircular33()">
-          <span>Cargar referencia: Maquinaria Chiloé</span>
+          <span>Cargar ejemplo: Iniciativa recomendada</span>
         </button>
         <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploEvaluacionC33()">
-          <span>Cargar referencia: Camión Aljibe Los Muermos</span>
+          <span>Cargar ejemplo: Iniciativa con observaciones</span>
         </button>
         <button type="button" class="btn btn-primary btn-sm" onclick="imprimirFichaOficialC33()">
           <span>Imprimir documento / Exportar a PDF</span>
@@ -146,26 +146,26 @@
             <div class="col-4 c33-registro-field c33-orden-3">
               <div class="form-group">
                 <label class="form-label" for="codigo_bip">Código BIP / IDI <span class="required">*</span></label>
-                <input type="text" id="codigo_bip" name="codigo_bip" class="form-control" placeholder="Ej: 40059805-0" required>
+                <input type="text" id="codigo_bip" name="codigo_bip" class="form-control" placeholder="Ej: 00000000-0" required>
               </div>
             </div>
             <div class="col-8 c33-registro-field c33-orden-4">
               <div class="form-group">
                 <label class="form-label" for="nombre_accion">Nombre de la Iniciativa / Acción <span class="required">*</span></label>
-                <input type="text" id="nombre_accion" name="nombre_accion" class="form-control" placeholder="Ej: ADQUISICION CAMION ALJIBE, COMUNA DE LOS MUERMOS" required>
+                <input type="text" id="nombre_accion" name="nombre_accion" class="form-control" placeholder="Ej: INICIATIVA DEMOSTRATIVA DE EQUIPAMIENTO" required>
               </div>
             </div>
 
             <div class="col-6 c33-registro-field c33-orden-5">
               <div class="form-group">
                 <label class="form-label" for="c33_unidad_formuladora">Unidad Formuladora <span class="required">*</span></label>
-                <input type="text" id="c33_unidad_formuladora" name="unidad_formuladora" class="form-control" placeholder="Ej: ILUSTRE MUNICIPALIDAD DE LOS MUERMOS" required>
+                <input type="text" id="c33_unidad_formuladora" name="unidad_formuladora" class="form-control" placeholder="Ej: ENTIDAD FORMULADORA DE EJEMPLO" required>
               </div>
             </div>
             <div class="col-6 c33-registro-field c33-orden-6">
               <div class="form-group">
                 <label class="form-label" for="c33_unidad_tecnica">Unidad Técnica <span class="required">*</span></label>
-                <input type="text" id="c33_unidad_tecnica" name="unidad_tecnica" class="form-control" placeholder="Ej: DIPLADER / SECOPLAN" required>
+                <input type="text" id="c33_unidad_tecnica" name="unidad_tecnica" class="form-control" placeholder="Ej: UNIDAD TÉCNICA DE EJEMPLO" required>
               </div>
             </div>
             <div class="col-6 c33-registro-field c33-orden-7">
@@ -248,7 +248,7 @@
             <div class="col-4 c33-registro-field c33-orden-11">
               <div class="form-group">
                 <label class="form-label" for="c33_localidad">Localidad o Sector</label>
-                <input type="text" id="c33_localidad" name="localizacion.localidad" class="form-control" placeholder="Ej: Sector Tehuaco">
+                <input type="text" id="c33_localidad" name="localizacion.localidad" class="form-control" placeholder="Ej: LOCALIDAD DE EJEMPLO">
               </div>
             </div>
             <div class="col-12 c33-registro-field c33-orden-12">
@@ -263,7 +263,7 @@
             <div class="col-6 c33-registro-field c33-orden-14">
               <div class="form-group">
                 <label class="form-label" for="c33_oficio_postulacion">N° de Oficio de Postulación</label>
-                <input type="text" id="c33_oficio_postulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: ORD. GR. N° 1234 / 01-2026">
+                <input type="text" id="c33_oficio_postulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0001">
               </div>
             </div>
             <div class="col-6 c33-registro-field c33-orden-15">
@@ -439,7 +439,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="c33_reg_numero">N° de Registro Documental <span class="required">*</span></label>
-                <input type="text" id="c33_reg_numero" name="registro_documental.numeroRegistro" class="form-control" placeholder="Ej: REG-DIP-2026-0203" required>
+                <input type="text" id="c33_reg_numero" name="registro_documental.numeroRegistro" class="form-control" placeholder="Ej: REG-EJEMPLO-0001" required>
               </div>
             </div>
             <div class="col-4">
@@ -458,7 +458,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="c33_reg_oficio">Referencia de Oficio (Instancia de Oficios)</label>
-                <input type="text" id="c33_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: ORD. GR. N° 1690">
+                <input type="text" id="c33_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0002">
               </div>
             </div>
             <div class="col-4">
@@ -647,62 +647,61 @@
     function cargarEjemploCircular33() {
       document.getElementById('c33_proceso_ano').value = 2026;
       document.getElementById('subtitulo').value = '29';
-      document.getElementById('codigo_bip').value = "40081234-0";
-      document.getElementById('nombre_accion').value = "ADQUISICION EQUIPAMIENTO Y MAQUINARIA VIAL SECTOR RURAL, PROVINCIA DE CHILOE";
-      document.getElementById('c33_unidad_formuladora').value = "ILUSTRE MUNICIPALIDAD DE CASTRO";
-      document.getElementById('c33_unidad_tecnica').value = "DIPLADER / SECOPLAN";
+      document.getElementById('codigo_bip').value = "00000002-0";
+      document.getElementById('nombre_accion').value = "ADQUISICIÓN DEMOSTRATIVA DE EQUIPAMIENTO COMUNITARIO";
+      document.getElementById('c33_unidad_formuladora').value = "ENTIDAD FORMULADORA DE EJEMPLO";
+      document.getElementById('c33_unidad_tecnica').value = "UNIDAD TÉCNICA DE EJEMPLO";
       document.getElementById('c33_sector').value = "Otros";
       document.getElementById('provincia').value = "CHILOÉ";
       document.getElementById('comuna').value = "Castro";
       document.getElementById('c33_localidad').value = "";
-      document.getElementById('c33_descripcion_proyecto').value = "Adquisición de un camión aljibe para mejorar el abastecimiento de agua potable en sectores rurales de la comuna de Castro.";
+      document.getElementById('c33_descripcion_proyecto').value = "Descripción ficticia para probar la captura de una iniciativa.";
       document.getElementById('costo_total').value = "230000000";
 
       document.getElementById('c33_estado').value = "RECOMENDADO";
       actualizarBadgeC33("RECOMENDADO");
-      document.getElementById('c33_observaciones_eval').value = "La iniciativa cumple con las cotizaciones requeridas, especificaciones técnicas y se adjunta decreto de asignación de chofer con licencia profesional al día. Se recomienda favorablemente.";
-      document.getElementById('c33_evaluador').value = "Carlos Miranda Soto";
+      document.getElementById('c33_observaciones_eval').value = "La iniciativa demostrativa cumple los requisitos de ejemplo y se recomienda favorablemente.";
+      document.getElementById('c33_evaluador').value = "Profesional de ejemplo";
       document.getElementById('c33_fecha_eval').value = "2026-07-15";
 
       // Registro documental de la ficha emitida
-      document.getElementById('c33_reg_numero').value = "REG-DIP-2026-0218";
+      document.getElementById('c33_reg_numero').value = "REG-EJEMPLO-0001";
       document.getElementById('c33_reg_fecha').value = "2026-07-15";
-      document.getElementById('c33_reg_registrado_por').value = "Carlos Miranda Soto";
-      document.getElementById('c33_reg_oficio').value = "ORD. GR. N° 1687";
+      document.getElementById('c33_reg_registrado_por').value = "Profesional de ejemplo";
+      document.getElementById('c33_reg_oficio').value = "OFICIO DE EJEMPLO N° 0005";
       document.getElementById('c33_reg_oficio_fecha').value = "2026-07-15";
-      document.getElementById('c33_reg_observaciones').value = "Ficha favorable registrada y remitida a la Municipalidad de Castro para continuación del proceso de contratación.";
+      document.getElementById('c33_reg_observaciones').value = "Registro de ejemplo para demostración.";
 
       actualizarFichaImprimibleC33();
     }
 
     function cargarEjemploEvaluacionC33() {
-      // Caso Real: FICHA 22-6-26.docx
       document.getElementById('c33_proceso_ano').value = 2026;
       document.getElementById('subtitulo').value = '29';
-      document.getElementById('codigo_bip').value = "40059805-0";
-      document.getElementById('nombre_accion').value = "ADQUISICION CAMION ALJIBE, COMUNA DE LOS MUERMOS";
-      document.getElementById('c33_unidad_formuladora').value = "ILUSTRE MUNICIPALIDAD DE LOS MUERMOS";
-      document.getElementById('c33_unidad_tecnica').value = "DIPLADER / SECOPLAN";
+      document.getElementById('codigo_bip').value = "00000003-0";
+      document.getElementById('nombre_accion').value = "INICIATIVA DEMOSTRATIVA DE MEJORAMIENTO COMUNITARIO";
+      document.getElementById('c33_unidad_formuladora').value = "ENTIDAD FORMULADORA DE EJEMPLO";
+      document.getElementById('c33_unidad_tecnica').value = "UNIDAD TÉCNICA DE EJEMPLO";
       document.getElementById('c33_sector').value = "Agua Potable Rural (SSR)";
-      document.getElementById('provincia').value = "LLANQUIHUE";
-      document.getElementById('comuna').value = "Los Muermos";
+      document.getElementById('provincia').value = "REGIONAL";
+      document.getElementById('comuna').value = "Regional";
       document.getElementById('c33_localidad').value = "";
-      document.getElementById('c33_descripcion_proyecto').value = "Adquisición de camión aljibe para apoyar el abastecimiento de agua potable en sectores rurales de la comuna de Los Muermos.";
+      document.getElementById('c33_descripcion_proyecto').value = "Descripción ficticia para probar la captura de una iniciativa.";
       document.getElementById('costo_total').value = "210148000";
 
       document.getElementById('c33_estado').value = "OBSERVADO";
       actualizarBadgeC33("OBSERVADO");
-      document.getElementById('c33_observaciones_eval').value = "Respecto a certificaciones:\n1. Certificado de asignación de conductor: falta documento independiente emitido por el municipio que certifique que el conductor asignado cuenta con licencia clase profesional al día.\n2. Se debe adjuntar 3 cotizaciones actualizadas de distribuidores oficiales.\n3. Incorporar decreto alcaldicio de aprobación de costos operacionales de mantención y combustible.";
-      document.getElementById('c33_evaluador').value = "Profesional Depto. Planificación DIPLADER";
+      document.getElementById('c33_observaciones_eval').value = "Para este ejemplo:\n1. Completar los antecedentes técnicos demostrativos.\n2. Adjuntar documentación ficticia de respaldo.";
+      document.getElementById('c33_evaluador').value = "Profesional de ejemplo";
       document.getElementById('c33_fecha_eval').value = "2026-06-22";
 
       // Registro documental de la ficha emitida (con resultado observado)
-      document.getElementById('c33_reg_numero').value = "REG-DIP-2026-0197";
+      document.getElementById('c33_reg_numero').value = "REG-EJEMPLO-0002";
       document.getElementById('c33_reg_fecha').value = "2026-06-22";
-      document.getElementById('c33_reg_registrado_por').value = "Carlos Miranda Soto";
-      document.getElementById('c33_reg_oficio').value = "ORD. GR. N° 1655";
+      document.getElementById('c33_reg_registrado_por').value = "Profesional de ejemplo";
+      document.getElementById('c33_reg_oficio').value = "OFICIO DE EJEMPLO N° 0006";
       document.getElementById('c33_reg_oficio_fecha').value = "2026-06-22";
-      document.getElementById('c33_reg_observaciones').value = "Observaciones remitidas a la Municipalidad de Los Muermos. Se espera respuesta del postulante para nueva iteración.";
+      document.getElementById('c33_reg_observaciones').value = "Observaciones ficticias para demostración del flujo.";
 
       actualizarFichaImprimibleC33();
     }

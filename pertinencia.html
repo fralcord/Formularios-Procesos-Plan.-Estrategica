@@ -45,11 +45,11 @@
         </p>
       </div>
       <div class="form-header-actions">
-        <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploPertinenciaTehuaco()">
-          <span>Cargar referencia: SSR Tehuaco (ORD a MDSF)</span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploPertinenciaFavorable()">
+          <span>Cargar ejemplo: Iniciativa pertinente</span>
         </button>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploPertinenciaMaillen()">
-          <span>Cargar referencia: PSR Maillen (Con observaciones)</span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploPertinenciaObservada()">
+          <span>Cargar ejemplo: Iniciativa con observaciones</span>
         </button>
         <button type="button" class="btn btn-primary btn-sm" onclick="imprimirFichaOficial()">
           <span>Imprimir documento / Exportar a PDF</span>
@@ -143,7 +143,7 @@
             <div class="col-4 pert-registro-field pert-orden-3">
               <div class="form-group">
                 <label class="form-label" for="codigo_bip">Código BIP / IDI <span class="required">*</span></label>
-                <input type="text" id="codigo_bip" name="codigo_bip" class="form-control" placeholder="Ej: 40052180-0" required>
+                <input type="text" id="codigo_bip" name="codigo_bip" class="form-control" placeholder="Ej: 00000000-0" required>
               </div>
             </div>
             <div class="col-8 pert-registro-field pert-orden-4">
@@ -156,13 +156,13 @@
             <div class="col-6 pert-registro-field pert-orden-5">
               <div class="form-group">
                 <label class="form-label" for="unidad_formuladora">Unidad Formuladora <span class="required">*</span></label>
-                <input type="text" id="unidad_formuladora" name="unidad_formuladora" class="form-control" placeholder="Ej: Municipalidad de Dalcahue" required>
+                <input type="text" id="unidad_formuladora" name="unidad_formuladora" class="form-control" placeholder="Ej: Entidad formuladora" required>
               </div>
             </div>
             <div class="col-6 pert-registro-field pert-orden-6">
               <div class="form-group">
                 <label class="form-label" for="unidad_tecnica_pert">Unidad Técnica <span class="required">*</span></label>
-                <input type="text" id="unidad_tecnica_pert" name="unidad_tecnica" class="form-control" placeholder="Ej: DOH MOP / Dirección de Obras Hidráulicas" required>
+                <input type="text" id="unidad_tecnica_pert" name="unidad_tecnica" class="form-control" placeholder="Ej: Unidad técnica responsable" required>
               </div>
             </div>
             <div class="col-6 pert-registro-field pert-orden-7">
@@ -278,7 +278,7 @@
             <div class="col-4 pert-registro-field pert-orden-11">
               <div class="form-group">
                 <label class="form-label" for="localidad_pert">Localidad o Sector</label>
-                <input type="text" id="localidad_pert" name="localizacion.localidad" class="form-control" placeholder="Ej: Sector Tehuaco">
+                <input type="text" id="localidad_pert" name="localizacion.localidad" class="form-control" placeholder="Ej: Localidad de ejemplo">
               </div>
             </div>
             <div class="col-12 pert-registro-field pert-orden-12">
@@ -290,7 +290,7 @@
             <div class="col-6 pert-registro-field pert-orden-13">
               <div class="form-group">
                 <label class="form-label" for="oficioPostulacion">N° de Oficio de Postulación</label>
-                <input type="text" id="oficioPostulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: ORD. GR. N° 1234 / 01-2026">
+                <input type="text" id="oficioPostulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0001">
               </div>
             </div>
             <div class="col-6 pert-registro-field pert-orden-14">
@@ -530,7 +530,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="pert_reg_oficio">N° de Oficio (Instancia de Oficios)</label>
-                <input type="text" id="pert_reg_oficio" name="registro_documental_evaluacion.referencia_oficio" class="form-control" placeholder="Ej: ORD. GR. N° 1628">
+                <input type="text" id="pert_reg_oficio" name="registro_documental_evaluacion.referencia_oficio" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0002">
               </div>
             </div>
             <div class="col-4">
@@ -542,7 +542,7 @@
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="pert_reg_oficio_destinatario">Destinatario del Oficio</label>
-                <input type="text" id="pert_reg_oficio_destinatario" name="registro_documental_evaluacion.destinatario_oficio" class="form-control" placeholder="Ej: SEREMI MDSF Región de Los Lagos o municipio">
+                <input type="text" id="pert_reg_oficio_destinatario" name="registro_documental_evaluacion.destinatario_oficio" class="form-control" placeholder="Ej: Entidad pública destinataria">
               </div>
             </div>
 
@@ -983,18 +983,18 @@
       showJsonModal('Evaluación de Pertinencia - Carga Útil para Base de Datos', data);
     }
 
-    function cargarEjemploPertinenciaTehuaco() {
+    function cargarEjemploPertinenciaFavorable() {
       document.getElementById('proceso_presupuestario').value = 2027;
-      document.getElementById('codigo_bip').value = "40052180-0";
-      document.getElementById('nombre_proyecto').value = "Construcción SSR Sector Tehuaco, Dalcahue";
+      document.getElementById('codigo_bip').value = "00000000-0";
+      document.getElementById('nombre_proyecto').value = "Proyecto demostrativo de infraestructura pública";
       document.getElementById('etapa_postula').value = "Ejecución";
       document.getElementById('sector_iniciativa').value = "Agua Potable Rural (SSR)";
-      document.getElementById('unidad_formuladora').value = "Ilustre Municipalidad de Dalcahue";
-      document.getElementById('unidad_tecnica_pert').value = "DOH MOP";
-      document.getElementById('provincia_pert').value = "CHILOÉ";
-      document.getElementById('comuna_pert').value = "Dalcahue";
-      document.getElementById('localidad_pert').value = "Sector Tehuaco";
-      document.getElementById('oficioPostulacion').value = "ORD. GR. N° 1204";
+      document.getElementById('unidad_formuladora').value = "Entidad formuladora de ejemplo";
+      document.getElementById('unidad_tecnica_pert').value = "Unidad técnica de ejemplo";
+      document.getElementById('provincia_pert').value = "PALENA";
+      document.getElementById('comuna_pert').value = "Palena";
+      document.getElementById('localidad_pert').value = "Localidad de ejemplo";
+      document.getElementById('oficioPostulacion').value = "OFICIO DE EJEMPLO N° 0001";
       document.getElementById('oficioPostulacionFecha').value = "2026-05-10";
 
       configurarEjemploFinanciamientoPert({
@@ -1005,41 +1005,41 @@
       });
 
       document.getElementById('pert_erd_lineamiento').value = "Bienestar Socio Territorial";
-      document.getElementById('pert_erd_item').value = "Servicios Básicos / Agua Potable Rural";
-      document.getElementById('pert_erd_objetivo').value = "Disminuir las brechas de acceso a servicios sanitarios y agua potable en comunidades rurales de Chiloé.";
+      document.getElementById('pert_erd_item').value = "Infraestructura y servicios comunitarios";
+      document.getElementById('pert_erd_objetivo').value = "Mejorar el acceso a servicios básicos para la comunidad beneficiaria.";
       document.getElementById('pert_gob_pilar').value = "Pilar 3. Inclusión Social y Mejoramiento de la Calidad de Vida";
       document.getElementById('pert_gob_letra').value = "c) Infraestructura de Servicios Básicos";
-      document.getElementById('pert_gob_justificacion').value = "El proyecto da cumplimiento al compromiso del Gobernador Regional de asegurar agua potable en zonas rurales vulnerables.";
-      document.getElementById('analisis_pertinencia_tecnica').value = "Iniciativa prioritariamente pertinente. Cuenta con diseño de ingeniería aprobado y factibilidad técnica DOH. Se remite al MDSF para su análisis técnico económico (RATE).";
+      document.getElementById('pert_gob_justificacion').value = "La iniciativa contribuye al mejoramiento de los servicios para la comunidad.";
+      document.getElementById('analisis_pertinencia_tecnica').value = "Ejemplo de análisis técnico favorable para demostración del formulario.";
 
       document.getElementById('estado_pertinencia').value = "PERTINENTE_A_MDSF";
       actualizarEstadoPertinencia("PERTINENTE_A_MDSF");
-      document.getElementById('evaluador_pert').value = "Diego Alexis Castro Henríquez";
+      document.getElementById('evaluador_pert').value = "Profesional de ejemplo";
       document.getElementById('fecha_evaluacion_fin').value = "2026-06-26";
 
       // Registro documental de la ficha emitida
-      document.getElementById('pert_reg_registrado_por').value = "Diego Alexis Castro Henríquez";
-      document.getElementById('pert_reg_oficio').value = "ORD. GR. N° 1628";
+      document.getElementById('pert_reg_registrado_por').value = "Profesional de ejemplo";
+      document.getElementById('pert_reg_oficio').value = "OFICIO DE EJEMPLO N° 0002";
       document.getElementById('pert_reg_oficio_fecha').value = "2026-06-26";
-      document.getElementById('pert_reg_oficio_destinatario').value = "MINISTERIO DE DESARROLLO SOCIAL Y FAMILIA REGION DE LOS LAGOS";
-      document.getElementById('pert_reg_observaciones').value = "Ficha remitida a la SEREMI MDSF Región de Los Lagos para análisis técnico económico (RATE).";
+      document.getElementById('pert_reg_oficio_destinatario').value = "Entidad pública destinataria";
+      document.getElementById('pert_reg_observaciones').value = "Registro de ejemplo para demostración.";
 
       actualizarFichaImprimible();
     }
 
-    function cargarEjemploPertinenciaMaillen() {
+    function cargarEjemploPertinenciaObservada() {
       document.getElementById('proceso_presupuestario').value = 2026;
-      document.getElementById('codigo_bip').value = "30034826-0";
-      document.getElementById('nombre_proyecto').value = "Reposición Posta de Salud Rural (PSR) Isla Maillen, Puerto Montt";
+      document.getElementById('codigo_bip').value = "00000001-0";
+      document.getElementById('nombre_proyecto').value = "Proyecto demostrativo de equipamiento comunitario";
       document.getElementById('etapa_postula').value = "Diseño";
       document.getElementById('sector_iniciativa').value = "Salud";
-      document.getElementById('unidad_formuladora').value = "I. Municipalidad de Puerto Montt";
-      document.getElementById('unidad_tecnica_pert').value = "DIPLADER / SEREMI de Salud Los Lagos";
-      document.getElementById('provincia_pert').value = "LLANQUIHUE";
-      document.getElementById('comuna_pert').value = "Puerto Montt";
-      document.getElementById('localidad_pert').value = "Isla Maillen";
-      document.getElementById('descripcion_proyecto').value = "Existe un déficit de cobertura en la atención de salud primaria en la localidad de Isla Maillen, comuna de Puerto Montt.";
-      document.getElementById('oficioPostulacion').value = "Oficio N° 1644";
+      document.getElementById('unidad_formuladora').value = "Entidad formuladora de ejemplo";
+      document.getElementById('unidad_tecnica_pert').value = "Unidad técnica de ejemplo";
+      document.getElementById('provincia_pert').value = "OSORNO";
+      document.getElementById('comuna_pert').value = "Osorno";
+      document.getElementById('localidad_pert').value = "Localidad de ejemplo";
+      document.getElementById('descripcion_proyecto').value = "Descripción ficticia para probar la captura de una iniciativa.";
+      document.getElementById('oficioPostulacion').value = "OFICIO DE EJEMPLO N° 0003";
       document.getElementById('oficioPostulacionFecha').value = "2026-06-15";
 
       configurarEjemploFinanciamientoPert({
@@ -1049,24 +1049,24 @@
         siguiente: 0
       });
 
-      document.getElementById('pert_erd_lineamiento').value = "Conectividad y Movilidad Regional Sustentable";
-      document.getElementById('pert_erd_item').value = "Conectividad Insular y Servicios Básicos en Islas";
+      document.getElementById('pert_erd_lineamiento').value = "Desarrollo territorial sostenible";
+      document.getElementById('pert_erd_item').value = "Servicios comunitarios";
       document.getElementById('pert_gob_pilar').value = "Pilar 3. Inclusión Social y Mejoramiento de la Calidad de Vida";
       document.getElementById('pert_gob_letra').value = "e) Acceso a Servicios de Salud";
-      document.getElementById('analisis_pertinencia_tecnica').value = "La iniciativa es estratégica para el territorio insular; sin embargo, los antecedentes ingresados presentan inconsistencias en el certificado de dominio vigente del terreno municipal y cálculo de gastos de consultoría.";
+      document.getElementById('analisis_pertinencia_tecnica').value = "Ejemplo de análisis técnico con observaciones para demostración del formulario.";
 
       document.getElementById('estado_pertinencia').value = "CON_OBSERVACIONES";
       actualizarEstadoPertinencia("CON_OBSERVACIONES");
-      document.getElementById('observaciones_devolucion').value = "1. Adjuntar certificado de dominio vigente actualizado del inmueble en Isla Maillen.\n2. Detallar los Términos de Referencia (TTR) de la consultoría de diseño.\n3. Acreditar acuerdo del Concejo Municipal para costos de mantención futura.";
-      document.getElementById('evaluador_pert').value = "Diego Alexis Castro Henríquez";
+      document.getElementById('observaciones_devolucion').value = "1. Completar los antecedentes técnicos de ejemplo.\n2. Adjuntar la documentación demostrativa correspondiente.";
+      document.getElementById('evaluador_pert').value = "Profesional de ejemplo";
       document.getElementById('fecha_evaluacion_fin').value = "2026-06-30";
 
       // Registro documental de la ficha emitida
-      document.getElementById('pert_reg_registrado_por').value = "Diego Alexis Castro Henríquez";
-      document.getElementById('pert_reg_oficio').value = "Oficio N° 1644";
+      document.getElementById('pert_reg_registrado_por').value = "Profesional de ejemplo";
+      document.getElementById('pert_reg_oficio').value = "OFICIO DE EJEMPLO N° 0004";
       document.getElementById('pert_reg_oficio_fecha').value = "2026-06-30";
-      document.getElementById('pert_reg_oficio_destinatario').value = "Sr. Rodrigo Wainraihgt Galilea - Alcalde I. Municipalidad de Puerto Montt";
-      document.getElementById('pert_reg_observaciones').value = "observaciones remitidas a la Municipalidad de Puerto Montt. Se espera respuesta del postulante para nueva iteración.";
+      document.getElementById('pert_reg_oficio_destinatario').value = "Entidad pública destinataria";
+      document.getElementById('pert_reg_observaciones').value = "Observaciones de ejemplo para demostración.";
 
       actualizarFichaImprimible();
     }
