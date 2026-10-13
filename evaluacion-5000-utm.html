@@ -61,15 +61,11 @@
     <div class="instancia-selector no-print" id="selectorInstancia"
          data-nombre-campo="instancia_evaluacion"
          data-permite-reevaluacion="true"
-         data-bloque-respuesta="bloqueRespuestaObs5000"
-         data-bloque-reevaluacion="bloqueReevaluacion5000"
          data-tabla-iteraciones="tablaIteraciones5000"
          data-panel-evaluacion="pasoEvaluacion5000"
          data-campo-estado="estado_resultado_evaluacion"
          data-campo-fecha="fecha_evaluacion"
          data-campo-detalle="sintesis_evaluacion"
-         data-tag-print="print_instancia_5000"
-         data-tag-iteracion="print_iteracion_5000, badgeIteracionRespuesta5000, badgeIteracionReevaluacion5000"
          data-paso-evaluacion="evaluacion">
       <span class="instancia-selector-label">Instancia de Evaluación:</span>
       <div class="instancia-options">
@@ -185,8 +181,9 @@
             </div>
             <div class="col-6 ut5000-registro-field ut5000-orden-8">
               <div class="form-group">
-                <label class="form-label" for="costo_total">Costo Total</label>
-                <input type="number" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" min="0">
+                <label class="form-label" for="costo_total">Costo Total (Pesos $)</label>
+                <input type="text" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" inputmode="numeric" data-format-currency autocomplete="off">
+                <span class="form-hint">Ingrese el monto en pesos; se formatea automáticamente.</span>
               </div>
             </div>
             <div class="col-4 ut5000-registro-field ut5000-orden-9">
@@ -258,6 +255,7 @@
               <div class="form-group">
                 <label class="form-label" for="ut5000_oficio_postulacion_fecha">Fecha de Oficio de Postulación</label>
                 <input type="date" id="ut5000_oficio_postulacion_fecha" name="oficio_postulacion.fecha" class="form-control">
+                <span class="form-hint">Año de postulación derivado: <strong id="ut5000_registro_ano_post">-</strong></span>
               </div>
             </div>
             <div class="col-6 ut5000-registro-field ut5000-orden-14">
@@ -390,68 +388,6 @@
           </div>
         </section>
 
-        <!-- BLOQUE: RESPUESTA DEL POSTULANTE A OBSERVACIONES -->
-        <section class="form-section-card bloque-iteracion" id="bloqueRespuestaObs5000" style="display: none;">
-          <div class="section-header">
-            <h3>2.1 Respuesta del Postulante a Observaciones</h3>
-            <span class="section-badge" id="badgeIteracionRespuesta5000">Iteración N° 2</span>
-          </div>
-          <div class="callout callout-warning">
-            <span>Instancia <strong>&laquo;Responde Observaciones&raquo;</strong>. Registre los antecedentes y documentos con que la unidad formuladora subsana cada observación emitida en la revisión anterior.</span>
-          </div>
-          <div class="form-grid">
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="ut5000_resp_fecha">Fecha de Respuesta del Postulante</label>
-                <input type="date" id="ut5000_resp_fecha" name="respuesta_observaciones.fecha_respuesta" class="form-control">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="ut5000_resp_documento">N° de Documento / ORD Recibido</label>
-                <input type="text" id="ut5000_resp_documento" name="respuesta_observaciones.numero_documento" class="form-control" placeholder="Ej: ORD. GR. N° 1745">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="ut5000_resp_entrada">Fecha de Ingreso a DIPLADER</label>
-                <input type="date" id="ut5000_resp_entrada" name="respuesta_observaciones.fecha_ingreso_diplader" class="form-control">
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label" for="ut5000_resp_detalle">Detalle de la Respuesta y Documentos Adjuntos</label>
-                <textarea id="ut5000_resp_detalle" name="respuesta_observaciones.detalle_respuesta" rows="4" class="form-control" placeholder="Punto por punto: qué observación se subsanó y con qué documento..."></textarea>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- BLOQUE: REEVALUACIÓN -->
-        <section class="form-section-card bloque-iteracion" id="bloqueReevaluacion5000" style="display: none;">
-          <div class="section-header">
-            <h3>2.2 Reevaluación de la Iniciativa</h3>
-            <span class="section-badge" id="badgeIteracionReevaluacion5000">Iteración N° 3</span>
-          </div>
-          <div class="callout callout-info">
-            <span>Instancia <strong>&laquo;Reevaluación&raquo;</strong>. Verifique la subsanación de las observaciones y registre el resultado de esta nueva revisión técnica.</span>
-          </div>
-          <div class="form-grid">
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="ut5000_reev_verificacion">Verificación de lo Subsanado</label>
-                <textarea id="ut5000_reev_verificacion" name="reevaluacion.verificacion_subsanacion" rows="4" class="form-control" placeholder="Observaciones resueltas y observaciones que permanecen..."></textarea>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="ut5000_reev_fundamento">Fundamento del Resultado de la Reevaluación</label>
-                <textarea id="ut5000_reev_fundamento" name="reevaluacion.fundamento_resultado" rows="4" class="form-control" placeholder="Fundamento técnico que sustenta el estado asignado en esta revisión..."></textarea>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <table id="tablaIteraciones5000" data-table-id="iteraciones" hidden style="display:none" aria-hidden="true">
           <tbody id="tbodyIteraciones5000"><tr data-table-row>
             <td><input type="text" data-field="numero"></td>
@@ -479,10 +415,6 @@
             <div style="font-size: 0.78rem; color: #64748b;">División de Planificación y Desarrollo Regional (DIPLADER)</div>
             <div class="sheet-main-title">FICHA DE EVALUACION INICIATIVAS MENORES A 5.000 UTM</div>
             <div class="budget-process-tag">PROCESO PRESUPUESTARIO <span id="print_5000_ano">2026</span></div>
-            <div>
-              <span class="instancia-print-tag" id="print_instancia_5000">PRIMER INGRESO</span>
-              <span class="instancia-print-tag iteracion-tag" id="print_iteracion_5000">N° 1</span>
-            </div>
           </div>
 
           <div class="sheet-section-title">ANTECEDENTES DE LA INICIATIVA:</div>
@@ -528,35 +460,13 @@
               <span class="val" id="print_5000_unidad_tecnica">-</span>
             </div>
             <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">COSTO TOTAL</span>
+              <span class="label">COSTO TOTAL (M$)</span>
               <span class="val" id="print_5000_costo_total">-</span>
             </div>
           </div>
 
           <div class="sheet-section-title" style="margin-top: 1.25rem;">EVALUACIÓN:</div>
           <div class="sheet-box-text" id="print_5000_evaluacion_bloque"></div>
-
-          <!-- Respuesta del postulante (instancia N° 2) -->
-          <div id="print_respuesta_observaciones_5000" style="display: none;">
-            <div class="sheet-section-title">RESPUESTA DEL POSTULANTE A OBSERVACIONES:</div>
-            <div class="sheet-summary-grid">
-              <div class="sheet-summary-cell" style="grid-column: span 6;">
-                <span class="label">FECHA DE RESPUESTA</span>
-                <span class="val" id="print_5000_resp_fecha">-</span>
-              </div>
-              <div class="sheet-summary-cell" style="grid-column: span 6;">
-                <span class="label">DOCUMENTO / ORD RECIBIDO</span>
-                <span class="val" id="print_5000_resp_documento">-</span>
-              </div>
-            </div>
-            <div class="sheet-box-text" id="print_5000_resp_detalle">-</div>
-          </div>
-
-          <!-- Reevaluación (instancia N° 3) -->
-          <div id="print_reevaluacion_5000" style="display: none;">
-            <div class="sheet-section-title">REEVALUACIÓN:</div>
-            <div class="sheet-box-text" id="print_5000_reevaluacion_bloque">-</div>
-          </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin: 0.75rem 0; font-size: 0.82rem;">
             <div><strong>ESTADO:</strong> <span class="status-badge observado" id="print_5000_estado_badge">OBSERVADO</span></div>
@@ -704,6 +614,7 @@
 
     function actualizarFichaImprimible5000() {
       AppIteracion.aplicar();
+      formatPesosInput(document.getElementById('costo_total'));
       const getVal = id => document.getElementById(id)?.value || '';
       const claveInstancia = AppIteracion.actual();
 
@@ -728,12 +639,14 @@
       document.getElementById('print_5000_sector').textContent = getVal('sector_5000') || '-';
       document.getElementById('print_5000_proceso_presupuestario').textContent = getVal('ano_postulacion') || '-';
       const fechaOficioPostulacion = getVal('ut5000_oficio_postulacion_fecha');
+      document.getElementById('ut5000_registro_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_5000_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_5000_bip').textContent = getVal('codigo_idi') || '-';
       document.getElementById('print_5000_nombre').textContent = getVal('nombre_iniciativa') || '-';
       document.getElementById('print_5000_unidad_formuladora').textContent = getVal('unidad_formuladora_5000') || '-';
       document.getElementById('print_5000_unidad_tecnica').textContent = getVal('unidad_tecnica_5000') || '-';
-      document.getElementById('print_5000_costo_total').textContent = getVal('costo_total') || '-';
+      document.getElementById('print_5000_costo_total').textContent =
+        formatCurrencyInThousands(getVal('costo_total'));
 
       // Desglose de Evaluación
       const estado = getVal('estado_resultado_evaluacion');
@@ -784,27 +697,6 @@
           : 'Resultado RECOMENDADO / SIN OBSERVACIONES: fin del proceso.';
       }
 
-      // Respuesta del postulante (instancia N° 2)
-      const bloqueRespuesta = document.getElementById('print_respuesta_observaciones_5000');
-      if (bloqueRespuesta) {
-        bloqueRespuesta.style.display = claveInstancia === 'PRIMER_INGRESO' ? 'none' : 'block';
-        document.getElementById('print_5000_resp_fecha').textContent = getVal('ut5000_resp_fecha') || '-';
-        document.getElementById('print_5000_resp_documento').textContent = getVal('ut5000_resp_documento') || '-';
-        document.getElementById('print_5000_resp_detalle').textContent = getVal('ut5000_resp_detalle') || 'Sin respuesta registrada.';
-      }
-
-      // Reevaluación (instancia N° 3)
-      const bloqueReeval = document.getElementById('print_reevaluacion_5000');
-      if (bloqueReeval) {
-        bloqueReeval.style.display = claveInstancia === 'REEVALUACION' ? 'block' : 'none';
-        const verif = getVal('ut5000_reev_verificacion');
-        const fund = getVal('ut5000_reev_fundamento');
-        document.getElementById('print_5000_reevaluacion_bloque').textContent =
-          (verif ? 'Verificación de lo subsanado:\n' + verif + '\n\n' : '') +
-          (fund ? 'Fundamento del resultado:\n' + fund : '') ||
-          'Sin registro de reevaluación.';
-      }
-
     }
 
     /** Avanza al ciclo de iteraciones: responde observaciones -> reevaluación. */
@@ -844,7 +736,7 @@
       document.getElementById('comuna_5000').value = "Puyehue";
       document.getElementById('localidad_5000').value = "Sector Pilmaiquén";
 
-      document.getElementById('costo_total').value = "193063";
+      document.getElementById('costo_total').value = "193063000";
 
       document.getElementById('estado_resultado_evaluacion').value = "OBSERVADO";
       actualizarBadgeResultado5000("OBSERVADO");
@@ -881,15 +773,8 @@
       document.getElementById('sintesis_evaluacion').value = "Sin Observaciones. Cumple cabalmente los requerimientos técnicos y se recomienda su financiamiento.";
       document.getElementById('fecha_evaluacion').value = "2026-08-28";
 
-      // La Rev-6 es el resultado de la reevaluación previa respuesta a las
-      // observaciones de la Rev-2.
+      // Registrar el tipo de entrada de esta evaluación en el atributo de instancia.
       AppIteracion.establecer('REEVALUACION', actualizarFichaImprimible5000);
-      document.getElementById('ut5000_resp_fecha').value = "2026-08-20";
-      document.getElementById('ut5000_resp_documento').value = "ORD. GR. N° 1742";
-      document.getElementById('ut5000_resp_entrada').value = "2026-08-25";
-      document.getElementById('ut5000_resp_detalle').value = "Se corrigió la aritmética de la cerrajería, se eliminó la fila de TOTAL duplicada, se desglosaron las partidas de pozo absorbente y televigilancia, se incorporaron render y geotextil, certificado sanitario y certificado DOM vigente, y se adjuntó el plano de subdivisión 10304-102-C.R.";
-      document.getElementById('ut5000_reev_verificacion').value = "Las 14 observaciones de la Rev-2 fueron verificadas y se consideran cumplidas en su totalidad.";
-      document.getElementById('ut5000_reev_fundamento').value = "La documentación subsanada cumple con los criterios técnicos exigidos, corresponde emitir la ficha sin observaciones y recomendar el financiamiento.";
 
       // Registro documental de la ficha emitida (cierre del proceso)
       document.getElementById('ut5000_reg_numero').value = "REG-DIP-2026-0296";

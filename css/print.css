@@ -153,6 +153,17 @@
     width: 28% !important;
   }
 
+  .pert-print-financing-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    font-size: 6.5pt !important;
+  }
+
+  .pert-print-financing-table th {
+    width: auto !important;
+    overflow-wrap: anywhere;
+  }
+
   .pert-print-description {
     border: 1pt solid #111111 !important;
     padding: 3pt 5pt !important;

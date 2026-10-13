@@ -61,15 +61,11 @@
     <div class="instancia-selector no-print" id="selectorInstancia"
          data-nombre-campo="instancia_evaluacion"
          data-permite-reevaluacion="true"
-         data-bloque-respuesta="bloqueRespuestaObsC33"
-         data-bloque-reevaluacion="bloqueReevaluacionC33"
          data-tabla-iteraciones="tablaIteracionesC33"
          data-panel-evaluacion="pasoEvaluacionC33"
          data-campo-estado="c33_estado"
          data-campo-fecha="c33_fecha_eval"
          data-campo-detalle="c33_observaciones_eval"
-         data-tag-print="print_instancia_c33"
-         data-tag-iteracion="print_iteracion_c33, badgeIteracionRespuestaC33, badgeIteracionReevaluacionC33"
          data-paso-evaluacion="evaluacion">
       <span class="instancia-selector-label">Instancia de Evaluación:</span>
       <div class="instancia-options">
@@ -98,7 +94,7 @@
     <div class="process-step-tabs no-print">
       <button type="button" class="step-tab-btn active" id="tabBtn1" onclick="cambiarPasoC33('identificacion')">
         <span class="step-tab-number">1</span>
-        <span>Registro de la Iniciativa (Anexo 1)</span>
+        <span>Registro de la Iniciativa</span>
       </button>
       <button type="button" class="step-tab-btn" id="tabBtn2" onclick="cambiarPasoC33('evaluacion')">
         <span class="step-tab-number">2</span>
@@ -192,8 +188,9 @@
             </div>
             <div class="col-6 c33-registro-field c33-orden-8">
               <div class="form-group">
-                <label class="form-label" for="costo_total">Costo Total</label>
-                <input type="number" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" min="0">
+                <label class="form-label" for="costo_total">Costo Total (Pesos $)</label>
+                <input type="text" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" inputmode="numeric" data-format-currency autocomplete="off">
+                <span class="form-hint">Ingrese el monto en pesos; se formatea automáticamente.</span>
               </div>
             </div>
             <div class="col-4 c33-registro-field c33-orden-9">
@@ -254,28 +251,35 @@
                 <input type="text" id="c33_localidad" name="localizacion.localidad" class="form-control" placeholder="Ej: Sector Tehuaco">
               </div>
             </div>
+            <div class="col-12 c33-registro-field c33-orden-12">
+              <div class="form-group">
+                <label class="form-label" for="c33_descripcion_proyecto">Descripción de la Iniciativa</label>
+                <textarea id="c33_descripcion_proyecto" name="descripcion_proyecto" rows="3" class="form-control" placeholder="Describa brevemente el objetivo, la necesidad que aborda y los principales componentes de la iniciativa."></textarea>
+              </div>
+            </div>
 
-            <div class="col-12 c33-registro-field c33-orden-12 form-grid-divider"></div>
+            <div class="col-12 c33-registro-field c33-orden-13 form-grid-divider"></div>
 
-            <div class="col-6 c33-registro-field c33-orden-13">
+            <div class="col-6 c33-registro-field c33-orden-14">
               <div class="form-group">
                 <label class="form-label" for="c33_oficio_postulacion">N° de Oficio de Postulación</label>
                 <input type="text" id="c33_oficio_postulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: ORD. GR. N° 1234 / 01-2026">
               </div>
             </div>
-            <div class="col-6 c33-registro-field c33-orden-14">
+            <div class="col-6 c33-registro-field c33-orden-15">
               <div class="form-group">
                 <label class="form-label" for="c33_oficio_postulacion_fecha">Fecha de Oficio de Postulación</label>
                 <input type="date" id="c33_oficio_postulacion_fecha" name="oficio_postulacion.fecha" class="form-control">
+                <span class="form-hint">Año de postulación derivado: <strong id="c33_registro_ano_post">-</strong></span>
               </div>
             </div>
-            <div class="col-6 c33-registro-field c33-orden-15">
+            <div class="col-6 c33-registro-field c33-orden-16">
               <div class="form-group">
                 <label class="form-label" for="c33_ingreso_oficina_partes">Ingreso de Oficio a Oficina de Partes</label>
                 <input type="date" id="c33_ingreso_oficina_partes" name="oficio_postulacion.fechaIngresoOficinaPartes" class="form-control">
               </div>
             </div>
-            <div class="col-6 c33-registro-field c33-orden-16">
+            <div class="col-6 c33-registro-field c33-orden-17">
               <div class="form-group">
                 <label class="form-label" for="c33_ingreso_evaluacion">Ingreso a Evaluación</label>
                 <input type="date" id="c33_ingreso_evaluacion" name="oficio_postulacion.fechaIngresoEvaluacion" class="form-control">
@@ -347,68 +351,6 @@
           </div>
         </section>
 
-        <!-- BLOQUE: RESPUESTA DEL POSTULANTE A OBSERVACIONES -->
-        <section class="form-section-card bloque-iteracion" id="bloqueRespuestaObsC33" style="display: none;">
-          <div class="section-header">
-            <h3>2.1 Respuesta del Postulante a Observaciones</h3>
-            <span class="section-badge" id="badgeIteracionRespuestaC33">Iteración N° 2</span>
-          </div>
-          <div class="callout callout-warning">
-            <span>Instancia <strong>&laquo;Responde Observaciones&raquo;</strong>. Registre lo que el postulante responde o adjunta respecto de las observaciones de la iteración anterior.</span>
-          </div>
-          <div class="form-grid">
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="c33_resp_fecha">Fecha de Respuesta del Postulante</label>
-                <input type="date" id="c33_resp_fecha" name="respuesta_observaciones.fecha_respuesta" class="form-control">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="c33_resp_documento">N° de Documento / ORD Recibido</label>
-                <input type="text" id="c33_resp_documento" name="respuesta_observaciones.numero_documento" class="form-control" placeholder="Ej: ORD. GR. N° 1731">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="c33_resp_entrada">Fecha de Ingreso a DIPLADER</label>
-                <input type="date" id="c33_resp_entrada" name="respuesta_observaciones.fecha_ingreso_diplader" class="form-control">
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label" for="c33_resp_detalle">Detalle de la Respuesta y Documentos Adjuntos</label>
-                <textarea id="c33_resp_detalle" name="respuesta_observaciones.detalle_respuesta" rows="4" class="form-control" placeholder="Punto por punto: qué se corrigió y con qué documento..."></textarea>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- BLOQUE: REEVALUACIÓN -->
-        <section class="form-section-card bloque-iteracion" id="bloqueReevaluacionC33" style="display: none;">
-          <div class="section-header">
-            <h3>2.2 Reevaluación de la Iniciativa</h3>
-            <span class="section-badge" id="badgeIteracionReevaluacionC33">Iteración N° 3</span>
-          </div>
-          <div class="callout callout-info">
-            <span>Instancia <strong>&laquo;Reevaluación&raquo;</strong>, disponible en esta línea. Verifique la subsanación y registre el resultado de esta nueva evaluación técnica.</span>
-          </div>
-          <div class="form-grid">
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="c33_reev_verificacion">Verificación de lo Subsanado</label>
-                <textarea id="c33_reev_verificacion" name="reevaluacion.verificacion_subsanacion" rows="4" class="form-control" placeholder="Qué observaciones quedaron resueltas y cuáles permanecen..."></textarea>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="c33_reev_fundamento">Fundamento del Resultado de la Reevaluación</label>
-                <textarea id="c33_reev_fundamento" name="reevaluacion.fundamento_resultado" rows="4" class="form-control" placeholder="Fundamento técnico que sustenta el estado asignado en esta iteración..."></textarea>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <table id="tablaIteracionesC33" data-table-id="iteraciones" hidden style="display:none" aria-hidden="true">
           <tbody id="tbodyIteracionesC33"><tr data-table-row>
             <td><input type="text" data-field="numero"></td>
@@ -432,93 +374,45 @@
               <img src="assets/gore-los-lagos.png" alt="Gobierno Regional de Los Lagos">
               <img src="assets/core-los-lagos.png" alt="Consejo Regional de Los Lagos">
             </div>
-            <div class="org-name">Gobierno Regional de la Región de Los Lagos</div>
-            <div style="font-size: 0.78rem; color: #64748b;">División de Planificación y Desarrollo Regional (DIPLADER)</div>
-            <div class="sheet-main-title">FICHA DE EVALUACION INICIATIVAS CIRCULAR N° 33</div>
-            <div class="budget-process-tag">PROCESO PRESUPUESTARIO <span id="print_c33_ano">2026</span></div>
-            <div>
-              <span class="instancia-print-tag" id="print_instancia_c33">PRIMER INGRESO</span>
-              <span class="instancia-print-tag iteracion-tag" id="print_iteracion_c33">N° 1</span>
-            </div>
+            <div class="sheet-main-title pert-print-title">FICHA DE EVALUACION INICIATIVAS CIRCULAR N° 33</div>
           </div>
 
-          <div class="sheet-section-title">ANTECEDENTES DE LA INICIATIVA:</div>
-          <div class="sheet-summary-grid">
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">PROVINCIA</span>
-              <span class="val" id="print_c33_provincia">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">COMUNA</span>
-              <span class="val" id="print_c33_comuna">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">LOCALIDAD O SECTOR</span>
-              <span class="val" id="print_c33_localidad">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">SECTOR</span>
-              <span class="val" id="print_c33_sector">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">PROCESO PRESUPUESTARIO</span>
-              <span class="val" id="print_c33_proceso_presupuestario">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">AÑO DE POSTULACIÓN</span>
-              <span class="val" id="print_c33_ano_post">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">CÓDIGO IDI</span>
-              <span class="val" id="print_c33_bip">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 12;">
-              <span class="label">NOMBRE</span>
-              <span class="val" id="print_c33_nombre">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 6;">
-              <span class="label">UNIDAD FORMULADORA</span>
-              <span class="val" id="print_c33_unidad_formuladora">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 6;">
-              <span class="label">UNIDAD TÉCNICA</span>
-              <span class="val" id="print_c33_unidad_tecnica">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">COSTO TOTAL</span>
-              <span class="val" id="print_c33_costo_total">-</span>
-            </div>
+          <div class="sheet-section-title pert-print-section-title">ANTECEDENTES DE LA INICIATIVA:</div>
+          <table class="pert-print-table">
+            <tbody>
+              <tr><th>PROVINCIA</th><td id="print_c33_provincia">-</td></tr>
+              <tr><th>COMUNA</th><td id="print_c33_comuna">-</td></tr>
+              <tr><th>LOCALIDAD O SECTOR</th><td id="print_c33_localidad">-</td></tr>
+              <tr><th>PROCESO PRESUPUESTARIO</th><td id="print_c33_proceso_presupuestario">-</td></tr>
+              <tr><th>AÑO DE POSTULACIÓN</th><td id="print_c33_ano_post">-</td></tr>
+              <tr><th>CÓDIGO IDI</th><td id="print_c33_bip">-</td></tr>
+              <tr><th>NOMBRE</th><td id="print_c33_nombre">-</td></tr>
+              <tr><th>PROPONENTE</th><td id="print_c33_unidad_formuladora">-</td></tr>
+              <tr><th>UNIDAD TÉCNICA</th><td id="print_c33_unidad_tecnica">-</td></tr>
+              <tr><th>SECTOR</th><td id="print_c33_sector">-</td></tr>
+              <tr><th>SUBTÍTULO</th><td id="print_c33_subtitulo">-</td></tr>
+            </tbody>
+          </table>
+
+          <div class="sheet-section-title pert-print-section-title">DESCRIPCIÓN DE LA INICIATIVA:</div>
+          <div class="pert-print-description" id="print_c33_descripcion">-</div>
+
+          <div class="sheet-section-title pert-print-section-title">COSTO TOTAL:</div>
+          <table class="pert-print-table">
+            <tbody>
+              <tr><th>COSTO TOTAL (M$)</th><td id="print_c33_costo_total">-</td></tr>
+            </tbody>
+          </table>
+
+          <div class="sheet-section-title pert-print-section-title">EVALUACIÓN:</div>
+          <div class="pert-print-description" id="print_c33_evaluacion_bloque"></div>
+
+          <div class="pert-print-status">
+            <strong>ESTADO:</strong> <span class="status-badge observado" id="print_c33_estado_badge">OBSERVADO</span>
           </div>
-
-          <div class="sheet-section-title" style="margin-top: 1.25rem;">EVALUACIÓN:</div>
-          <div class="sheet-box-text" id="print_c33_evaluacion_bloque"></div>
-
-          <!-- Respuesta del postulante (instancia N° 2) -->
-          <div id="print_respuesta_observaciones_c33" style="display: none;">
-            <div class="sheet-section-title">RESPUESTA DEL POSTULANTE A OBSERVACIONES:</div>
-            <div class="sheet-summary-grid">
-              <div class="sheet-summary-cell" style="grid-column: span 6;">
-                <span class="label">FECHA DE RESPUESTA</span>
-                <span class="val" id="print_c33_resp_fecha">-</span>
-              </div>
-              <div class="sheet-summary-cell" style="grid-column: span 6;">
-                <span class="label">DOCUMENTO / ORD RECIBIDO</span>
-                <span class="val" id="print_c33_resp_documento">-</span>
-              </div>
-            </div>
-            <div class="sheet-box-text" id="print_c33_resp_detalle">-</div>
-          </div>
-
-          <!-- Reevaluación (instancia N° 3) -->
-          <div id="print_reevaluacion_c33" style="display: none;">
-            <div class="sheet-section-title">REEVALUACIÓN:</div>
-            <div class="sheet-box-text" id="print_c33_reevaluacion_bloque">-</div>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; margin: 0.75rem 0; font-size: 0.82rem;">
-            <div><strong>ESTADO:</strong> <span class="status-badge observado" id="print_c33_estado_badge">OBSERVADO</span></div>
-            <div><strong>SUBTÍTULO:</strong> <span id="print_c33_subtitulo">-</span></div>
-            <div><strong>EVALUACIÓN:</strong> <span id="print_c33_evaluador_texto">-</span> &middot; <span id="print_c33_fecha_eval">-</span></div>
+          <div class="pert-print-footer">
+            <div><strong>Evaluado por:</strong> <span id="print_c33_evaluador_texto">-</span></div>
+            <div><strong>Fecha de Evaluación:</strong> <span id="print_c33_fecha_eval">-</span></div>
           </div>
 
           <!-- Las firmas y las referencias a oficios se gestionan en otra instancia -->
@@ -661,6 +555,7 @@
 
     function actualizarFichaImprimibleC33() {
       AppIteracion.aplicar();
+      formatPesosInput(document.getElementById('costo_total'));
       const getVal = id => document.getElementById(id)?.value || '';
       const claveInstancia = AppIteracion.actual();
 
@@ -678,20 +573,22 @@
             : 'El postulante respondió las observaciones; corresponde verificar la respuesta.');
       }
 
-      document.getElementById('print_c33_ano').textContent = getVal('c33_proceso_ano') || '2026';
       document.getElementById('print_c33_provincia').textContent = getVal('provincia') || '-';
       document.getElementById('print_c33_comuna').textContent = getVal('comuna') || '-';
       document.getElementById('print_c33_localidad').textContent = getVal('c33_localidad') || '-';
       document.getElementById('print_c33_sector').textContent = getVal('c33_sector') || '-';
       document.getElementById('print_c33_proceso_presupuestario').textContent = getVal('c33_proceso_ano') || '-';
       const fechaOficioPostulacion = getVal('c33_oficio_postulacion_fecha');
+      document.getElementById('c33_registro_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_c33_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_c33_bip').textContent = getVal('codigo_bip') || '-';
       document.getElementById('print_c33_nombre').textContent = getVal('nombre_accion') || '-';
       document.getElementById('print_c33_unidad_formuladora').textContent = getVal('c33_unidad_formuladora') || '-';
       document.getElementById('print_c33_unidad_tecnica').textContent = getVal('c33_unidad_tecnica') || '-';
+      document.getElementById('print_c33_descripcion').textContent = getVal('c33_descripcion_proyecto') || '-';
       document.getElementById('print_c33_subtitulo').textContent = getVal('subtitulo') || '-';
-      document.getElementById('print_c33_costo_total').textContent = getVal('costo_total') || '-';
+      document.getElementById('print_c33_costo_total').textContent =
+        formatCurrencyInThousands(getVal('costo_total'));
 
       // Evaluación bloque
       const obs = getVal('c33_observaciones_eval');
@@ -717,27 +614,6 @@
         cierre.textContent = AppIteracion.exigeIteracion(getVal('c33_estado'))
           ? 'Resultado con OBSERVACIONES: el postulante responde y se abre una nueva iteración de evaluación.'
           : 'Resultado RECOMENDADO: fin del proceso.';
-      }
-
-      // Respuesta del postulante (instancia N° 2)
-      const bloqueRespuesta = document.getElementById('print_respuesta_observaciones_c33');
-      if (bloqueRespuesta) {
-        bloqueRespuesta.style.display = claveInstancia === 'PRIMER_INGRESO' ? 'none' : 'block';
-        document.getElementById('print_c33_resp_fecha').textContent = getVal('c33_resp_fecha') || '-';
-        document.getElementById('print_c33_resp_documento').textContent = getVal('c33_resp_documento') || '-';
-        document.getElementById('print_c33_resp_detalle').textContent = getVal('c33_resp_detalle') || 'Sin respuesta registrada.';
-      }
-
-      // Reevaluación (instancia N° 3)
-      const bloqueReeval = document.getElementById('print_reevaluacion_c33');
-      if (bloqueReeval) {
-        bloqueReeval.style.display = claveInstancia === 'REEVALUACION' ? 'block' : 'none';
-        const verif = getVal('c33_reev_verificacion');
-        const fund = getVal('c33_reev_fundamento');
-        document.getElementById('print_c33_reevaluacion_bloque').textContent =
-          (verif ? 'Verificación de lo subsanado:\n' + verif + '\n\n' : '') +
-          (fund ? 'Fundamento del resultado:\n' + fund : '') ||
-          'Sin registro de reevaluación.';
       }
 
     }
@@ -779,7 +655,8 @@
       document.getElementById('provincia').value = "CHILOÉ";
       document.getElementById('comuna').value = "Castro";
       document.getElementById('c33_localidad').value = "";
-      document.getElementById('costo_total').value = "230000";
+      document.getElementById('c33_descripcion_proyecto').value = "Adquisición de un camión aljibe para mejorar el abastecimiento de agua potable en sectores rurales de la comuna de Castro.";
+      document.getElementById('costo_total').value = "230000000";
 
       document.getElementById('c33_estado').value = "RECOMENDADO";
       actualizarBadgeC33("RECOMENDADO");
@@ -810,7 +687,8 @@
       document.getElementById('provincia').value = "LLANQUIHUE";
       document.getElementById('comuna').value = "Los Muermos";
       document.getElementById('c33_localidad').value = "";
-      document.getElementById('costo_total').value = "210148";
+      document.getElementById('c33_descripcion_proyecto').value = "Adquisición de camión aljibe para apoyar el abastecimiento de agua potable en sectores rurales de la comuna de Los Muermos.";
+      document.getElementById('costo_total').value = "210148000";
 
       document.getElementById('c33_estado').value = "OBSERVADO";
       actualizarBadgeC33("OBSERVADO");

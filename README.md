@@ -13,8 +13,8 @@ Cada formulario cuenta con una barra de pestañas superior que refleja el orden 
 | Pestaña | Contenido |
 |---|---|
 | `[1] Registro de la Iniciativa` | Identificación de la iniciativa, localización y antecedentes de postulación/oficio; los campos varían según el formulario. |
-| `[2] Evaluación y sus Resultados` | Detalle del dictamen, estado y, según la línea, bloques de respuesta/reevaluación. |
-| `[3] Ficha de Evaluación (PDF)` | Vista de la ficha oficial de la iteración en curso; al imprimir, solo esta sección se exporta. |
+| `[2] Evaluación y sus Resultados` | Detalle del dictamen y estado; el tipo de instancia se registra como atributo de la evaluación. |
+| `[3] Ficha de Evaluación (PDF)` | Vista de la ficha oficial de la evaluación; no incluye etiquetas de instancia ni bloques de respuesta/reevaluación. |
 | `[4] Registro Documental Evaluación` | Constancia documental (N° registro, oficio, validador). |
 
 Los controles del formulario (`no-print`) se ocultan al generar el PDF; únicamente la ficha oficial se muestra.
@@ -35,13 +35,13 @@ La plataforma organiza la captura en módulos independientes, no en una secuenci
 ```
 
 1. **Registro de la Iniciativa** *(módulo independiente)*: se identifican la iniciativa y sus antecedentes de postulación. Según el formulario, incluye proceso presupuestario, código BIP/IDI, nombre, unidades formuladora y técnica, sector o subtítulo, localización, etapa, costo total y antecedentes del oficio de postulación. No es requisito previo para editar o completar la evaluación ni el registro documental.
-2. **Evaluación y sus Resultados** *(módulo con ciclo iterativo propio)*: el profesional registra el dictamen técnico, las observaciones por área y el estado resultante; el estado se presenta después del detalle de la evaluación. Sólo el avance entre instancias valida y archiva los snapshots de esta evaluación en el payload; el historial no se muestra en el formulario ni en la ficha PDF y se destina a la base de datos para el dashboard. El N° de iteración se calcula con los registros archivados y la instancia activa. Desde aquí se genera la **Ficha de Evaluación en PDF**, documento oficial de la DIPLADER.
+2. **Evaluación y sus Resultados** *(módulo con ciclo iterativo propio)*: el profesional registra el dictamen técnico, las observaciones por área y el estado resultante; el estado se presenta después del detalle de la evaluación. El selector identifica **Primer Ingreso**, **Responde Observaciones** o **Reevaluación** como atributo de la entrada evaluativa. Sólo el avance entre instancias valida y archiva los snapshots de esta evaluación en el payload; el historial se destina a la base de datos para el dashboard. El N° de iteración se calcula con los registros archivados y la instancia activa. Desde aquí se genera la **Ficha de Evaluación en PDF**, documento oficial de la DIPLADER, sin mostrar etiquetas de instancia ni bloques de respuesta/reevaluación.
 3. **Ficha de Evaluación (PDF)**: permite visualizar y exportar la ficha oficial de la iteración en curso; en impresión se ocultan los controles del formulario y se muestra únicamente esta sección.
 4. **Registro Documental Evaluación** *(módulo independiente)*: permite dejar constancia de la ficha emitida: N° de registro, fecha, profesional que registra, referencia del oficio y enlace validador Ley N° 19.799. No se exige para continuar el ciclo de evaluación ni se modifica al avanzar entre instancias.
 
 ### Avance y cierre del proceso
 
-El estado registrado en **Evaluación y sus Resultados** determina si corresponde habilitar otra instancia; esta regla no conecta ni bloquea los módulos de Registro de la Iniciativa o Registro Documental. Antes de avanzar, el sistema comprueba sólo los campos requeridos de la instancia evaluativa actual y que exista una fecha no anterior a las ya registradas. Si el resultado contiene observaciones, el botón **"Continuar a la siguiente instancia"** archiva una copia completa de la evaluación y abre una nueva instancia para la misma iniciativa. En Pertinencia, **Primer Ingreso** y **Responde Observaciones** son atributos de la entrada evaluativa que se persisten en `proceso.instancia_evaluacion` y `proceso.clave_instancia`; no se captura la respuesta del postulante como un bloque dentro del dictamen. En las otras líneas, que conservan un bloque de respuesta, éste aún solicita un antecedente antes de avanzar desde esa instancia.
+El estado registrado en **Evaluación y sus Resultados** determina si corresponde habilitar otra instancia; esta regla no conecta ni bloquea los módulos de Registro de la Iniciativa o Registro Documental. Antes de avanzar, el sistema comprueba sólo los campos requeridos de la instancia evaluativa actual y que exista una fecha no anterior a las ya registradas. Si el resultado contiene observaciones, el botón **"Continuar a la siguiente instancia"** archiva una copia de la evaluación y abre una nueva entrada para la misma iniciativa. **Primer Ingreso**, **Responde Observaciones** y **Reevaluación** se registran como atributos de esa entrada (en `proceso.instancia_evaluacion` y `proceso.clave_instancia`), no como bloques de captura separados. La ficha PDF no muestra el tipo de instancia ni campos específicos de respuesta o reevaluación.
 
 | Resultado | Consecuencia |
 |---|---|
@@ -58,7 +58,7 @@ Cada resultado que exige observaciones devuelve la iniciativa al postulante y ab
 |---|---|
 | **Primer Ingreso** | Primera evaluación técnica de la iniciativa. |
 | **Responde Observaciones** | Nueva entrada de evaluación asociada a la misma iniciativa, identificada por la instancia `RESPONDE_OBSERVACIONES` en el registro de base de datos. |
-| **Reevaluación** | Verificación de lo subsanado y emisión de un nuevo resultado técnico. |
+| **Reevaluación** | Nueva entrada de evaluación asociada a la misma iniciativa, identificada por la instancia `REEVALUACION` en el registro de base de datos. |
 
 | Línea de evaluación | Primer Ingreso | Responde Observaciones | Reevaluación |
 |---|---|---|---|
@@ -67,7 +67,7 @@ Cada resultado que exige observaciones devuelve la iniciativa al postulante y ab
 | Iniciativas Menores a 5.000 UTM | Disponible | Disponible | Disponible |
 | Evaluación de Programas | Disponible | Disponible | Disponible |
 
-En cada formulario, el selector **"Instancia de Evaluación"** describe el tipo de entrada asociada a la iniciativa y determina la presentación de la instancia. El número de iteración se calcula sumando una a la cantidad de etapas previas archivadas, usando como mínimo el ordinal inicial de la instancia seleccionada. Las etapas cerradas desde el botón se archivan con sus campos completos y fecha. Las iteraciones se conservan en el payload como datos para la base de datos y el dashboard, pero no se presentan como historial en los formularios ni en las fichas PDF. En **Pertinencia** no se muestra un bloque separado para capturar la respuesta del postulante; en las otras líneas se mantienen sus bloques de respuesta y reevaluación.
+En cada formulario, el selector **"Instancia de Evaluación"** asigna el tipo de entrada evaluativa. El número de iteración se calcula sumando una a la cantidad de etapas previas archivadas, usando como mínimo el ordinal inicial de la instancia seleccionada. Las etapas cerradas desde el botón se archivan con sus campos de evaluación y fecha. Las iteraciones se conservan en el payload como datos para la base de datos y el dashboard, pero no se presentan como historial, etiquetas ni secciones de respuesta/reevaluación en las fichas PDF.
 
 > **Alcance de validación:** esta versión es una plataforma cliente sin API ni servidor. Las comprobaciones al avanzar y el snapshot del historial se ejecutan en el navegador; cualquier API futura debe repetirlas en el servidor (campos obligatorios, orden cronológico, continuidad de instancia y preservación del snapshot), sin confiar en datos validados sólo por el cliente.
 
@@ -80,11 +80,11 @@ Los cuatro formularios comparten la navegación y el ciclo de evaluación, pero 
 | Formulario | Orden y campos del Registro de la Iniciativa |
 |---|---|
 | **Evaluación de Pertinencia** | Proceso presupuestario (año), etapa a la que postula, código BIP/IDI y nombre de la iniciativa, unidad formuladora y unidad técnica, sector/tipología y costo total (M$), provincia/comuna/localidad, descripción del proyecto, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
-| **Circular N° 33** | Proceso presupuestario (año) y subtítulo, código BIP/IDI y nombre de iniciativa/acción, unidad formuladora y unidad técnica, sector y costo total, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
+| **Circular N° 33** | Proceso presupuestario (año) y subtítulo, código BIP/IDI y nombre de iniciativa/acción, unidad formuladora y unidad técnica, sector y costo total, provincia/comuna/localidad o sector, descripción del proyecto, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
 | **Iniciativas Menores a 5.000 UTM** | Proceso presupuestario (año) y etapa a la que postula (opciones: Diseño y Ejecución), código IDI/BIP y nombre de la iniciativa, unidad formuladora y unidad técnica, sector y costo total, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
 | **Evaluación de Programas** | Proceso presupuestario (año) y sector, código IDI/BIP y nombre del programa, unidad formuladora y unidad técnica, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación; costo total se conserva al final del registro. |
 
-Los campos de oficio y sus fechas de ingreso se capturan como antecedentes de la iniciativa. En Pertinencia, la descripción del proyecto se registra después de provincia, comuna y localidad; la ficha muestra esa descripción y el costo total de la iniciativa (M$), sin agregar un desglose de fuentes o partidas de financiamiento. Las cuatro fichas distinguen el **Proceso Presupuestario** ingresado del **Año de Postulación**, que se deriva del año de la fecha del oficio de postulación; si no se registra esa fecha, el año de postulación se muestra como “-”. La etapa postulada solo está incluida en Pertinencia y en el formulario **Menores a 5.000 UTM**; en este último el selector ofrece únicamente **Diseño** y **Ejecución**. El subtítulo corresponde a Circular N° 33. No se debe asumir que los cuatro formularios tienen un cuadro común de financiamiento FNDR.
+Los campos de oficio y sus fechas de ingreso se capturan como antecedentes de la iniciativa. En los cuatro formularios, bajo la fecha del oficio se muestra el **Año de Postulación** calculado; no es un campo editable ni se duplica en el payload. Las fichas distinguen el **Proceso Presupuestario** ingresado de ese año derivado; si no se registra la fecha del oficio, el año de postulación se muestra como “-”. En Circular N° 33, Programas y Menores a 5.000 UTM, el **Costo Total** se ingresa en pesos, se serializa como valor numérico en pesos y las fichas lo presentan convertido a **M$** (pesos divididos por 1.000). En Pertinencia, el costo se construye sumando las partidas de la lista de financiamiento: cada partida tiene fuente FNDR y subtítulo 31 predeterminados, ítem y clasificador presupuestario seleccionables y montos solicitados para el proceso presupuestario y el año siguiente, ingresados en **pesos**. La captura no incluye sector por partida. La ficha presenta el desglose y los totales en **M$**; el `costo_total` del payload se deriva del total de la lista y se expresa en pesos. En Pertinencia y Circular N° 33, la descripción del proyecto se registra después de provincia, comuna y localidad. La etapa postulada solo está incluida en Pertinencia y en el formulario **Menores a 5.000 UTM**; en este último el selector ofrece únicamente **Diseño** y **Ejecución**. El subtítulo de Circular N° 33 es independiente de la lista de financiamiento de Pertinencia.
 
 La grilla mantiene juntos los campos que forman pares o grupos —por ejemplo, código y nombre, unidades, localización y fechas— en pantallas amplias; en pantallas pequeñas los campos se apilan para facilitar su captura.
 
@@ -92,10 +92,9 @@ La arquitectura restante del flujo es:
 
 1. **Paso 1: Registro de la Iniciativa**, con la estructura propia indicada arriba.
 2. **Paso 2: Evaluación y sus Resultados**
-   - Selector de instancia e indicador calculado del N° de iteración en curso.
+   - Selector de instancia para registrar el atributo correspondiente e indicador calculado del N° de iteración en curso.
    - Dictamen técnico, desglose de observaciones sectoriales específicas, estado de la evaluación (OBSERVADO / RECOMENDADO / SIN OBSERVACIONES / PERTINENTE), profesional evaluador y fecha.
-   - En Pertinencia, **Responde Observaciones** abre una nueva entrada evaluativa de la misma iniciativa; la clase de instancia se guarda como atributo del registro, sin un bloque de captura de respuesta embebido.
-   - Bloque **2.2 Reevaluación**, activo sólo en la instancia **Reevaluación** y en las líneas que la admiten.
+   - **Primer Ingreso**, **Responde Observaciones** y **Reevaluación** se almacenan como atributos de cada entrada; no se habilitan bloques de captura dedicados para respuesta o reevaluación.
    - Las iteraciones se archivan en el payload y se consultarán desde la base de datos para el dashboard; ninguna línea presenta una tabla de historial en el formulario o PDF.
    - **Salida del paso: Ficha de Evaluación (PDF)**, documento oficial de la DIPLADER, que se previsualiza en la tercera pestaña del formulario.
 3. **Paso 3: Ficha de Evaluación (PDF)**

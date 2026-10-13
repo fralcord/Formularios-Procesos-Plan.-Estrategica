@@ -6,6 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initAutoCalculations();
+  initCurrencyInputs();
   initModalJsonViewer();
 });
 
@@ -18,6 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
 function serializeForm(formElement) {
   const formData = new FormData(formElement);
   const result = {};
+  const currencyFields = new Set(
+    [...formElement.querySelectorAll('[data-format-currency][name]')].map(input => input.name)
+  );
 
   // Procesar inputs simples
   for (const [key, value] of formData.entries()) {
@@ -31,9 +35,11 @@ function serializeForm(formElement) {
         if (!current[parts[i]]) current[parts[i]] = {};
         current = current[parts[i]];
       }
-      current[parts[parts.length - 1]] = parseValue(value);
+      current[parts[parts.length - 1]] = currencyFields.has(key)
+        ? parseCurrencyValue(value)
+        : parseValue(value);
     } else {
-      result[key] = parseValue(value);
+      result[key] = currencyFields.has(key) ? parseCurrencyValue(value) : parseValue(value);
     }
   }
 
@@ -65,6 +71,45 @@ function serializeForm(formElement) {
   });
 
   return result;
+}
+
+function parseCurrencyValue(value) {
+  const digits = String(value).replace(/\D/g, '');
+  return digits ? Number(digits) : '';
+}
+
+function formatCurrencyInThousands(value) {
+  const pesos = parseCurrencyValue(value);
+  if (pesos === '') return '-';
+  return (pesos / 1000).toLocaleString('es-CL', { maximumFractionDigits: 3 });
+}
+
+function formatPesosInput(input) {
+  const rawValue = String(input.value);
+  const digitsBeforeCursor = rawValue.slice(0, input.selectionStart ?? rawValue.length).replace(/\D/g, '').length;
+  const digits = rawValue.replace(/\D/g, '');
+  const formatted = digits
+    ? Number(digits).toLocaleString('es-CL', { maximumFractionDigits: 0 })
+    : '';
+
+  if (formatted !== rawValue) {
+    input.value = formatted;
+    let cursor = 0;
+    let digitsPassed = 0;
+    while (cursor < formatted.length && digitsPassed < digitsBeforeCursor) {
+      if (/\d/.test(formatted[cursor])) digitsPassed++;
+      cursor++;
+    }
+    input.setSelectionRange(cursor, cursor);
+  }
+}
+
+function initCurrencyInputs() {
+  document.querySelectorAll('[data-format-currency]').forEach(input => {
+    formatPesosInput(input);
+    input.addEventListener('input', () => formatPesosInput(input));
+    input.addEventListener('blur', () => formatPesosInput(input));
+  });
 }
 
 function parseValue(val) {
@@ -241,30 +286,19 @@ const AppIteracion = {
       campoEstado: el.dataset.campoEstado || '',
       campoFecha: el.dataset.campoFecha || '',
       campoDetalle: el.dataset.campoDetalle || '',
-      tagsPrint: (el.dataset.tagPrint || '').split(',').map(t => t.trim()).filter(Boolean),
-      tagsIteracion: (el.dataset.tagIteracion || '').split(',').map(t => t.trim()).filter(Boolean),
       pasoEvaluacion: el.dataset.pasoEvaluacion || ''
     };
   },
 
   /**
-   * Aplica la instancia seleccionada: muestra/oculta los bloques propios de
-   * cada instancia, deriva el número de iteración desde el historial fechado y
-   * actualiza las etiquetas de la ficha imprimible. Es idempotente y no dispara
-   * la actualización de la ficha, para evitar ciclos recursivos.
+   * Aplica la instancia seleccionada y deriva el número de iteración desde el
+   * historial fechado. Es idempotente y no dispara la actualización de la ficha.
    */
   aplicar(selectorId) {
     const cfg = this.config(selectorId);
     const clave = this.actual(selectorId);
     const etiqueta = this.ETIQUETAS[clave];
     const numero = this.numeroActual(selectorId);
-
-    // Bloques condicionales de la evaluación
-    this.mostrarElemento(cfg.bloqueRespuesta, clave !== 'PRIMER_INGRESO');
-    this.mostrarElemento(
-      cfg.bloqueReevaluacion,
-      cfg.permiteReevaluacion && clave === 'REEVALUACION'
-    );
 
     // La instancia "Reevaluación" no existe en líneas sin iteración técnica
     if (!cfg.permiteReevaluacion) {
@@ -276,21 +310,6 @@ const AppIteracion = {
       });
     }
 
-    // Etiquetas de la ficha oficial
-    cfg.tagsPrint.forEach(id => {
-      const tag = document.getElementById(id);
-      if (tag) tag.textContent = etiqueta.toUpperCase();
-    });
-    cfg.tagsIteracion.forEach(id => {
-      const tag = document.getElementById(id);
-      if (tag) tag.textContent = 'N° ' + numero;
-    });
-  },
-
-  mostrarElemento(id, visible) {
-    if (!id) return;
-    const el = document.getElementById(id);
-    if (el) el.style.display = visible ? 'block' : 'none';
   },
 
   /** Fija la instancia y refresca la ficha llamando al actualizador de la página. */
@@ -327,22 +346,11 @@ const AppIteracion = {
     const panel = document.getElementById(cfg.panelEvaluacion);
     if (!panel) return [];
 
-    const clave = this.actual(selectorId);
-    const controles = new Set(
-      Array.from(panel.querySelectorAll('input[name], select[name], textarea[name]'))
-        .filter(campo => !campo.closest('table') && !campo.closest('.bloque-iteracion'))
-    );
-    const bloqueId = clave === 'REEVALUACION' ? cfg.bloqueReevaluacion
-      : clave === 'RESPONDE_OBSERVACIONES' ? cfg.bloqueRespuesta
-        : '';
-    const bloque = bloqueId ? document.getElementById(bloqueId) : null;
-    if (bloque) {
-      bloque.querySelectorAll('input[name], select[name], textarea[name]').forEach(campo => controles.add(campo));
-    }
-    return Array.from(controles);
+    return Array.from(panel.querySelectorAll('input[name], select[name], textarea[name]'))
+      .filter(campo => !campo.closest('table'));
   },
 
-  /** Valida los campos requeridos, la respuesta y la secuencia cronológica antes del cierre. */
+  /** Valida los campos requeridos y la secuencia cronológica antes del cierre. */
   validarEtapa(selectorId) {
     const cfg = this.config(selectorId);
     const controles = this.controlesEtapa(selectorId);
@@ -352,18 +360,6 @@ const AppIteracion = {
     if (requeridosInvalidos.length) {
       requeridosInvalidos[0].reportValidity();
       return false;
-    }
-
-    if (this.actual(selectorId) === 'RESPONDE_OBSERVACIONES') {
-      const respuestaId = cfg.bloqueRespuesta;
-      const bloqueRespuesta = respuestaId ? document.getElementById(respuestaId) : null;
-      const tieneRespuesta = bloqueRespuesta && Array.from(
-        bloqueRespuesta.querySelectorAll('input[name], select[name], textarea[name]')
-      ).some(campo => campo.value.trim());
-      if (bloqueRespuesta && !tieneRespuesta) {
-        alert('Registre al menos un antecedente de la respuesta del postulante antes de continuar.');
-        return false;
-      }
     }
 
     const fechaActual = document.getElementById(cfg.campoFecha)?.value;

@@ -754,6 +754,7 @@ body {
 .form-grid .c33-registro-field.c33-orden-14 { order: 14; }
 .form-grid .c33-registro-field.c33-orden-15 { order: 15; }
 .form-grid .c33-registro-field.c33-orden-16 { order: 16; }
+.form-grid .c33-registro-field.c33-orden-17 { order: 17; }
 
 .form-grid .ut5000-registro-field.ut5000-orden-1 { order: 1; }
 .form-grid .ut5000-registro-field.ut5000-orden-2 { order: 2; }
@@ -811,16 +812,17 @@ body {
   .form-grid .c33-registro-field.c33-orden-6,
   .form-grid .c33-registro-field.c33-orden-7,
   .form-grid .c33-registro-field.c33-orden-8,
-  .form-grid .c33-registro-field.c33-orden-13,
   .form-grid .c33-registro-field.c33-orden-14,
   .form-grid .c33-registro-field.c33-orden-15,
-  .form-grid .c33-registro-field.c33-orden-16 { grid-column: span 6; }
+  .form-grid .c33-registro-field.c33-orden-16,
+  .form-grid .c33-registro-field.c33-orden-17 { grid-column: span 6; }
   .form-grid .c33-registro-field.c33-orden-9,
   .form-grid .c33-registro-field.c33-orden-10,
   .form-grid .c33-registro-field.c33-orden-11 { grid-column: span 4; }
   .form-grid .c33-registro-field.c33-orden-3 { grid-column: span 4; }
   .form-grid .c33-registro-field.c33-orden-4 { grid-column: span 8; }
-  .form-grid .c33-registro-field.c33-orden-12 { grid-column: span 12; }
+  .form-grid .c33-registro-field.c33-orden-12,
+  .form-grid .c33-registro-field.c33-orden-13 { grid-column: span 12; }
   .form-grid .ut5000-registro-field.ut5000-orden-1,
   .form-grid .ut5000-registro-field.ut5000-orden-2,
   .form-grid .ut5000-registro-field.ut5000-orden-5,
@@ -985,6 +987,10 @@ select.form-control {
 .data-table tr.total-row td {
   border-top: 2px solid var(--border-color);
   color: var(--primary);
+}
+
+.pert-financing-table {
+  min-width: 940px;
 }
 
 .table-actions {

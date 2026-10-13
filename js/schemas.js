@@ -52,21 +52,6 @@ const BLOQUE_PROCESO_EVALUACION = {
   iteraciones_registradas: { tipo: "integer", descripcion: "Cantidad de iteraciones previas con fecha en el historial" }
 };
 
-/** Respuesta del postulante a las observaciones de la iteración anterior. */
-const BLOQUE_RESPUESTA_OBSERVACIONES = {
-  fecha_respuesta: { tipo: "string", formato: "date", condicional: "instancia_evaluacion != PRIMER_INGRESO" },
-  numero_documento: { tipo: "string", descripcion: "N° de ORD o documento recibido" },
-  fecha_ingreso_diplader: { tipo: "string", formato: "date" },
-  detalle_respuesta: { tipo: "text", descripcion: "Punto por punto, qué observación se subsanó y con qué documento" }
-};
-
-/** Resultado de la reevaluación, sólo en líneas que la admiten. */
-const BLOQUE_REEVALUACION = {
-  admite_reevaluacion: { tipo: "boolean", valor_esperado: true },
-  verificacion_subsanacion: { tipo: "text", condicional: "clave_instancia = REEVALUACION" },
-  fundamento_resultado: { tipo: "text", condicional: "clave_instancia = REEVALUACION" }
-};
-
 /** Historial de etapas cerradas, con snapshot para conservar la evaluación completa. */
 const HISTORIAL_ITERACIONES = [
   {
@@ -78,7 +63,7 @@ const HISTORIAL_ITERACIONES = [
     registro: {
       tipo: "object",
       opcional: true,
-      descripcion: "Snapshot inmutable de los campos de evaluación y respuesta capturados al cerrar la instancia"
+      descripcion: "Snapshot inmutable de los campos de evaluación capturados al cerrar la instancia; el tipo de instancia se registra como atributo"
     }
   }
 ];
@@ -157,7 +142,22 @@ nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha ID
         fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
       },
 
-      costo_total: { tipo: "number", descripcion: "Costo total de la iniciativa expresado en M$" },
+      fuentes_financiamiento: {
+        tipo: "array",
+        descripcion: "Partidas de financiamiento de subtítulo 31; los montos se capturan y almacenan en pesos",
+        elementos: {
+          fuente: { tipo: "string", valor_predeterminado: "FNDR" },
+          subtitulo: { tipo: "string", valor_predeterminado: "31" },
+          grupo_inversion: { tipo: "string", enum: ["01 ESTUDIOS BÁSICOS", "02 PROYECTOS", "03 PROGRAMAS DE INVERSIÓN"] },
+          item: { tipo: "string", descripcion: "Código del ítem presupuestario (01, 02 o 03)" },
+          clasificador: { tipo: "string", descripcion: "Código de clasificador seleccionado para el ítem" },
+          clasificador_descripcion: { tipo: "string", descripcion: "Nombre del clasificador presupuestario" },
+          solicitado_ano_actual: { tipo: "number", unidad: "pesos" },
+          solicitado_ano_siguiente: { tipo: "number", unidad: "pesos" },
+          costo_total: { tipo: "number", unidad: "pesos", descripcion: "Suma de los montos solicitados de ambos años para la partida" }
+        }
+      },
+      costo_total: { tipo: "number", unidad: "pesos", descripcion: "Total derivado de sumar las partidas de fuentes_financiamiento; la ficha lo presenta convertido a M$" },
       // Evaluación Estratégica Regional GORE Los Lagos
 evaluacion_pertinencia: {
         erd_lineamiento: { tipo: "string", descripcion: "Lineamiento estratégico ERD (campo de texto libre)" },
@@ -216,9 +216,14 @@ trazabilidad: {
       localizacion: {
         localidad: { tipo: "string", opcional: true }
       },
+      descripcion_proyecto: {
+        tipo: "text",
+        opcional: true,
+        descripcion: "Descripción general de la iniciativa capturada en el Registro de la Iniciativa"
+      },
       unidad_formuladora: { tipo: "string" },
       unidad_tecnica: { tipo: "string" },
-      costo_total: { tipo: "number" },
+      costo_total: { tipo: "number", descripcion: "Costo total expresado en pesos; las fichas lo muestran convertido a M$" },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true },
         fecha: { tipo: "string", formato: "date", opcional: true, descripcion: "La ficha deriva de esta fecha el año de postulación" },
@@ -238,8 +243,6 @@ trazabilidad: {
         fecha_evaluacion: { tipo: "string", formato: "date" }
       },
       proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
-      respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,
-      reevaluacion: BLOQUE_REEVALUACION,
       iteraciones: HISTORIAL_ITERACIONES,
       // Paso 3: Registro Documental Evaluación y cierre del ciclo
       registro_documental_evaluacion: BLOQUE_REGISTRO_DOCUMENTAL,
@@ -269,7 +272,7 @@ trazabilidad: {
       },
       unidad_formuladora: { tipo: "string" },
       unidad_tecnica: { tipo: "string" },
-      costo_total: { tipo: "number" },
+      costo_total: { tipo: "number", descripcion: "Costo total expresado en pesos; las fichas lo muestran convertido a M$" },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true },
         fecha: { tipo: "string", formato: "date", opcional: true, descripcion: "La ficha deriva de esta fecha el año de postulación" },
@@ -291,8 +294,6 @@ trazabilidad: {
         fecha_evaluacion: { tipo: "string", formato: "date" }
       },
       proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
-      respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,
-      reevaluacion: BLOQUE_REEVALUACION,
       iteraciones: HISTORIAL_ITERACIONES,
       // Paso 3: Registro Documental Evaluación y cierre del ciclo
       registro_documental_evaluacion: BLOQUE_REGISTRO_DOCUMENTAL,
@@ -321,7 +322,7 @@ trazabilidad: {
       nombre_programa: { tipo: "string" },
       unidad_formuladora: { tipo: "string" },
       unidad_tecnica: { tipo: "string" },
-      costo_total: { tipo: "number" },
+      costo_total: { tipo: "number", descripcion: "Costo total expresado en pesos; las fichas lo muestran convertido a M$" },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true },
         fecha: { tipo: "string", formato: "date", opcional: true, descripcion: "La ficha deriva de esta fecha el año de postulación" },
@@ -335,8 +336,6 @@ trazabilidad: {
         evaluador_nombre: { tipo: "string" }
       },
       proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
-      respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,
-      reevaluacion: BLOQUE_REEVALUACION,
       iteraciones: HISTORIAL_ITERACIONES,
       // Paso 3: Registro Documental Evaluación y cierre del ciclo
       registro_documental_evaluacion: BLOQUE_REGISTRO_DOCUMENTAL,

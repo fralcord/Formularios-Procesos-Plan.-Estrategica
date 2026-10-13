@@ -183,11 +183,43 @@
                 </select>
               </div>
             </div>
-            <div class="col-6 pert-registro-field pert-orden-8">
-              <div class="form-group">
-                <label class="form-label" for="costo_total">Costo Total (M$)</label>
-                <input type="number" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" min="0">
-              </div>
+            <div class="col-12 pert-registro-field pert-orden-8">
+              <section class="form-section-card pert-financing-capture">
+                <div class="section-header">
+                  <h3>Fuentes de Financiamiento</h3>
+                  <span class="section-badge">Subtítulo 31</span>
+                </div>
+                <p class="form-hint">Agregue una fila por ítem y clasificador presupuestario. Ingrese los montos en pesos; la ficha de evaluación los presenta en M$.</p>
+                <div class="table-responsive">
+                  <table class="data-table pert-financing-table" id="tablaFinanciamientoPert" data-table-id="fuentes_financiamiento">
+                    <thead>
+                      <tr>
+                        <th>Fuente</th>
+                        <th>Ítem</th>
+                        <th>Asignación</th>
+                        <th id="financiamiento_ano_actual_label">Solicitado Año ($)</th>
+                        <th id="financiamiento_ano_siguiente_label">Solicitado Año Siguiente ($)</th>
+                        <th>Costo Total ($)</th>
+                        <th><span class="sr-only">Acciones</span></th>
+                      </tr>
+                    </thead>
+                    <tbody id="financiamiento_pert_body"></tbody>
+                    <tfoot>
+                      <tr>
+                        <th colspan="3">TOTAL ($)</th>
+                        <td data-total-for="solicitado_ano_actual">0</td>
+                        <td data-total-for="solicitado_ano_siguiente">0</td>
+                        <td data-total-for="costo_total">0</td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <div class="table-actions">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaFinanciamientoPert()">Agregar fuente / ítem +</button>
+                  <strong>Costo Total calculado: <span id="costo_total_calculado_pert">$0</span></strong>
+                </div>
+              </section>
             </div>
 
             <div class="col-4 pert-registro-field pert-orden-9">
@@ -265,6 +297,7 @@
               <div class="form-group">
                 <label class="form-label" for="oficioPostulacionFecha">Fecha de Oficio de Postulación</label>
                 <input type="date" id="oficioPostulacionFecha" name="oficio_postulacion.fecha" class="form-control">
+                <span class="form-hint">Año de postulación derivado: <strong id="registro_ano_post">-</strong></span>
               </div>
             </div>
             <div class="col-6 pert-registro-field pert-orden-15">
@@ -432,12 +465,34 @@
               <tr><th>UNIDAD TÉCNICA</th><td id="print_unidad_tecnica">-</td></tr>
               <tr><th>ETAPA</th><td id="print_etapa">-</td></tr>
               <tr><th>SECTOR</th><td id="print_sector">-</td></tr>
-              <tr><th>COSTO TOTAL (M$)</th><td id="print_costo_total_pert">-</td></tr>
             </tbody>
           </table>
 
           <div class="sheet-section-title pert-print-section-title">DESCRIPCIÓN DEL PROYECTO:</div>
           <div class="pert-print-description" id="print_descripcion_proyecto">-</div>
+
+          <div class="sheet-section-title pert-print-section-title">FUENTE DE FINANCIAMIENTO:</div>
+          <table class="pert-print-table pert-print-financing-table">
+            <thead>
+              <tr>
+                <th>FUENTE / SUBTÍTULO</th>
+                <th>ÍTEM</th>
+                <th>ASIGNACIÓN</th>
+                <th id="print_financiamiento_ano_actual_label">SOLICITADO AÑO M$</th>
+                <th id="print_financiamiento_ano_siguiente_label">SOLICITADO AÑO SIGUIENTE M$</th>
+                <th>COSTO TOTAL M$</th>
+              </tr>
+            </thead>
+            <tbody id="print_financiamiento_pert_body"></tbody>
+            <tfoot>
+              <tr>
+                <th colspan="3">TOTAL</th>
+                <td id="print_total_ano_actual_pert">0</td>
+                <td id="print_total_ano_siguiente_pert">0</td>
+                <td id="print_costo_total_pert">0</td>
+              </tr>
+            </tfoot>
+          </table>
 
           <div class="sheet-section-title pert-print-section-title">EVALUACIÓN:</div>
           <ol class="pert-print-evaluation" id="print_evaluacion_lista"></ol>
@@ -563,8 +618,220 @@
       return document.getElementById('estado_pertinencia')?.value || '';
     }
 
+    const clasificadoresPresupuestarios31 = [
+      { grupo: '01 ESTUDIOS BÁSICOS', opciones: [
+        ['001', 'G. ADMINISTRATIVOS'],
+        ['002', 'CONSULTORÍA']
+      ] },
+      { grupo: '02 PROYECTOS', opciones: [
+        ['001', 'G. ADMINISTRATIVOS'],
+        ['002', 'CONSULTORÍA'],
+        ['003', 'TERRENO'],
+        ['004', 'OBRAS CIVILES'],
+        ['005', 'EQUIPAMIENTO'],
+        ['006', 'EQUIPOS'],
+        ['007', 'VEHÍCULOS'],
+        ['999', 'OTROS GASTOS']
+      ] },
+      { grupo: '03 PROGRAMAS DE INVERSIÓN', opciones: [
+        ['001', 'G. ADMINISTRATIVOS CONSULTORÍA'],
+        ['002', 'CONSULTORÍA'],
+        ['003', 'CONTRATACIÓN DEL PROGRAMA']
+      ] }
+    ];
+
+    function agregarCampoFinanciamiento(fila, campo, tipo, valorInicial = '') {
+      const input = document.createElement('input');
+      input.type = tipo;
+      input.dataset.field = campo;
+      input.value = valorInicial;
+      return input;
+    }
+
+    function agregarCeldaFinanciamiento(fila, contenido) {
+      const celda = document.createElement('td');
+      celda.appendChild(contenido);
+      fila.appendChild(celda);
+      return celda;
+    }
+
+    function crearFilaFinanciamientoPert() {
+      const fila = document.createElement('tr');
+      fila.dataset.tableRow = '';
+
+      const fuenteCelda = agregarCeldaFinanciamiento(fila, document.createTextNode('FNDR'));
+      fuenteCelda.appendChild(agregarCampoFinanciamiento(fila, 'fuente', 'hidden', 'FNDR'));
+
+      const itemCelda = document.createElement('td');
+      const selectorItem = document.createElement('select');
+      selectorItem.className = 'form-control';
+      selectorItem.dataset.field = 'item';
+      selectorItem.innerHTML = '<option value="">Seleccione ítem...</option>';
+      clasificadoresPresupuestarios31.forEach(grupo => {
+        const opcion = document.createElement('option');
+        opcion.value = grupo.grupo.slice(0, 2);
+        opcion.textContent = grupo.grupo;
+        opcion.dataset.grupo = grupo.grupo;
+        selectorItem.appendChild(opcion);
+      });
+      itemCelda.appendChild(selectorItem);
+      itemCelda.appendChild(agregarCampoFinanciamiento(fila, 'subtitulo', 'hidden', '31'));
+      itemCelda.appendChild(agregarCampoFinanciamiento(fila, 'grupo_inversion', 'hidden'));
+      fila.appendChild(itemCelda);
+
+      const clasificadorCelda = document.createElement('td');
+      const selectorClasificador = document.createElement('select');
+      selectorClasificador.className = 'form-control';
+      selectorClasificador.dataset.field = 'clasificador';
+      selectorClasificador.disabled = true;
+      selectorClasificador.innerHTML = '<option value="">Seleccione ítem primero...</option>';
+      clasificadorCelda.appendChild(selectorClasificador);
+      clasificadorCelda.appendChild(agregarCampoFinanciamiento(fila, 'clasificador_descripcion', 'hidden'));
+      fila.appendChild(clasificadorCelda);
+
+      ['solicitado_ano_actual', 'solicitado_ano_siguiente'].forEach(campo => {
+        const input = agregarCampoFinanciamiento(fila, campo, 'number');
+        input.className = 'form-control';
+        input.min = '0';
+        input.step = '1';
+        input.placeholder = '0';
+        agregarCeldaFinanciamiento(fila, input);
+      });
+
+      const costoFila = agregarCampoFinanciamiento(fila, 'costo_total', 'number', '0');
+      costoFila.className = 'form-control auto-calc';
+      costoFila.readOnly = true;
+      costoFila.step = '1';
+      costoFila.setAttribute('aria-label', 'Costo total calculado en pesos');
+      agregarCeldaFinanciamiento(fila, costoFila);
+
+      const acciones = document.createElement('td');
+      const eliminar = document.createElement('button');
+      eliminar.type = 'button';
+      eliminar.className = 'btn btn-danger btn-sm';
+      eliminar.textContent = 'Quitar';
+      eliminar.setAttribute('aria-label', 'Quitar fuente de financiamiento');
+      eliminar.addEventListener('click', () => {
+        fila.remove();
+        actualizarFichaImprimible();
+      });
+      acciones.appendChild(eliminar);
+      fila.appendChild(acciones);
+
+      selectorItem.addEventListener('change', () => {
+        const grupoSeleccionado = clasificadoresPresupuestarios31.find(grupo =>
+          grupo.grupo.slice(0, 2) === selectorItem.value
+        );
+        fila.querySelector('[data-field="grupo_inversion"]').value = grupoSeleccionado?.grupo || '';
+        fila.querySelector('[data-field="clasificador_descripcion"]').value = '';
+        selectorClasificador.replaceChildren();
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = grupoSeleccionado ? 'Seleccione clasificador...' : 'Seleccione ítem primero...';
+        selectorClasificador.appendChild(placeholder);
+        (grupoSeleccionado?.opciones || []).forEach(([codigo, nombre]) => {
+          const opcion = document.createElement('option');
+          opcion.value = codigo;
+          opcion.textContent = `${codigo} - ${nombre}`;
+          opcion.dataset.descripcion = nombre;
+          selectorClasificador.appendChild(opcion);
+        });
+        selectorClasificador.disabled = !grupoSeleccionado;
+        actualizarFichaImprimible();
+      });
+      selectorClasificador.addEventListener('change', () => {
+        fila.querySelector('[data-field="clasificador_descripcion"]').value =
+          selectorClasificador.selectedOptions[0]?.dataset.descripcion || '';
+        actualizarFichaImprimible();
+      });
+      fila.querySelectorAll('input[type="number"]').forEach(input =>
+        input.addEventListener('input', actualizarFichaImprimible)
+      );
+      return fila;
+    }
+
+    function agregarFilaFinanciamientoPert() {
+      document.getElementById('financiamiento_pert_body').appendChild(crearFilaFinanciamientoPert());
+      actualizarFichaImprimible();
+    }
+
+    function formatearMontoFinanciamiento(monto) {
+      return Number(monto || 0).toLocaleString('es-CL', { maximumFractionDigits: 3 });
+    }
+
+    function formatearMontoFinanciamientoM(montoEnPesos) {
+      return formatearMontoFinanciamiento(Number(montoEnPesos || 0) / 1000);
+    }
+
+    function actualizarFinanciamientoPert() {
+      const ano = Number(document.getElementById('proceso_presupuestario').value) || new Date().getFullYear();
+      const siguienteAno = ano + 1;
+      document.getElementById('financiamiento_ano_actual_label').textContent = `Solicitado Año ${ano} ($)`;
+      document.getElementById('financiamiento_ano_siguiente_label').textContent = 'Solicitado Año Siguiente ($)';
+      document.getElementById('print_financiamiento_ano_actual_label').textContent = `SOLICITADO AÑO ${ano} M$`;
+      document.getElementById('print_financiamiento_ano_siguiente_label').textContent = 'SOLICITADO AÑO SIGUIENTE M$';
+
+      let totalActual = 0;
+      let totalSiguiente = 0;
+      const cuerpoImpresion = document.getElementById('print_financiamiento_pert_body');
+      cuerpoImpresion.replaceChildren();
+      document.querySelectorAll('#financiamiento_pert_body tr[data-table-row]').forEach(fila => {
+        const actual = Number(fila.querySelector('[data-field="solicitado_ano_actual"]').value) || 0;
+        const siguiente = Number(fila.querySelector('[data-field="solicitado_ano_siguiente"]').value) || 0;
+        const costo = actual + siguiente;
+        fila.querySelector('[data-field="costo_total"]').value = String(costo);
+        totalActual += actual;
+        totalSiguiente += siguiente;
+
+        const selectorItem = fila.querySelector('[data-field="item"]');
+        const selectorClasificador = fila.querySelector('[data-field="clasificador"]');
+        if (!selectorItem.value && !selectorClasificador.value && costo === 0) return;
+        const celdas = [
+          'FNDR / 31',
+          fila.querySelector('[data-field="grupo_inversion"]').value || '-',
+          selectorClasificador.selectedOptions[0]?.textContent || '-',
+          formatearMontoFinanciamientoM(actual),
+          formatearMontoFinanciamientoM(siguiente),
+          formatearMontoFinanciamientoM(costo)
+        ];
+        const filaImpresion = document.createElement('tr');
+        celdas.forEach(texto => {
+          const celda = document.createElement('td');
+          celda.textContent = texto;
+          filaImpresion.appendChild(celda);
+        });
+        cuerpoImpresion.appendChild(filaImpresion);
+      });
+
+      const total = totalActual + totalSiguiente;
+      document.querySelector('#tablaFinanciamientoPert [data-total-for="solicitado_ano_actual"]').textContent = formatearMontoFinanciamiento(totalActual);
+      document.querySelector('#tablaFinanciamientoPert [data-total-for="solicitado_ano_siguiente"]').textContent = formatearMontoFinanciamiento(totalSiguiente);
+      document.querySelector('#tablaFinanciamientoPert [data-total-for="costo_total"]').textContent = formatearMontoFinanciamiento(total);
+      document.getElementById('costo_total_calculado_pert').textContent = `$${formatearMontoFinanciamiento(total)}`;
+      document.getElementById('print_total_ano_actual_pert').textContent = formatearMontoFinanciamientoM(totalActual);
+      document.getElementById('print_total_ano_siguiente_pert').textContent = formatearMontoFinanciamientoM(totalSiguiente);
+      document.getElementById('print_costo_total_pert').textContent = formatearMontoFinanciamientoM(total);
+      return { totalActual, totalSiguiente, total };
+    }
+
+    function configurarEjemploFinanciamientoPert({ item, clasificador, actual, siguiente }) {
+      const cuerpo = document.getElementById('financiamiento_pert_body');
+      cuerpo.replaceChildren();
+      const fila = crearFilaFinanciamientoPert();
+      cuerpo.appendChild(fila);
+      const selectorItem = fila.querySelector('[data-field="item"]');
+      selectorItem.value = item;
+      selectorItem.dispatchEvent(new Event('change', { bubbles: true }));
+      fila.querySelector('[data-field="clasificador"]').value = clasificador;
+      fila.querySelector('[data-field="clasificador"]').dispatchEvent(new Event('change', { bubbles: true }));
+      fila.querySelector('[data-field="solicitado_ano_actual"]').value = actual;
+      fila.querySelector('[data-field="solicitado_ano_siguiente"]').value = siguiente;
+      actualizarFichaImprimible();
+    }
+
     function actualizarFichaImprimible() {
       AppIteracion.aplicar();
+      actualizarFinanciamientoPert();
       const getVal = id => document.getElementById(id)?.value || '';
       const claveInstancia = AppIteracion.actual();
 
@@ -590,6 +857,7 @@
       asignarTexto('print_localidad', getVal('localidad_pert'));
       asignarTexto('print_proceso_presupuestario', getVal('proceso_presupuestario'));
       const fechaOficioPostulacion = getVal('oficioPostulacionFecha');
+      asignarTexto('registro_ano_post', fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '');
       asignarTexto('print_ano_post', fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '');
       asignarTexto('print_bip', getVal('codigo_bip'));
       asignarTexto('print_nombre', getVal('nombre_proyecto'));
@@ -598,12 +866,6 @@
       asignarTexto('print_etapa', getVal('etapa_postula'));
       asignarTexto('print_sector', getVal('sector_iniciativa'));
       asignarTexto('print_descripcion_proyecto', getVal('descripcion_proyecto'));
-      const costoTotal = getVal('costo_total');
-      asignarTexto(
-        'print_costo_total_pert',
-        costoTotal ? Number(costoTotal).toLocaleString('es-CL') : ''
-      );
-
       const valorCompuesto = campos => campos
         .map(([etiqueta, id]) => [etiqueta, getVal(id)])
         .filter(([, valor]) => valor)
@@ -711,6 +973,13 @@
         modelo: 'EvaluacionPertinenciaRegional',
         linea: 'Evaluación de Pertinencia'
       });
+      data.fuentes_financiamiento = (data.fuentes_financiamiento || []).filter(fuente =>
+        fuente.item || fuente.clasificador ||
+        Number(fuente.solicitado_ano_actual) > 0 || Number(fuente.solicitado_ano_siguiente) > 0
+      );
+      data.costo_total = Math.round(data.fuentes_financiamiento.reduce((total, fuente) =>
+        total + Number(fuente.solicitado_ano_actual || 0) + Number(fuente.solicitado_ano_siguiente || 0), 0
+      ));
       showJsonModal('Evaluación de Pertinencia - Carga Útil para Base de Datos', data);
     }
 
@@ -728,7 +997,12 @@
       document.getElementById('oficioPostulacion').value = "ORD. GR. N° 1204";
       document.getElementById('oficioPostulacionFecha').value = "2026-05-10";
 
-      document.getElementById('costo_total').value = "830000";
+      configurarEjemploFinanciamientoPert({
+        item: '02',
+        clasificador: '004',
+        actual: 830000000,
+        siguiente: 0
+      });
 
       document.getElementById('pert_erd_lineamiento').value = "Bienestar Socio Territorial";
       document.getElementById('pert_erd_item').value = "Servicios Básicos / Agua Potable Rural";
@@ -768,7 +1042,12 @@
       document.getElementById('oficioPostulacion').value = "Oficio N° 1644";
       document.getElementById('oficioPostulacionFecha').value = "2026-06-15";
 
-      document.getElementById('costo_total').value = "75000";
+      configurarEjemploFinanciamientoPert({
+        item: '02',
+        clasificador: '004',
+        actual: 75000000,
+        siguiente: 0
+      });
 
       document.getElementById('pert_erd_lineamiento').value = "Conectividad y Movilidad Regional Sustentable";
       document.getElementById('pert_erd_item').value = "Conectividad Insular y Servicios Básicos en Islas";
@@ -793,6 +1072,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+      agregarFilaFinanciamientoPert();
       actualizarFichaImprimible();
     });
   </script>

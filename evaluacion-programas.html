@@ -61,15 +61,11 @@
     <div class="instancia-selector no-print" id="selectorInstancia"
          data-nombre-campo="instancia_evaluacion"
          data-permite-reevaluacion="true"
-         data-bloque-respuesta="bloqueRespuestaObsProg"
-         data-bloque-reevaluacion="bloqueReevaluacionProg"
          data-tabla-iteraciones="tablaIteracionesProg"
          data-panel-evaluacion="pasoEvaluacionProg"
          data-campo-estado="prog_estado_evaluacion"
          data-campo-fecha="prog_fecha_evaluacion"
          data-campo-detalle="prog_analisis"
-         data-tag-print="print_instancia_prog"
-         data-tag-iteracion="print_iteracion_prog, badgeIteracionRespuestaProg, badgeIteracionReevaluacionProg"
          data-paso-evaluacion="evaluacion">
       <span class="instancia-selector-label">Instancia de Evaluación:</span>
       <div class="instancia-options">
@@ -237,6 +233,7 @@
               <div class="form-group">
                 <label class="form-label" for="prog_fecha_oficio">Fecha de Oficio de Postulación</label>
                 <input type="date" id="prog_fecha_oficio" name="oficio_postulacion.fecha" class="form-control">
+                <span class="form-hint">Año de postulación derivado: <strong id="prog_registro_ano_post">-</strong></span>
               </div>
             </div>
             <div class="col-6 prog-registro-field prog-orden-12">
@@ -253,8 +250,9 @@
             </div>
             <div class="col-6 prog-registro-field prog-orden-14">
               <div class="form-group">
-                <label class="form-label" for="costo_total">Costo Total</label>
-                <input type="number" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" min="0">
+                <label class="form-label" for="costo_total">Costo Total (Pesos $)</label>
+                <input type="text" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" inputmode="numeric" data-format-currency autocomplete="off">
+                <span class="form-hint">Ingrese el monto en pesos; se formatea automáticamente.</span>
               </div>
             </div>
           </div>
@@ -319,68 +317,6 @@
           </div>
         </section>
 
-        <!-- BLOQUE: RESPUESTA DEL POSTULANTE A OBSERVACIONES -->
-        <section class="form-section-card bloque-iteracion" id="bloqueRespuestaObsProg" style="display: none;">
-          <div class="section-header">
-            <h3>2.1 Respuesta del Postulante a Observaciones</h3>
-            <span class="section-badge" id="badgeIteracionRespuestaProg">Iteración N° 2</span>
-          </div>
-          <div class="callout callout-warning">
-            <span>Instancia <strong>&laquo;Responde Observaciones&raquo;</strong>. Registre los antecedentes con que la unidad formuladora responde las observaciones de la evaluación anterior.</span>
-          </div>
-          <div class="form-grid">
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="prog_resp_fecha">Fecha de Respuesta del Postulante</label>
-                <input type="date" id="prog_resp_fecha" name="respuesta_observaciones.fecha_respuesta" class="form-control">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="prog_resp_documento">N° de Documento / ORD Recibido</label>
-                <input type="text" id="prog_resp_documento" name="respuesta_observaciones.numero_documento" class="form-control" placeholder="Ej: ORD. GR. N° 1758">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="prog_resp_entrada">Fecha de Ingreso a DIPLADER</label>
-                <input type="date" id="prog_resp_entrada" name="respuesta_observaciones.fecha_ingreso_diplader" class="form-control">
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label" for="prog_resp_detalle">Detalle de la Respuesta y Documentos Adjuntos</label>
-                <textarea id="prog_resp_detalle" name="respuesta_observaciones.detalle_respuesta" rows="4" class="form-control" placeholder="Punto por punto: qué observación se subsanó y con qué documento..."></textarea>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- BLOQUE: REEVALUACIÓN -->
-        <section class="form-section-card bloque-iteracion" id="bloqueReevaluacionProg" style="display: none;">
-          <div class="section-header">
-            <h3>2.2 Reevaluación del Programa</h3>
-            <span class="section-badge" id="badgeIteracionReevaluacionProg">Iteración N° 3</span>
-          </div>
-          <div class="callout callout-info">
-            <span>Instancia <strong>&laquo;Reevaluación&raquo;</strong>. Verifique la subsanación y registre el resultado de esta nueva evaluación técnica del programa.</span>
-          </div>
-          <div class="form-grid">
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="prog_reev_verificacion">Verificación de lo Subsanado</label>
-                <textarea id="prog_reev_verificacion" name="reevaluacion.verificacion_subsanacion" rows="4" class="form-control" placeholder="Observaciones resueltas y observaciones que permanecen..."></textarea>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="prog_reev_fundamento">Fundamento del Resultado de la Reevaluación</label>
-                <textarea id="prog_reev_fundamento" name="reevaluacion.fundamento_resultado" rows="4" class="form-control" placeholder="Fundamento técnico que sustenta el estado asignado en esta iteración..."></textarea>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <table id="tablaIteracionesProg" data-table-id="iteraciones" hidden style="display:none" aria-hidden="true">
           <tbody id="tbodyIteracionesProg"><tr data-table-row>
             <td><input type="text" data-field="numero"></td>
@@ -408,10 +344,6 @@
             <div style="font-size: 0.78rem; color: #64748b;">División de Planificación y Desarrollo Regional (DIPLADER)</div>
             <div class="sheet-main-title">FICHA DE EVALUACIÓN DE PROGRAMAS</div>
             <div class="budget-process-tag">PROCESO PRESUPUESTARIO <span id="print_prog_ano">2026</span></div>
-            <div>
-              <span class="instancia-print-tag" id="print_instancia_prog">PRIMER INGRESO</span>
-              <span class="instancia-print-tag iteracion-tag" id="print_iteracion_prog">N° 1</span>
-            </div>
           </div>
 
           <div class="sheet-section-title">ANTECEDENTES DEL PROYECTO:</div>
@@ -445,35 +377,13 @@
               <span class="val" id="print_prog_unidad_tecnica">-</span>
             </div>
             <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">COSTO TOTAL</span>
+              <span class="label">COSTO TOTAL (M$)</span>
               <span class="val" id="print_prog_costo_total">-</span>
             </div>
           </div>
 
           <div class="sheet-section-title" style="margin-top: 1.25rem;">EVALUACIÓN:</div>
           <div class="sheet-box-text" id="print_prog_evaluacion_bloque"></div>
-
-          <!-- Respuesta del postulante (instancia N° 2) -->
-          <div id="print_respuesta_observaciones_prog" style="display: none;">
-            <div class="sheet-section-title">RESPUESTA DEL POSTULANTE A OBSERVACIONES:</div>
-            <div class="sheet-summary-grid">
-              <div class="sheet-summary-cell" style="grid-column: span 6;">
-                <span class="label">FECHA DE RESPUESTA</span>
-                <span class="val" id="print_prog_resp_fecha">-</span>
-              </div>
-              <div class="sheet-summary-cell" style="grid-column: span 6;">
-                <span class="label">DOCUMENTO / ORD RECIBIDO</span>
-                <span class="val" id="print_prog_resp_documento">-</span>
-              </div>
-            </div>
-            <div class="sheet-box-text" id="print_prog_resp_detalle">-</div>
-          </div>
-
-          <!-- Reevaluación (instancia N° 3) -->
-          <div id="print_reevaluacion_prog" style="display: none;">
-            <div class="sheet-section-title">REEVALUACIÓN:</div>
-            <div class="sheet-box-text" id="print_prog_reevaluacion_bloque">-</div>
-          </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin: 0.75rem 0; font-size: 0.82rem;">
             <div><strong>ESTADO:</strong> <span class="status-badge recomendado" id="print_prog_estado_badge">RECOMENDADO</span></div>
@@ -621,6 +531,7 @@
 
     function actualizarFichaImprimibleProg() {
       AppIteracion.aplicar();
+      formatPesosInput(document.getElementById('costo_total'));
       const getVal = id => document.getElementById(id)?.value || '';
       const claveInstancia = AppIteracion.actual();
 
@@ -642,12 +553,14 @@
       document.getElementById('print_prog_provincia').textContent = getVal('prog_provincia') || '-';
       document.getElementById('print_prog_proceso_presupuestario').textContent = getVal('prog_ano_postulacion') || '-';
       const fechaOficioPostulacion = getVal('prog_fecha_oficio');
+      document.getElementById('prog_registro_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_prog_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_prog_bip').textContent = getVal('prog_codigo_idi') || '-';
       document.getElementById('print_prog_nombre').textContent = getVal('prog_nombre') || '-';
       document.getElementById('print_prog_unidad_formuladora').textContent = getVal('prog_unidad_formuladora') || '-';
       document.getElementById('print_prog_unidad_tecnica').textContent = getVal('prog_unidad_tecnica') || '-';
-      document.getElementById('print_prog_costo_total').textContent = getVal('costo_total') || '-';
+      document.getElementById('print_prog_costo_total').textContent =
+        formatCurrencyInThousands(getVal('costo_total'));
 
       // Evaluación bloque
       const evalText = getVal('prog_analisis');
@@ -673,27 +586,6 @@
         cierre.textContent = AppIteracion.exigeIteracion(getVal('prog_estado_evaluacion'))
           ? 'Resultado con OBSERVACIONES: el postulante responde y se abre una nueva iteración de evaluación.'
           : 'Resultado RECOMENDADO: fin del proceso.';
-      }
-
-      // Respuesta del postulante (instancia N° 2)
-      const bloqueRespuesta = document.getElementById('print_respuesta_observaciones_prog');
-      if (bloqueRespuesta) {
-        bloqueRespuesta.style.display = claveInstancia === 'PRIMER_INGRESO' ? 'none' : 'block';
-        document.getElementById('print_prog_resp_fecha').textContent = getVal('prog_resp_fecha') || '-';
-        document.getElementById('print_prog_resp_documento').textContent = getVal('prog_resp_documento') || '-';
-        document.getElementById('print_prog_resp_detalle').textContent = getVal('prog_resp_detalle') || 'Sin respuesta registrada.';
-      }
-
-      // Reevaluación (instancia N° 3)
-      const bloqueReeval = document.getElementById('print_reevaluacion_prog');
-      if (bloqueReeval) {
-        bloqueReeval.style.display = claveInstancia === 'REEVALUACION' ? 'block' : 'none';
-        const verif = getVal('prog_reev_verificacion');
-        const fund = getVal('prog_reev_fundamento');
-        document.getElementById('print_prog_reevaluacion_bloque').textContent =
-          (verif ? 'Verificación de lo subsanado:\n' + verif + '\n\n' : '') +
-          (fund ? 'Fundamento del resultado:\n' + fund : '') ||
-          'Sin registro de reevaluación.';
       }
 
     }
