@@ -65,6 +65,12 @@
     margin-bottom: 8pt !important;
   }
 
+  .ut5000-reference-sheet .official-header {
+    border-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 8pt !important;
+  }
+
   .official-header-logos {
     margin-bottom: 5pt !important;
   }
@@ -162,6 +168,17 @@
   .pert-print-financing-table th {
     width: auto !important;
     overflow-wrap: anywhere;
+    text-align: center !important;
+  }
+
+  .ut5000-reference-sheet .pert-print-financing-table td:nth-child(n+3) {
+    text-align: center !important;
+  }
+
+  .ut5000-reference-sheet .pert-print-table td,
+  .ut5000-reference-sheet .pert-print-description,
+  .ut5000-reference-sheet .ut5000-evaluador-line span:last-child {
+    font-family: "Courier New", monospace !important;
   }
 
   .pert-print-description {
@@ -171,6 +188,10 @@
     color: #000000 !important;
     font-size: 8pt !important;
     page-break-inside: avoid;
+  }
+
+  .ut5000-reference-sheet #print_5000_descripcion {
+    padding-left: 25pt !important;
   }
 
   .pert-print-evaluation {

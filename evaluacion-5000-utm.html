@@ -276,26 +276,32 @@
                 <input type="text" id="localidad_5000" name="localizacion.localidad" class="form-control" placeholder="Ej: LOCALIDAD DE EJEMPLO">
               </div>
             </div>
-            <div class="col-6 ut5000-registro-field ut5000-orden-12">
+            <div class="col-12 ut5000-registro-field ut5000-orden-12">
+              <div class="form-group">
+                <label class="form-label" for="descripcion_proyecto_5000">Descripción de la Iniciativa</label>
+                <textarea id="descripcion_proyecto_5000" name="descripcion_proyecto" rows="4" class="form-control" placeholder="Describa el objetivo, la necesidad que aborda y los principales componentes de la iniciativa."></textarea>
+              </div>
+            </div>
+            <div class="col-6 ut5000-registro-field ut5000-orden-13">
               <div class="form-group">
                 <label class="form-label" for="ut5000_oficio_postulacion">N° de Oficio de Postulación</label>
                 <input type="text" id="ut5000_oficio_postulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0001">
               </div>
             </div>
-            <div class="col-6 ut5000-registro-field ut5000-orden-13">
+            <div class="col-6 ut5000-registro-field ut5000-orden-14">
               <div class="form-group">
                 <label class="form-label" for="ut5000_oficio_postulacion_fecha">Fecha de Oficio de Postulación</label>
                 <input type="date" id="ut5000_oficio_postulacion_fecha" name="oficio_postulacion.fecha" class="form-control">
                 <span class="form-hint">Año de postulación derivado: <strong id="ut5000_registro_ano_post">-</strong></span>
               </div>
             </div>
-            <div class="col-6 ut5000-registro-field ut5000-orden-14">
+            <div class="col-6 ut5000-registro-field ut5000-orden-15">
               <div class="form-group">
                 <label class="form-label" for="ut5000_ingreso_oficina_partes">Ingreso de Oficio a Oficina de Partes</label>
                 <input type="date" id="ut5000_ingreso_oficina_partes" name="oficio_postulacion.fechaIngresoOficinaPartes" class="form-control">
               </div>
             </div>
-            <div class="col-6 ut5000-registro-field ut5000-orden-15">
+            <div class="col-6 ut5000-registro-field ut5000-orden-16">
               <div class="form-group">
                 <label class="form-label" for="ut5000_ingreso_evaluacion">Ingreso a Evaluación</label>
                 <input type="date" id="ut5000_ingreso_evaluacion" name="oficio_postulacion.fechaIngresoEvaluacion" class="form-control">
@@ -325,6 +331,48 @@
             <div class="col-12">
               <div class="callout callout-warning" style="margin-bottom:0;">
                 <span id="ayudaInstancia5000">Se registra la primera revisión técnica de la iniciativa.</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="lineamiento_estrategico_erd_5000">Lineamiento Estratégico ERD Los Lagos <span class="required">*</span></label>
+                <input type="text" id="lineamiento_estrategico_erd_5000" name="evaluacion_tecnica.lineamiento_estrategico_erd" class="form-control" placeholder="Ej: Bienestar Socio Territorial" required>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="item_erd_5000">Ítem ERD</label>
+                <input type="text" id="item_erd_5000" name="evaluacion_tecnica.item_erd" class="form-control" placeholder="Ej: Servicios Básicos / Agua Potable Rural">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="objetivo_estrategico_erd_5000">Objetivo Estratégico ERD</label>
+                <textarea id="objetivo_estrategico_erd_5000" name="evaluacion_tecnica.objetivo_estrategico_erd" rows="3" class="form-control" placeholder="Objetivo de la ERD con el que se relaciona la iniciativa..."></textarea>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="actividad_programa_erd_5000">Actividad / Programa ERD</label>
+                <textarea id="actividad_programa_erd_5000" name="evaluacion_tecnica.actividad_programa_erd" rows="3" class="form-control" placeholder="Actividad o programa contemplado en la ERD..."></textarea>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="pilar_programa_gobernador_5000">Pilar Programa del Gobernador Regional <span class="required">*</span></label>
+                <input type="text" id="pilar_programa_gobernador_5000" name="evaluacion_tecnica.pilar_programa_gobernador_regional" class="form-control" placeholder="Ej: Pilar 3. Inclusión Social y Calidad de Vida" required>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="eje_letra_programa_gobernador_5000">Eje / Letra Específica del Programa</label>
+                <input type="text" id="eje_letra_programa_gobernador_5000" name="evaluacion_tecnica.eje_letra_programa_gobernador" class="form-control" placeholder="Ej: Letra c) Infraestructura de Servicios Básicos">
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="articulacion_programa_gobernador_5000">Articulación con el Programa Regional del Gobernador</label>
+                <textarea id="articulacion_programa_gobernador_5000" name="evaluacion_tecnica.articulacion_programa_regional_gobernador" rows="3" class="form-control" placeholder="Fundamento de articulación con el programa de gobierno regional..."></textarea>
               </div>
             </div>
             <!-- Desglose por Áreas Oficiales -->
@@ -454,78 +502,46 @@
 
 <!-- ================= PASO 3: FICHA DE EVALUACIÓN (PDF) ================= -->
       <div id="seccionImprimibleOficial5000" style="display: none;">
-        <div class="official-sheet">
+        <div class="official-sheet ut5000-reference-sheet">
           <div class="official-header">
             <div class="official-header-logos">
               <img src="assets/gore-los-lagos.png" alt="Gobierno Regional de Los Lagos">
               <img src="assets/core-los-lagos.png" alt="Consejo Regional de Los Lagos">
             </div>
-            <div class="org-name">Gobierno Regional de la Región de Los Lagos</div>
-            <div style="font-size: 0.78rem; color: #64748b;">División de Planificación y Desarrollo Regional (DIPLADER)</div>
-            <div class="sheet-main-title">FICHA DE EVALUACION INICIATIVAS MENORES A 5.000 UTM</div>
-            <div class="budget-process-tag">PROCESO PRESUPUESTARIO <span id="print_5000_ano">2026</span></div>
+            <div class="sheet-main-title pert-print-title">FICHA DE EVALUACION INICIATIVAS MENOR A 5.000 UTM</div>
           </div>
 
-          <div class="sheet-section-title">ANTECEDENTES DE LA INICIATIVA:</div>
-          <div class="sheet-summary-grid">
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">PROVINCIA</span>
-              <span class="val" id="print_5000_provincia">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">COMUNA</span>
-              <span class="val" id="print_5000_comuna">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">LOCALIDAD O SECTOR</span>
-              <span class="val" id="print_5000_localidad">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">SECTOR</span>
-              <span class="val" id="print_5000_sector">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">PROCESO PRESUPUESTARIO</span>
-              <span class="val" id="print_5000_proceso_presupuestario">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">AÑO DE POSTULACIÓN</span>
-              <span class="val" id="print_5000_ano_post">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">CÓDIGO IDI</span>
-              <span class="val" id="print_5000_bip">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 12;">
-              <span class="label">NOMBRE DE LA INICIATIVA</span>
-              <span class="val" id="print_5000_nombre">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 6;">
-              <span class="label">UNIDAD FORMULADORA</span>
-              <span class="val" id="print_5000_unidad_formuladora">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 6;">
-              <span class="label">UNIDAD TÉCNICA</span>
-              <span class="val" id="print_5000_unidad_tecnica">-</span>
-            </div>
-          </div>
+          <div class="sheet-section-title pert-print-section-title">ANTECEDENTES DE LA INICIATIVA:</div>
+          <table class="pert-print-table">
+            <tbody>
+              <tr><th>PROVINCIA</th><td id="print_5000_provincia">-</td></tr>
+              <tr><th>COMUNA</th><td id="print_5000_comuna">-</td></tr>
+              <tr><th>AÑO DE POSTULACIÓN</th><td id="print_5000_ano_post">-</td></tr>
+              <tr><th>CÓDIGO IDI</th><td id="print_5000_bip">-</td></tr>
+              <tr><th>NOMBRE</th><td id="print_5000_nombre">-</td></tr>
+              <tr><th>PROPONENTE</th><td id="print_5000_proponente">-</td></tr>
+            </tbody>
+          </table>
 
-          <div class="sheet-section-title" style="margin-top: 1.25rem;">FUENTE DE FINANCIAMIENTO:</div>
-          <table class="data-table pert-print-financing-table">
+          <div class="sheet-section-title pert-print-section-title">DESCRIPCIÓN DE LA INICIATIVA:</div>
+          <div class="pert-print-description" id="print_5000_descripcion">-</div>
+
+          <div class="sheet-section-title pert-print-section-title">FUENTE DE FINANCIAMIENTO:</div>
+          <table class="pert-print-table pert-print-financing-table">
             <thead>
               <tr>
-                <th>FUENTE / SUBTÍTULO</th>
+                <th>FUENTE</th>
                 <th>ÍTEM</th>
-                <th>ASIGNACIÓN</th>
-                <th>SOLICITADO AÑO M$</th>
-                <th>SOLICITADO AÑO SIGUIENTE M$</th>
+                <th>CLASIFICADOR PRESUPUESTARIO</th>
+                <th id="print_5000_financing_year_label">SOLICITADO AÑO M$</th>
+                <th id="print_5000_financing_next_year_label">SOLICITADO AÑO SIGUIENTE M$</th>
                 <th>COSTO TOTAL M$</th>
               </tr>
             </thead>
             <tbody id="print_financiamiento_5000_body"></tbody>
             <tfoot>
               <tr>
-                <th colspan="3">TOTAL</th>
+                <th colspan="3" style="text-align:right;">TOTAL</th>
                 <td id="print_total_ano_actual_5000">0</td>
                 <td id="print_total_ano_siguiente_5000">0</td>
                 <td id="print_5000_costo_total">0</td>
@@ -533,19 +549,18 @@
             </tfoot>
           </table>
 
-          <div class="sheet-section-title" style="margin-top: 1.25rem;">EVALUACIÓN:</div>
-          <div class="sheet-box-text" id="print_5000_evaluacion_bloque"></div>
+          <div class="sheet-section-title pert-print-section-title">EVALUACIÓN:</div>
+          <div class="pert-print-description" id="print_5000_evaluacion_bloque"></div>
 
-          <div style="display: flex; justify-content: space-between; align-items: center; margin: 0.75rem 0; font-size: 0.82rem;">
-            <div><strong>ESTADO:</strong> <span class="status-badge observado" id="print_5000_estado_badge">OBSERVADO</span></div>
-            <div><strong>INGRESO:</strong> <span id="print_5000_fechas_tramite">-</span></div>
-            <div><strong>EVALUACIÓN:</strong> <span id="print_5000_evaluador_texto">-</span></div>
+          <div class="ut5000-evaluador-line">
+            <span>Evaluado por</span>
+            <span>:</span>
+            <span id="print_5000_evaluador_texto">-</span>
           </div>
-
-          <!-- Las firmas y las referencias a oficios se gestionan en otra instancia -->
-          <div class="sheet-footer-note">
-            Las firmas electrónicas Ley N° 19.799 y las referencias a oficios asociadas
-            se registran en la instancia de Oficios de la DIPLADER.
+          <div class="ut5000-evaluador-line">
+            <span>Fecha de evaluación</span>
+            <span>:</span>
+            <span id="print_5000_fecha_evaluacion">-</span>
           </div>
         </div>
       </div>
@@ -700,19 +715,20 @@
             : 'La unidad formuladora respondió las observaciones; corresponde verificar la subsanación.');
       }
 
-      document.getElementById('print_5000_ano').textContent = getVal('ano_postulacion') || '2026';
       document.getElementById('print_5000_provincia').textContent = getVal('provincia_5000') || '-';
       document.getElementById('print_5000_comuna').textContent = getVal('comuna_5000') || '-';
-      document.getElementById('print_5000_localidad').textContent = getVal('localidad_5000') || '-';
-      document.getElementById('print_5000_sector').textContent = getVal('sector_5000') || '-';
-      document.getElementById('print_5000_proceso_presupuestario').textContent = getVal('ano_postulacion') || '-';
       const fechaOficioPostulacion = getVal('ut5000_oficio_postulacion_fecha');
       document.getElementById('ut5000_registro_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_5000_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_5000_bip').textContent = getVal('codigo_idi') || '-';
       document.getElementById('print_5000_nombre').textContent = getVal('nombre_iniciativa') || '-';
-      document.getElementById('print_5000_unidad_formuladora').textContent = getVal('unidad_formuladora_5000') || '-';
-      document.getElementById('print_5000_unidad_tecnica').textContent = getVal('unidad_tecnica_5000') || '-';
+      document.getElementById('print_5000_proponente').textContent = getVal('unidad_formuladora_5000') || '-';
+      document.getElementById('print_5000_descripcion').textContent = getVal('descripcion_proyecto_5000') || '-';
+      const anoPresupuestario = Number(getVal('ano_postulacion')) || new Date().getFullYear();
+      document.getElementById('print_5000_financing_year_label').textContent =
+        `SOLICITADO AÑO ${anoPresupuestario} M$`;
+      document.getElementById('print_5000_financing_next_year_label').textContent =
+        `SOLICITADO AÑO SIGUIENTE ${anoPresupuestario + 1} M$`;
 
       // Desglose de Evaluación
       const estado = getVal('estado_resultado_evaluacion');
@@ -743,21 +759,12 @@
 
       document.getElementById('print_5000_evaluacion_bloque').textContent = evalText;
 
-      // Badge Estado
-      const badge = document.getElementById('print_5000_estado_badge');
-      if (estado === 'SIN OBSERVACIONES' || estado === 'RECOMENDADO') {
-        badge.className = 'status-badge recomendado';
-        badge.textContent = estado;
-      } else {
-        badge.className = 'status-badge observado';
-        badge.textContent = estado;
-      }
-
-      const fechaEvaluacion = getVal('fecha_evaluacion');
-      document.getElementById('print_5000_fechas_tramite').textContent = fechaEvaluacion || '-';
-
       document.getElementById('print_5000_evaluador_texto').textContent =
         getVal('evaluador_nombre') || 'Profesional Evaluador';
+      const fechaEvaluacion = getVal('fecha_evaluacion');
+      document.getElementById('print_5000_fecha_evaluacion').textContent = fechaEvaluacion
+        ? fechaEvaluacion.split('-').reverse().join('-')
+        : '-';
 
       // Resultado del ciclo al cerrar el Registro Documental
       const cierre = document.getElementById('cierreResultado5000');
@@ -932,10 +939,14 @@
 
         const selectorAsignacion = fila.querySelector('[data-field="clasificador"]');
         if (!selectorAsignacion.value && costo === 0) return;
+        const descripcion = selectorAsignacion.selectedOptions[0]?.dataset.descripcion || '';
+        const item = descripcion
+          ? descripcion.toLocaleLowerCase('es-CL').replace(/^./u, letra => letra.toLocaleUpperCase('es-CL'))
+          : '-';
         const celdas = [
-          'FNDR / 31 INICIATIVAS DE INVERSIÓN',
-          fila.querySelector('[data-field="grupo_inversion"]').value || '-',
-          selectorAsignacion.selectedOptions[0]?.textContent || '-',
+          'FNDR',
+          item,
+          selectorAsignacion.value ? `31-02-${selectorAsignacion.value}` : '-',
           formatearMontoFinanciamientoM5000(actual),
           formatearMontoFinanciamientoM5000(siguiente),
           formatearMontoFinanciamientoM5000(costo)
@@ -979,10 +990,18 @@
       document.getElementById('unidad_formuladora_5000').value = "ENTIDAD FORMULADORA DE EJEMPLO";
       document.getElementById('unidad_tecnica_5000').value = "UNIDAD TÉCNICA DE EJEMPLO";
       document.getElementById('nombre_iniciativa').value = "MEJORAMIENTO DEMOSTRATIVO DE ESPACIO COMUNITARIO";
+      document.getElementById('descripcion_proyecto_5000').value = "La iniciativa considera la ejecución de obras para habilitar infraestructura recreativa y áreas verdes, incorporando equipamiento, circulaciones peatonales y accesibilidad universal para uso de la comunidad.";
       document.getElementById('sector_5000').value = "Deporte";
       document.getElementById('provincia_5000').value = "PALENA";
       document.getElementById('comuna_5000').value = "Palena";
       document.getElementById('localidad_5000').value = "Localidad de ejemplo";
+      document.getElementById('lineamiento_estrategico_erd_5000').value = "Bienestar Socio Territorial";
+      document.getElementById('item_erd_5000').value = "Servicios Básicos / Agua Potable Rural";
+      document.getElementById('objetivo_estrategico_erd_5000').value = "Mejorar el acceso equitativo a servicios básicos y espacios comunitarios.";
+      document.getElementById('actividad_programa_erd_5000').value = "Habilitación de infraestructura recreativa y áreas verdes.";
+      document.getElementById('pilar_programa_gobernador_5000').value = "Pilar 3. Inclusión Social y Calidad de Vida";
+      document.getElementById('eje_letra_programa_gobernador_5000').value = "Letra c) Infraestructura de Servicios Básicos";
+      document.getElementById('articulacion_programa_gobernador_5000').value = "La iniciativa contribuye a mejorar la calidad de vida y el acceso comunitario a espacios públicos.";
 
       configurarEjemploFinanciamiento5000({
         clasificador: '004',
@@ -1000,12 +1019,12 @@
       document.getElementById('obs_terreno').value = "Adjuntar plano demostrativo.";
       document.getElementById('sintesis_evaluacion').value = "Se remiten observaciones de ejemplo a la entidad formuladora.";
 
-      document.getElementById('evaluador_nombre').value = "Profesional de ejemplo";
+      document.getElementById('evaluador_nombre').value = "Diego Castro";
       document.getElementById('fecha_evaluacion').value = "2026-08-05";
       // Registro documental de la ficha emitida
       document.getElementById('ut5000_reg_numero').value = "REG-EJEMPLO-0003";
       document.getElementById('ut5000_reg_fecha').value = "2026-08-05";
-      document.getElementById('ut5000_reg_registrado_por').value = "Profesional de ejemplo";
+      document.getElementById('ut5000_reg_registrado_por').value = "Diego Castro";
       document.getElementById('ut5000_reg_oficio').value = "OFICIO DE EJEMPLO N° 0007";
       document.getElementById('ut5000_reg_oficio_fecha').value = "2026-08-05";
       document.getElementById('ut5000_reg_observaciones').value = "Evaluación de ejemplo con observaciones remitida a la entidad formuladora.";
@@ -1031,7 +1050,7 @@
       // Registro documental de la ficha emitida (cierre del proceso)
       document.getElementById('ut5000_reg_numero').value = "REG-EJEMPLO-0004";
       document.getElementById('ut5000_reg_fecha').value = "2026-08-28";
-      document.getElementById('ut5000_reg_registrado_por').value = "Profesional de ejemplo";
+      document.getElementById('ut5000_reg_registrado_por').value = "Diego Castro";
       document.getElementById('ut5000_reg_oficio').value = "OFICIO DE EJEMPLO N° 0008";
       document.getElementById('ut5000_reg_oficio_fecha').value = "2026-08-28";
       document.getElementById('ut5000_reg_observaciones').value = "Evaluación demostrativa sin observaciones y con recomendación favorable.";
