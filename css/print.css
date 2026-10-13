@@ -65,6 +65,18 @@
     margin-bottom: 8pt !important;
   }
 
+  .official-header-logos {
+    margin-bottom: 5pt !important;
+  }
+
+  .official-header-logos img {
+    height: 36pt !important;
+    max-width: 46% !important;
+    object-fit: contain !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
   .official-header .sheet-main-title {
     font-size: 13pt !important;
     color: #000000 !important;
@@ -108,6 +120,69 @@
     padding: 4pt 6pt !important;
     font-size: 8.5pt !important;
     page-break-inside: avoid;
+  }
+
+  .pert-print-title {
+    letter-spacing: 2pt !important;
+  }
+
+  .sheet-section-title.pert-print-section-title {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-left: none !important;
+    padding: 3pt 0 !important;
+    margin: 8pt 0 2pt !important;
+    font-size: 9pt !important;
+    letter-spacing: 1pt !important;
+  }
+
+  .pert-print-table {
+    border-collapse: collapse !important;
+    margin-bottom: 6pt !important;
+    font-size: 8pt !important;
+  }
+
+  .pert-print-table th,
+  .pert-print-table td {
+    border: 1pt solid #111111 !important;
+    padding: 3pt 5pt !important;
+    color: #000000 !important;
+  }
+
+  .pert-print-table th {
+    width: 28% !important;
+  }
+
+  .pert-print-description {
+    border: 1pt solid #111111 !important;
+    padding: 3pt 5pt !important;
+    margin-bottom: 6pt !important;
+    color: #000000 !important;
+    font-size: 8pt !important;
+    page-break-inside: avoid;
+  }
+
+  .pert-print-evaluation {
+    border: 1pt solid #111111 !important;
+    margin: 0 0 4pt !important;
+    padding: 3pt 6pt 3pt 25pt !important;
+    font-size: 8pt !important;
+    page-break-inside: avoid;
+  }
+
+  .pert-print-evaluation li {
+    padding: 1pt 0 !important;
+    white-space: pre-line !important;
+  }
+
+  .pert-print-status,
+  .pert-print-footer {
+    color: #000000 !important;
+    font-size: 8pt !important;
+  }
+
+  .pert-print-footer {
+    margin-top: 4pt !important;
   }
 
   .data-table {

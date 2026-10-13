@@ -229,6 +229,22 @@
   text-align: center;
 }
 
+.official-header-logos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.official-header-logos img {
+  display: block;
+  width: auto;
+  height: 48px;
+  max-width: 46%;
+  object-fit: contain;
+}
+
 .official-header .org-name {
   font-size: 0.82rem;
   text-transform: uppercase;
@@ -307,6 +323,77 @@
   color: #1e293b;
   white-space: pre-wrap;
   margin-bottom: 0.75rem;
+}
+
+.pert-print-title {
+  letter-spacing: 2px !important;
+  margin-top: 0.5rem !important;
+}
+
+.pert-print-section-title {
+  background: #ffffff;
+  color: #111827;
+  border-left: 0;
+  padding: 0.35rem 0;
+  margin: 1rem 0 0.2rem;
+  letter-spacing: 1px;
+  font-size: 0.92rem;
+}
+
+.pert-print-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.pert-print-table th,
+.pert-print-table td {
+  border: 1px solid #111827;
+  padding: 0.32rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.pert-print-table th {
+  width: 28%;
+  font-weight: 700;
+}
+
+.pert-print-description {
+  border: 1px solid #111827;
+  padding: 0.35rem 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  white-space: pre-line;
+}
+
+.pert-print-evaluation {
+  border: 1px solid #111827;
+  margin: 0 0 0.5rem;
+  padding: 0.35rem 0.75rem 0.35rem 2.5rem;
+  font-size: 0.8rem;
+}
+
+.pert-print-evaluation li {
+  padding: 0.15rem 0;
+  padding-left: 0.15rem;
+  white-space: pre-line;
+}
+
+.pert-print-status {
+  margin: 0.45rem 0;
+  font-size: 0.8rem;
+}
+
+.pert-print-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 700;
 }
 
 .sheet-signatures-box {
@@ -649,6 +736,7 @@ body {
 .form-grid .pert-registro-field.pert-orden-13 { order: 13; }
 .form-grid .pert-registro-field.pert-orden-14 { order: 14; }
 .form-grid .pert-registro-field.pert-orden-15 { order: 15; }
+.form-grid .pert-registro-field.pert-orden-16 { order: 16; }
 
 .form-grid .c33-registro-field.c33-orden-1 { order: 1; }
 .form-grid .c33-registro-field.c33-orden-2 { order: 2; }
@@ -708,10 +796,10 @@ body {
   .form-grid .pert-registro-field.pert-orden-6,
   .form-grid .pert-registro-field.pert-orden-7,
   .form-grid .pert-registro-field.pert-orden-8,
-  .form-grid .pert-registro-field.pert-orden-12,
   .form-grid .pert-registro-field.pert-orden-13,
   .form-grid .pert-registro-field.pert-orden-14,
-  .form-grid .pert-registro-field.pert-orden-15 { grid-column: span 6; }
+  .form-grid .pert-registro-field.pert-orden-15,
+  .form-grid .pert-registro-field.pert-orden-16 { grid-column: span 6; }
   .form-grid .pert-registro-field.pert-orden-3 { grid-column: span 4; }
   .form-grid .pert-registro-field.pert-orden-4 { grid-column: span 8; }
   .form-grid .pert-registro-field.pert-orden-9,

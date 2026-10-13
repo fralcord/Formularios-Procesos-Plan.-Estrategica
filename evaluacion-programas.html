@@ -283,6 +283,13 @@
                 <span id="ayudaInstanciaProg">Se registra la primera evaluación técnica del programa.</span>
               </div>
             </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="prog_analisis">Contenido de la Evaluación Técnica <span class="required">*</span></label>
+                <textarea id="prog_analisis" name="evaluacion.texto_evaluacion" rows="5" class="form-control" placeholder="El programa brindará atención sanitaria por un equipo profesional... Cumple con los objetivos de la ERD..." required></textarea>
+              </div>
+            </div>
+
             <div class="col-6">
               <div class="form-group">
                 <label class="form-label" for="prog_estado_evaluacion">Estado de la Evaluación <span class="required">*</span></label>
@@ -297,13 +304,6 @@
               <span class="status-badge recomendado" id="badgeProg">ESTADO: RECOMENDADO</span>
             </div>
 
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label" for="prog_analisis">Contenido de la Evaluación Técnica <span class="required">*</span></label>
-                <textarea id="prog_analisis" name="evaluacion.texto_evaluacion" rows="5" class="form-control" placeholder="El programa brindará atención sanitaria por un equipo profesional... Cumple con los objetivos de la ERD..." required></textarea>
-              </div>
-            </div>
-
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="prog_evaluador">Evaluado por (Profesional) <span class="required">*</span></label>
@@ -314,12 +314,6 @@
               <div class="form-group">
                 <label class="form-label" for="prog_fecha_evaluacion">Fecha de Evaluación <span class="required">*</span></label>
                 <input type="date" id="prog_fecha_evaluacion" name="evaluacion.fecha" class="form-control" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="prog_validador">Link Validador DocDigital Ley N° 19.799</label>
-                <input type="url" id="prog_validador" name="evaluacion.url_validador_firma" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
               </div>
             </div>
           </div>
@@ -387,55 +381,29 @@
           </div>
         </section>
 
-        <!-- HISTORIAL DE ITERACIONES -->
-        <section class="form-section-card">
-          <div class="section-header">
-            <h3>2.3 Historial de Iteraciones de la Evaluación</h3>
-            <span class="section-badge">Trazabilidad</span>
-          </div>
-          <div class="table-responsive">
-            <table class="data-table" id="tablaIteracionesProg" data-table-id="iteraciones">
-              <thead>
-                <tr>
-                  <th style="width: 10%;">N°</th>
-                  <th style="width: 15%;">Fecha</th>
-                  <th style="width: 22%;">Instancia</th>
-                  <th style="width: 18%;">Estado</th>
-                  <th style="width: 27%;">Síntesis / Fundamento</th>
-                  <th style="width: 8%; text-align: center;"></th>
-                </tr>
-              </thead>
-              <tbody id="tbodyIteracionesProg">
-                <tr data-table-row>
-                  <td><input type="text" class="form-control" data-field="numero" placeholder="N°"></td>
-                  <td><input type="date" class="form-control" data-field="fecha"></td>
-                  <td>
-                    <select class="form-control" data-field="instancia">
-                      <option value="">-</option>
-                      <option>Primer Ingreso</option>
-                      <option>Responde Observaciones</option>
-                      <option>Reevaluación</option>
-                    </select>
-                  </td>
-                  <td><input type="text" class="form-control" data-field="estado" placeholder="RECOMENDADO / OBSERVADO"></td>
-                  <td><input type="text" class="form-control" data-field="detalle" placeholder="Resumen del resultado"></td>
-                  <td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" onclick="removeTableRow(this)">Eliminar</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="table-actions">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaIteracionProg()">+ Agregar Iteración Anterior</button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarPasoProg('imprimible')">Ver Ficha de Evaluación (PDF) &rarr;</button>
-            <button type="button" class="btn btn-primary btn-sm" onclick="cambiarPasoProg('documental')">Continuar a Registro Documental &rarr;</button>
-          </div>
-        </section>
+        <table id="tablaIteracionesProg" data-table-id="iteraciones" hidden style="display:none" aria-hidden="true">
+          <tbody id="tbodyIteracionesProg"><tr data-table-row>
+            <td><input type="text" data-field="numero"></td>
+            <td><input type="date" data-field="fecha"></td>
+            <td><select data-field="instancia"><option value=""></option><option>Primer Ingreso</option><option>Responde Observaciones</option><option>Reevaluación</option></select></td>
+            <td><input type="text" data-field="estado"></td>
+            <td><input type="text" data-field="detalle"></td>
+          </tr></tbody>
+        </table>
+        <div class="table-actions">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarPasoProg('imprimible')">Ver Ficha de Evaluación (PDF) &rarr;</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="cambiarPasoProg('documental')">Continuar a Registro Documental &rarr;</button>
+        </div>
       </div>
 
 <!-- ================= PASO 3: FICHA DE EVALUACIÓN (PDF) ================= -->
       <div id="seccionImprimibleOficialProg" style="display: none;">
         <div class="official-sheet">
           <div class="official-header">
+            <div class="official-header-logos">
+              <img src="assets/gore-los-lagos.png" alt="Gobierno Regional de Los Lagos">
+              <img src="assets/core-los-lagos.png" alt="Consejo Regional de Los Lagos">
+            </div>
             <div class="org-name">Gobierno Regional de la Región de Los Lagos</div>
             <div style="font-size: 0.78rem; color: #64748b;">División de Planificación y Desarrollo Regional (DIPLADER)</div>
             <div class="sheet-main-title">FICHA DE EVALUACIÓN DE PROGRAMAS</div>
@@ -508,20 +476,6 @@
             <div><strong>CLASIFICACIÓN:</strong> Programas Subtítulo 24 / Subtítulo 33</div>
             <div><strong>EVALUACIÓN:</strong> <span id="print_prog_evaluador_texto">-</span> &middot; <span id="print_prog_fecha_eval">-</span></div>
           </div>
-
-          <div class="sheet-section-title">HISTORIAL DE ITERACIONES DE LA EVALUACIÓN:</div>
-          <table class="data-table" id="tablaPrintIteracionesProg">
-            <thead>
-              <tr>
-                <th style="width: 8%;">N°</th>
-                <th style="width: 14%;">FECHA</th>
-                <th style="width: 22%;">INSTANCIA</th>
-                <th style="width: 20%;">ESTADO</th>
-                <th style="width: 36%;">SÍNTESIS / FUNDAMENTO</th>
-              </tr>
-            </thead>
-            <tbody id="print_prog_tbody_iteraciones"></tbody>
-          </table>
 
           <!-- Las firmas y las referencias a oficios se gestionan en otra instancia -->
           <div class="sheet-footer-note">
@@ -736,26 +690,7 @@
           'Sin registro de reevaluación.';
       }
 
-      // Historial de iteraciones
-      renderHistorialIteraciones(
-        'tablaIteracionesProg',
-        'print_prog_tbody_iteraciones',
-        COLUMNAS_ITERACIONES_PROG,
-        filaIteracionActual({
-          campoFecha: 'prog_fecha_evaluacion',
-          campoEstado: 'prog_estado_evaluacion',
-          campoDetalle: 'prog_analisis'
-        })
-      );
     }
-
-    const COLUMNAS_ITERACIONES_PROG = [
-      { campo: 'numero', label: 'N°' },
-      { campo: 'fecha', label: 'Fecha' },
-      { campo: 'instancia', label: 'Instancia' },
-      { campo: 'estado', label: 'Estado' },
-      { campo: 'detalle', label: 'Síntesis' }
-    ];
 
     /** Avanza al ciclo de iteraciones: responde observaciones -> reevaluación. */
     function avanzarInstanciaProg() {
@@ -781,28 +716,6 @@
         linea: 'Evaluación de Programas'
       });
       showJsonModal('Evaluación de Programas - Payload para Backend', data);
-    }
-
-    function agregarFilaIteracionProg() {
-      const template = `
-        <tr data-table-row>
-          <td><input type="text" class="form-control" data-field="numero" placeholder="N°"></td>
-          <td><input type="date" class="form-control" data-field="fecha"></td>
-          <td>
-            <select class="form-control" data-field="instancia">
-              <option value="">-</option>
-              <option>Primer Ingreso</option>
-              <option>Responde Observaciones</option>
-              <option>Reevaluación</option>
-            </select>
-          </td>
-          <td><input type="text" class="form-control" data-field="estado" placeholder="RECOMENDADO / OBSERVADO"></td>
-          <td><input type="text" class="form-control" data-field="detalle" placeholder="Resumen del resultado"></td>
-          <td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" onclick="removeTableRow(this)">Eliminar</button></td>
-        </tr>
-      `;
-      addTableRow('tablaIteracionesProg', template);
-      actualizarFichaImprimibleProg();
     }
 
     function cargarEjemploProgramaSalud() {

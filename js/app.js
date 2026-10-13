@@ -522,68 +522,6 @@ function serializarEvaluacion(formId, opciones) {
 }
 
 /* ==========================================================================
-   HISTORIAL DE ITERACIONES EN LA FICHA IMPRIMIBLE
-   ========================================================================== */
-
-/**
- * Pinta en la ficha oficial la tabla de historial de iteraciones leída desde
- * la tabla dinámica del formulario, agregando la iteración en curso.
- *
- * @param {string} tablaOrigenId  Tabla del formulario con data-table-row
- * @param {string} tbodyDestinoId  tbody de la tabla en la ficha oficial
- * @param {Array}  columnas        [{ campo, label, ancho }]
- * @param {object} iteracionActual { fila en curso a resaltar }
- */
-function renderHistorialIteraciones(tablaOrigenId, tbodyDestinoId, columnas, iteracionActual) {
-  const destino = document.getElementById(tbodyDestinoId);
-  if (!destino) return;
-
-  const origen = document.getElementById(tablaOrigenId);
-  let html = '';
-
-  if (origen) {
-    origen.querySelectorAll('tbody tr[data-table-row]').forEach(fila => {
-      const datos = columnas.map(col => {
-        const valor = fila.querySelector('[data-field="' + col.campo + '"]')?.value;
-        return valor || '-';
-      });
-      // Se omiten las filas de historial que el funcionario aún no ha llenado.
-      if (datos.every(v => v === '-')) return;
-      html += '<tr>' + datos.map(v => `<td>${v}</td>`).join('') + '</tr>';
-    });
-  }
-
-  if (iteracionActual && iteracionActual.valores) {
-    const celdas = columnas.map(col => {
-      const valor = iteracionActual.valores[col.campo];
-      return `<td>${valor || '-'}</td>`;
-    }).join('');
-    html += `<tr class="fila-iteracion-actual">${celdas}</tr>`;
-  }
-
-  destino.innerHTML = html || '<tr><td colspan="' + columnas.length + '">Sin iteraciones registradas.</td></tr>';
-}
-
-/**
- * Crea la fila de la iteración en curso a partir de los campos de la página.
- * Los identificadores se resuelven con el prefijo de cada formulario.
- */
-function filaIteracionActual(cfg) {
-  const getVal = id => (document.getElementById(id)?.value || '').trim();
-  const clave = AppIteracion.actual(cfg.selectorId);
-  return {
-    clave: clave,
-    valores: {
-      numero: AppIteracion.numeroActual(cfg.selectorId),
-      fecha: getVal(cfg.campoFecha),
-      instancia: AppIteracion.ETIQUETAS[clave],
-      estado: getVal(cfg.campoEstado),
-      detalle: cfg.campoDetalle ? getVal(cfg.campoDetalle).replace(/\s+/g, ' ').slice(0, 160) : ''
-    }
-  };
-}
-
-/* ==========================================================================
    IMPRESIÓN DE LA FICHA OFICIAL
    ========================================================================== */
 

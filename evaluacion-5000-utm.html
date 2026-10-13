@@ -66,7 +66,7 @@
          data-tabla-iteraciones="tablaIteraciones5000"
          data-panel-evaluacion="pasoEvaluacion5000"
          data-campo-estado="estado_resultado_evaluacion"
-         data-campo-fecha="fecha_termino_ev"
+         data-campo-fecha="fecha_evaluacion"
          data-campo-detalle="sintesis_evaluacion"
          data-tag-print="print_instancia_5000"
          data-tag-iteracion="print_iteracion_5000, badgeIteracionRespuesta5000, badgeIteracionReevaluacion5000"
@@ -298,21 +298,6 @@
                 <span id="ayudaInstancia5000">Se registra la primera revisión técnica de la iniciativa.</span>
               </div>
             </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="estado_resultado_evaluacion">Estado o Resultado de la Evaluación <span class="required">*</span></label>
-                <select id="estado_resultado_evaluacion" name="evaluacion_tecnica.estado_resultado" class="form-control" required onchange="actualizarBadgeResultado5000(this.value)">
-                  <option value="OBSERVADO">OBSERVADO (Con Observaciones pendientes)</option>
-                  <option value="SIN OBSERVACIONES">SIN OBSERVACIONES (Recomendado)</option>
-                  <option value="RECOMENDADO">RECOMENDADO TÉCNICAMENTE</option>
-                  <option value="RECHAZADO">RECHAZADO</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-6" style="display: flex; align-items: flex-end; padding-bottom: 0.5rem;">
-              <span class="status-badge observado" id="badgePreview5000">ESTADO: OBSERVADO</span>
-            </div>
-
             <!-- Desglose por Áreas Oficiales -->
             <div class="col-12">
               <div class="form-group">
@@ -373,6 +358,21 @@
               </div>
             </div>
 
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="estado_resultado_evaluacion">Estado o Resultado de la Evaluación <span class="required">*</span></label>
+                <select id="estado_resultado_evaluacion" name="evaluacion_tecnica.estado_resultado" class="form-control" required onchange="actualizarBadgeResultado5000(this.value)">
+                  <option value="OBSERVADO">OBSERVADO (Con Observaciones pendientes)</option>
+                  <option value="SIN OBSERVACIONES">SIN OBSERVACIONES (Recomendado)</option>
+                  <option value="RECOMENDADO">RECOMENDADO TÉCNICAMENTE</option>
+                  <option value="RECHAZADO">RECHAZADO</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6" style="display: flex; align-items: flex-end; padding-bottom: 0.5rem;">
+              <span class="status-badge observado" id="badgePreview5000">ESTADO: OBSERVADO</span>
+            </div>
+
             <!-- Trazabilidad y Firmas -->
             <div class="col-4">
               <div class="form-group">
@@ -382,29 +382,11 @@
             </div>
             <div class="col-4">
               <div class="form-group">
-                <label class="form-label" for="fecha_ingreso_ev">Fecha Ingreso a Evaluación <span class="required">*</span></label>
-                <input type="date" id="fecha_ingreso_ev" name="control_evaluacion.fecha_ingreso_evaluacion" class="form-control" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="fecha_termino_ev">Fecha Término Evaluación <span class="required">*</span></label>
-                <input type="date" id="fecha_termino_ev" name="control_evaluacion.fecha_termino_evaluacion" class="form-control" required>
+                <label class="form-label" for="fecha_evaluacion">Fecha de Evaluación <span class="required">*</span></label>
+                <input type="date" id="fecha_evaluacion" name="control_evaluacion.fecha_evaluacion" class="form-control" required>
               </div>
             </div>
 
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="jefe_division_nombre">Jefatura Validadora</label>
-                <input type="text" id="jefe_division_nombre" name="control_evaluacion.jefe_division_nombre" class="form-control" value="Washington Alejandro Montaña Ampuero">
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="url_validador_firma">Enlace Validador DocDigital Ley N° 19.799</label>
-                <input type="url" id="url_validador_firma" name="control_evaluacion.url_validador_firma" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
-              </div>
-            </div>
           </div>
         </section>
 
@@ -470,55 +452,29 @@
           </div>
         </section>
 
-        <!-- HISTORIAL DE ITERACIONES -->
-        <section class="form-section-card">
-          <div class="section-header">
-            <h3>2.3 Historial de Iteraciones de la Evaluación</h3>
-            <span class="section-badge">Trazabilidad</span>
-          </div>
-          <div class="table-responsive">
-            <table class="data-table" id="tablaIteraciones5000" data-table-id="iteraciones">
-              <thead>
-                <tr>
-                  <th style="width: 10%;">N°</th>
-                  <th style="width: 15%;">Fecha</th>
-                  <th style="width: 22%;">Instancia</th>
-                  <th style="width: 18%;">Estado</th>
-                  <th style="width: 27%;">Síntesis / Fundamento</th>
-                  <th style="width: 8%; text-align: center;"></th>
-                </tr>
-              </thead>
-              <tbody id="tbodyIteraciones5000">
-                <tr data-table-row>
-                  <td><input type="text" class="form-control" data-field="numero" placeholder="N°"></td>
-                  <td><input type="date" class="form-control" data-field="fecha"></td>
-                  <td>
-                    <select class="form-control" data-field="instancia">
-                      <option value="">-</option>
-                      <option>Primer Ingreso</option>
-                      <option>Responde Observaciones</option>
-                      <option>Reevaluación</option>
-                    </select>
-                  </td>
-                  <td><input type="text" class="form-control" data-field="estado" placeholder="OBSERVADO / SIN OBSERVACIONES"></td>
-                  <td><input type="text" class="form-control" data-field="detalle" placeholder="Resumen del resultado"></td>
-                  <td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" onclick="removeTableRow(this)">Eliminar</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="table-actions">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaIteracion5000()">+ Agregar Iteración Anterior</button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarPaso5000('imprimible')">Ver Ficha de Evaluación (PDF) &rarr;</button>
-            <button type="button" class="btn btn-primary btn-sm" onclick="cambiarPaso5000('documental')">Continuar a Registro Documental &rarr;</button>
-          </div>
-        </section>
+        <table id="tablaIteraciones5000" data-table-id="iteraciones" hidden style="display:none" aria-hidden="true">
+          <tbody id="tbodyIteraciones5000"><tr data-table-row>
+            <td><input type="text" data-field="numero"></td>
+            <td><input type="date" data-field="fecha"></td>
+            <td><select data-field="instancia"><option value=""></option><option>Primer Ingreso</option><option>Responde Observaciones</option><option>Reevaluación</option></select></td>
+            <td><input type="text" data-field="estado"></td>
+            <td><input type="text" data-field="detalle"></td>
+          </tr></tbody>
+        </table>
+        <div class="table-actions">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarPaso5000('imprimible')">Ver Ficha de Evaluación (PDF) &rarr;</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="cambiarPaso5000('documental')">Continuar a Registro Documental &rarr;</button>
+        </div>
       </div>
 
 <!-- ================= PASO 3: FICHA DE EVALUACIÓN (PDF) ================= -->
       <div id="seccionImprimibleOficial5000" style="display: none;">
         <div class="official-sheet">
           <div class="official-header">
+            <div class="official-header-logos">
+              <img src="assets/gore-los-lagos.png" alt="Gobierno Regional de Los Lagos">
+              <img src="assets/core-los-lagos.png" alt="Consejo Regional de Los Lagos">
+            </div>
             <div class="org-name">Gobierno Regional de la Región de Los Lagos</div>
             <div style="font-size: 0.78rem; color: #64748b;">División de Planificación y Desarrollo Regional (DIPLADER)</div>
             <div class="sheet-main-title">FICHA DE EVALUACION INICIATIVAS MENORES A 5.000 UTM</div>
@@ -603,20 +559,6 @@
             <div><strong>INGRESO:</strong> <span id="print_5000_fechas_tramite">-</span></div>
             <div><strong>EVALUACIÓN:</strong> <span id="print_5000_evaluador_texto">-</span></div>
           </div>
-
-          <div class="sheet-section-title">HISTORIAL DE ITERACIONES DE LA EVALUACIÓN:</div>
-          <table class="data-table" id="tablaPrintIteraciones5000">
-            <thead>
-              <tr>
-                <th style="width: 8%;">N°</th>
-                <th style="width: 14%;">FECHA</th>
-                <th style="width: 22%;">INSTANCIA</th>
-                <th style="width: 20%;">ESTADO</th>
-                <th style="width: 36%;">SÍNTESIS / FUNDAMENTO</th>
-              </tr>
-            </thead>
-            <tbody id="print_5000_tbody_iteraciones"></tbody>
-          </table>
 
           <!-- Las firmas y las referencias a oficios se gestionan en otra instancia -->
           <div class="sheet-footer-note">
@@ -822,9 +764,8 @@
         badge.textContent = estado;
       }
 
-      const fIng = getVal('fecha_ingreso_ev');
-      const fTer = getVal('fecha_termino_ev');
-      document.getElementById('print_5000_fechas_tramite').textContent = `Ingreso: ${fIng} | Término: ${fTer}`;
+      const fechaEvaluacion = getVal('fecha_evaluacion');
+      document.getElementById('print_5000_fechas_tramite').textContent = fechaEvaluacion || '-';
 
       document.getElementById('print_5000_evaluador_texto').textContent =
         getVal('evaluador_nombre') || 'Profesional Evaluador';
@@ -858,26 +799,7 @@
           'Sin registro de reevaluación.';
       }
 
-      // Historial de iteraciones
-      renderHistorialIteraciones(
-        'tablaIteraciones5000',
-        'print_5000_tbody_iteraciones',
-        COLUMNAS_ITERACIONES_5000,
-        filaIteracionActual({
-          campoFecha: 'fecha_termino_ev',
-          campoEstado: 'estado_resultado_evaluacion',
-          campoDetalle: 'sintesis_evaluacion'
-        })
-      );
     }
-
-    const COLUMNAS_ITERACIONES_5000 = [
-      { campo: 'numero', label: 'N°' },
-      { campo: 'fecha', label: 'Fecha' },
-      { campo: 'instancia', label: 'Instancia' },
-      { campo: 'estado', label: 'Estado' },
-      { campo: 'detalle', label: 'Síntesis' }
-    ];
 
     /** Avanza al ciclo de iteraciones: responde observaciones -> reevaluación. */
     function avanzarInstancia5000() {
@@ -895,28 +817,6 @@
         'seccionImprimibleOficial5000'
       );
       window.print();
-    }
-
-    function agregarFilaIteracion5000() {
-      const template = `
-        <tr data-table-row>
-          <td><input type="text" class="form-control" data-field="numero" placeholder="N°"></td>
-          <td><input type="date" class="form-control" data-field="fecha"></td>
-          <td>
-            <select class="form-control" data-field="instancia">
-              <option value="">-</option>
-              <option>Primer Ingreso</option>
-              <option>Responde Observaciones</option>
-              <option>Reevaluación</option>
-            </select>
-          </td>
-          <td><input type="text" class="form-control" data-field="estado" placeholder="OBSERVADO / SIN OBSERVACIONES"></td>
-          <td><input type="text" class="form-control" data-field="detalle" placeholder="Resumen del resultado"></td>
-          <td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" onclick="removeTableRow(this)">Eliminar</button></td>
-        </tr>
-      `;
-      addTableRow('tablaIteraciones5000', template);
-      actualizarFichaImprimible5000();
     }
 
     function guardarFormulario5000() {
@@ -951,10 +851,7 @@
       document.getElementById('sintesis_evaluacion').value = "Se remiten observaciones a la unidad formuladora para su oportuna subsanación.";
 
       document.getElementById('evaluador_nombre').value = "Diego Alexis Castro Henríquez";
-      document.getElementById('fecha_ingreso_ev').value = "2026-08-05";
-      document.getElementById('fecha_termino_ev').value = "2026-08-05";
-      document.getElementById('url_validador_firma').value = "https://doc.digital.gob.cl/validador/BIJFVM-278";
-
+      document.getElementById('fecha_evaluacion').value = "2026-08-05";
       // Registro documental de la ficha emitida
       document.getElementById('ut5000_reg_numero').value = "REG-DIP-2026-0288";
       document.getElementById('ut5000_reg_fecha').value = "2026-08-05";
@@ -976,8 +873,7 @@
       document.getElementById('obs_anexos').value = "";
       document.getElementById('obs_terreno').value = "";
       document.getElementById('sintesis_evaluacion').value = "Sin Observaciones. Cumple cabalmente los requerimientos técnicos y se recomienda su financiamiento.";
-      document.getElementById('fecha_ingreso_ev').value = "2026-08-28";
-      document.getElementById('fecha_termino_ev').value = "2026-08-28";
+      document.getElementById('fecha_evaluacion').value = "2026-08-28";
 
       // La Rev-6 es el resultado de la reevaluación previa respuesta a las
       // observaciones de la Rev-2.

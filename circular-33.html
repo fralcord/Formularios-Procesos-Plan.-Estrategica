@@ -299,7 +299,7 @@
           </div>
 
           <div class="callout callout-info">
-            <span>Instancia en registro: <strong id="instanciaDescripcionEvalC33">Primer Ingreso</strong>. Al registrar un resultado con observaciones, active <strong>&laquo;Continuar a la siguiente instancia&raquo;</strong> para incorporar la respuesta del postulante y su reevaluación.</span>
+            <span>Instancia en registro: <strong id="instanciaDescripcionEvalC33">Primer Ingreso</strong>. Al registrar un resultado con observaciones, active <strong>&laquo;Continuar a la siguiente instancia&raquo;</strong> para abrir el siguiente registro evaluativo.</span>
           </div>
 
           <div class="form-grid">
@@ -308,6 +308,16 @@
                 <span id="ayudaInstanciaC33">Se registra la primera evaluación técnica de la iniciativa.</span>
               </div>
             </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="c33_observaciones_eval">
+                  <span>Detalle de la Evaluación y Observaciones Sectoriales <span class="required">*</span></span>
+                  <span class="form-hint">Certificaciones: asignación de conductor/operador con licencia profesional vigente, ficha técnica, cotizaciones, costos de mantención</span>
+                </label>
+                <textarea id="c33_observaciones_eval" name="evaluacion_c33.texto_observaciones" rows="6" class="form-control" placeholder="Respecto a certificaciones: Certificado de asignación de conductor: falta documento emitido por el municipio..." required></textarea>
+              </div>
+            </div>
+
             <div class="col-6">
               <div class="form-group">
                 <label class="form-label" for="c33_estado">Estado de la Evaluación <span class="required">*</span></label>
@@ -322,16 +332,6 @@
               <span class="status-badge observado" id="badgeC33">ESTADO: OBSERVADO</span>
             </div>
 
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label" for="c33_observaciones_eval">
-                  <span>Detalle de la Evaluación y Observaciones Sectoriales <span class="required">*</span></span>
-                  <span class="form-hint">Certificaciones: asignación de conductor/operador con licencia profesional vigente, ficha técnica, cotizaciones, costos de mantención</span>
-                </label>
-                <textarea id="c33_observaciones_eval" name="evaluacion_c33.texto_observaciones" rows="6" class="form-control" placeholder="Respecto a certificaciones: Certificado de asignación de conductor: falta documento emitido por el municipio..." required></textarea>
-              </div>
-            </div>
-
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="c33_evaluador">Evaluado por (Profesional) <span class="required">*</span></label>
@@ -342,12 +342,6 @@
               <div class="form-group">
                 <label class="form-label" for="c33_fecha_eval">Fecha de Evaluación <span class="required">*</span></label>
                 <input type="date" id="c33_fecha_eval" name="evaluacion_c33.fecha_evaluacion" class="form-control" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="c33_validador">Enlace Validador DocDigital Ley N° 19.799</label>
-                <input type="url" id="c33_validador" name="evaluacion_c33.url_validador" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
               </div>
             </div>
           </div>
@@ -415,55 +409,29 @@
           </div>
         </section>
 
-        <!-- HISTORIAL DE ITERACIONES -->
-        <section class="form-section-card">
-          <div class="section-header">
-            <h3>2.3 Historial de Iteraciones de la Evaluación</h3>
-            <span class="section-badge">Trazabilidad</span>
-          </div>
-          <div class="table-responsive">
-            <table class="data-table" id="tablaIteracionesC33" data-table-id="iteraciones">
-              <thead>
-                <tr>
-                  <th style="width: 10%;">N°</th>
-                  <th style="width: 15%;">Fecha</th>
-                  <th style="width: 22%;">Instancia</th>
-                  <th style="width: 18%;">Estado</th>
-                  <th style="width: 27%;">Síntesis / Fundamento</th>
-                  <th style="width: 8%; text-align: center;"></th>
-                </tr>
-              </thead>
-              <tbody id="tbodyIteracionesC33">
-                <tr data-table-row>
-                  <td><input type="text" class="form-control" data-field="numero" placeholder="N°"></td>
-                  <td><input type="date" class="form-control" data-field="fecha"></td>
-                  <td>
-                    <select class="form-control" data-field="instancia">
-                      <option value="">-</option>
-                      <option>Primer Ingreso</option>
-                      <option>Responde Observaciones</option>
-                      <option>Reevaluación</option>
-                    </select>
-                  </td>
-                  <td><input type="text" class="form-control" data-field="estado" placeholder="OBSERVADO / RECOMENDADO"></td>
-                  <td><input type="text" class="form-control" data-field="detalle" placeholder="Resumen del resultado"></td>
-                  <td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" onclick="removeTableRow(this)">Eliminar</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="table-actions">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaIteracionC33()">+ Agregar Iteración Anterior</button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarPasoC33('imprimible')">Ver Ficha de Evaluación (PDF) &rarr;</button>
-            <button type="button" class="btn btn-primary btn-sm" onclick="cambiarPasoC33('documental')">Continuar a Registro Documental &rarr;</button>
-          </div>
-        </section>
+        <table id="tablaIteracionesC33" data-table-id="iteraciones" hidden style="display:none" aria-hidden="true">
+          <tbody id="tbodyIteracionesC33"><tr data-table-row>
+            <td><input type="text" data-field="numero"></td>
+            <td><input type="date" data-field="fecha"></td>
+            <td><select data-field="instancia"><option value=""></option><option>Primer Ingreso</option><option>Responde Observaciones</option><option>Reevaluación</option></select></td>
+            <td><input type="text" data-field="estado"></td>
+            <td><input type="text" data-field="detalle"></td>
+          </tr></tbody>
+        </table>
+        <div class="table-actions">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarPasoC33('imprimible')">Ver Ficha de Evaluación (PDF) &rarr;</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="cambiarPasoC33('documental')">Continuar a Registro Documental &rarr;</button>
+        </div>
       </div>
 
 <!-- ================= PASO 3: FICHA DE EVALUACIÓN (PDF) ================= -->
       <div id="seccionImprimibleOficialC33" style="display: none;">
         <div class="official-sheet">
           <div class="official-header">
+            <div class="official-header-logos">
+              <img src="assets/gore-los-lagos.png" alt="Gobierno Regional de Los Lagos">
+              <img src="assets/core-los-lagos.png" alt="Consejo Regional de Los Lagos">
+            </div>
             <div class="org-name">Gobierno Regional de la Región de Los Lagos</div>
             <div style="font-size: 0.78rem; color: #64748b;">División de Planificación y Desarrollo Regional (DIPLADER)</div>
             <div class="sheet-main-title">FICHA DE EVALUACION INICIATIVAS CIRCULAR N° 33</div>
@@ -548,20 +516,6 @@
             <div><strong>SUBTÍTULO:</strong> <span id="print_c33_subtitulo">-</span></div>
             <div><strong>EVALUACIÓN:</strong> <span id="print_c33_evaluador_texto">-</span> &middot; <span id="print_c33_fecha_eval">-</span></div>
           </div>
-
-          <div class="sheet-section-title">HISTORIAL DE ITERACIONES DE LA EVALUACIÓN:</div>
-          <table class="data-table" id="tablaPrintIteracionesC33">
-            <thead>
-              <tr>
-                <th style="width: 8%;">N°</th>
-                <th style="width: 14%;">FECHA</th>
-                <th style="width: 22%;">INSTANCIA</th>
-                <th style="width: 20%;">ESTADO</th>
-                <th style="width: 36%;">SÍNTESIS / FUNDAMENTO</th>
-              </tr>
-            </thead>
-            <tbody id="print_c33_tbody_iteraciones"></tbody>
-          </table>
 
           <!-- Las firmas y las referencias a oficios se gestionan en otra instancia -->
           <div class="sheet-footer-note">
@@ -780,26 +734,7 @@
           'Sin registro de reevaluación.';
       }
 
-      // Historial de iteraciones
-      renderHistorialIteraciones(
-        'tablaIteracionesC33',
-        'print_c33_tbody_iteraciones',
-        COLUMNAS_ITERACIONES_C33,
-        filaIteracionActual({
-          campoFecha: 'c33_fecha_eval',
-          campoEstado: 'c33_estado',
-          campoDetalle: 'c33_observaciones_eval'
-        })
-      );
     }
-
-    const COLUMNAS_ITERACIONES_C33 = [
-      { campo: 'numero', label: 'N°' },
-      { campo: 'fecha', label: 'Fecha' },
-      { campo: 'instancia', label: 'Instancia' },
-      { campo: 'estado', label: 'Estado' },
-      { campo: 'detalle', label: 'Síntesis' }
-    ];
 
     /** Avanza al ciclo de iteraciones: responde observaciones -> reevaluación. */
     function avanzarInstanciaC33() {
@@ -817,28 +752,6 @@
         'seccionImprimibleOficialC33'
       );
       window.print();
-    }
-
-    function agregarFilaIteracionC33() {
-      const template = `
-        <tr data-table-row>
-          <td><input type="text" class="form-control" data-field="numero" placeholder="N°"></td>
-          <td><input type="date" class="form-control" data-field="fecha"></td>
-          <td>
-            <select class="form-control" data-field="instancia">
-              <option value="">-</option>
-              <option>Primer Ingreso</option>
-              <option>Responde Observaciones</option>
-              <option>Reevaluación</option>
-            </select>
-          </td>
-          <td><input type="text" class="form-control" data-field="estado" placeholder="OBSERVADO / RECOMENDADO"></td>
-          <td><input type="text" class="form-control" data-field="detalle" placeholder="Resumen del resultado"></td>
-          <td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" onclick="removeTableRow(this)">Eliminar</button></td>
-        </tr>
-      `;
-      addTableRow('tablaIteracionesC33', template);
-      actualizarFichaImprimibleC33();
     }
 
     function guardarFormularioCircular33() {

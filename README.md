@@ -13,7 +13,7 @@ Cada formulario cuenta con una barra de pestañas superior que refleja el orden 
 | Pestaña | Contenido |
 |---|---|
 | `[1] Registro de la Iniciativa` | Identificación de la iniciativa, localización y antecedentes de postulación/oficio; los campos varían según el formulario. |
-| `[2] Evaluación y sus Resultados` | Dictamen, observaciones, estado, iteraciones y bloques de respuesta/reevaluación. |
+| `[2] Evaluación y sus Resultados` | Detalle del dictamen, estado y, según la línea, bloques de respuesta/reevaluación. |
 | `[3] Ficha de Evaluación (PDF)` | Vista de la ficha oficial de la iteración en curso; al imprimir, solo esta sección se exporta. |
 | `[4] Registro Documental Evaluación` | Constancia documental (N° registro, oficio, validador). |
 
@@ -35,7 +35,7 @@ La plataforma organiza la captura en módulos independientes, no en una secuenci
 ```
 
 1. **Registro de la Iniciativa** *(módulo independiente)*: se identifican la iniciativa y sus antecedentes de postulación. Según el formulario, incluye proceso presupuestario, código BIP/IDI, nombre, unidades formuladora y técnica, sector o subtítulo, localización, etapa, costo total y antecedentes del oficio de postulación. No es requisito previo para editar o completar la evaluación ni el registro documental.
-2. **Evaluación y sus Resultados** *(módulo con ciclo iterativo propio)*: el profesional registra el dictamen técnico, las observaciones por área y el estado resultante. Sólo el avance entre instancias valida y archiva los snapshots de esta evaluación en el payload; el historial visible se administrará desde la base de datos para el dashboard. El N° de iteración se calcula con los registros archivados y la instancia activa. Desde aquí se genera la **Ficha de Evaluación en PDF**, documento oficial de la DIPLADER.
+2. **Evaluación y sus Resultados** *(módulo con ciclo iterativo propio)*: el profesional registra el dictamen técnico, las observaciones por área y el estado resultante; el estado se presenta después del detalle de la evaluación. Sólo el avance entre instancias valida y archiva los snapshots de esta evaluación en el payload; el historial no se muestra en el formulario ni en la ficha PDF y se destina a la base de datos para el dashboard. El N° de iteración se calcula con los registros archivados y la instancia activa. Desde aquí se genera la **Ficha de Evaluación en PDF**, documento oficial de la DIPLADER.
 3. **Ficha de Evaluación (PDF)**: permite visualizar y exportar la ficha oficial de la iteración en curso; en impresión se ocultan los controles del formulario y se muestra únicamente esta sección.
 4. **Registro Documental Evaluación** *(módulo independiente)*: permite dejar constancia de la ficha emitida: N° de registro, fecha, profesional que registra, referencia del oficio y enlace validador Ley N° 19.799. No se exige para continuar el ciclo de evaluación ni se modifica al avanzar entre instancias.
 
@@ -67,7 +67,7 @@ Cada resultado que exige observaciones devuelve la iniciativa al postulante y ab
 | Iniciativas Menores a 5.000 UTM | Disponible | Disponible | Disponible |
 | Evaluación de Programas | Disponible | Disponible | Disponible |
 
-En cada formulario, el selector **"Instancia de Evaluación"** describe el tipo de entrada asociada a la iniciativa y determina la presentación de la instancia. El número de iteración se calcula sumando una a la cantidad de etapas previas archivadas, usando como mínimo el ordinal inicial de la instancia seleccionada. Las etapas cerradas desde el botón se archivan con sus campos completos y fecha. En **Pertinencia** no se muestra un bloque separado para capturar la respuesta del postulante ni una tabla de historial en el formulario/PDF: cada evaluación se almacena como una nueva entrada con su atributo de instancia, y los snapshots quedan destinados a la base de datos y al dashboard. Las otras líneas mantienen sus bloques y tabla de historial visibles.
+En cada formulario, el selector **"Instancia de Evaluación"** describe el tipo de entrada asociada a la iniciativa y determina la presentación de la instancia. El número de iteración se calcula sumando una a la cantidad de etapas previas archivadas, usando como mínimo el ordinal inicial de la instancia seleccionada. Las etapas cerradas desde el botón se archivan con sus campos completos y fecha. Las iteraciones se conservan en el payload como datos para la base de datos y el dashboard, pero no se presentan como historial en los formularios ni en las fichas PDF. En **Pertinencia** no se muestra un bloque separado para capturar la respuesta del postulante; en las otras líneas se mantienen sus bloques de respuesta y reevaluación.
 
 > **Alcance de validación:** esta versión es una plataforma cliente sin API ni servidor. Las comprobaciones al avanzar y el snapshot del historial se ejecutan en el navegador; cualquier API futura debe repetirlas en el servidor (campos obligatorios, orden cronológico, continuidad de instancia y preservación del snapshot), sin confiar en datos validados sólo por el cliente.
 
@@ -79,12 +79,12 @@ Los cuatro formularios comparten la navegación y el ciclo de evaluación, pero 
 
 | Formulario | Orden y campos del Registro de la Iniciativa |
 |---|---|
-| **Evaluación de Pertinencia** | Proceso presupuestario (año), etapa a la que postula, código BIP/IDI y nombre de la iniciativa, unidad formuladora y unidad técnica, sector/tipología y costo total, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
+| **Evaluación de Pertinencia** | Proceso presupuestario (año), etapa a la que postula, código BIP/IDI y nombre de la iniciativa, unidad formuladora y unidad técnica, sector/tipología y costo total (M$), provincia/comuna/localidad, descripción del proyecto, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
 | **Circular N° 33** | Proceso presupuestario (año) y subtítulo, código BIP/IDI y nombre de iniciativa/acción, unidad formuladora y unidad técnica, sector y costo total, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
 | **Iniciativas Menores a 5.000 UTM** | Proceso presupuestario (año) y etapa a la que postula (opciones: Diseño y Ejecución), código IDI/BIP y nombre de la iniciativa, unidad formuladora y unidad técnica, sector y costo total, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
 | **Evaluación de Programas** | Proceso presupuestario (año) y sector, código IDI/BIP y nombre del programa, unidad formuladora y unidad técnica, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación; costo total se conserva al final del registro. |
 
-Los campos de oficio y sus fechas de ingreso se capturan como antecedentes de la iniciativa. La etapa postulada solo está incluida en Pertinencia y en el formulario **Menores a 5.000 UTM**; en este último el selector ofrece únicamente **Diseño** y **Ejecución**. El subtítulo corresponde a Circular N° 33. No se debe asumir que los cuatro formularios tienen un cuadro común de financiamiento FNDR.
+Los campos de oficio y sus fechas de ingreso se capturan como antecedentes de la iniciativa. En Pertinencia, la descripción del proyecto se registra después de provincia, comuna y localidad; la ficha muestra esa descripción y el costo total de la iniciativa (M$), sin agregar un desglose de fuentes o partidas de financiamiento. La etapa postulada solo está incluida en Pertinencia y en el formulario **Menores a 5.000 UTM**; en este último el selector ofrece únicamente **Diseño** y **Ejecución**. El subtítulo corresponde a Circular N° 33. No se debe asumir que los cuatro formularios tienen un cuadro común de financiamiento FNDR.
 
 La grilla mantiene juntos los campos que forman pares o grupos —por ejemplo, código y nombre, unidades, localización y fechas— en pantallas amplias; en pantallas pequeñas los campos se apilan para facilitar su captura.
 
@@ -96,7 +96,7 @@ La arquitectura restante del flujo es:
    - Dictamen técnico, desglose de observaciones sectoriales específicas, estado de la evaluación (OBSERVADO / RECOMENDADO / SIN OBSERVACIONES / PERTINENTE), profesional evaluador y fecha.
    - En Pertinencia, **Responde Observaciones** abre una nueva entrada evaluativa de la misma iniciativa; la clase de instancia se guarda como atributo del registro, sin un bloque de captura de respuesta embebido.
    - Bloque **2.2 Reevaluación**, activo sólo en la instancia **Reevaluación** y en las líneas que la admiten.
-   - En Pertinencia, las iteraciones se archivan en el payload y se consultarán desde la base de datos para el dashboard, no mediante una tabla en el formulario o PDF. Las otras líneas mantienen el historial visible.
+   - Las iteraciones se archivan en el payload y se consultarán desde la base de datos para el dashboard; ninguna línea presenta una tabla de historial en el formulario o PDF.
    - **Salida del paso: Ficha de Evaluación (PDF)**, documento oficial de la DIPLADER, que se previsualiza en la tercera pestaña del formulario.
 3. **Paso 3: Ficha de Evaluación (PDF)**
    - Vista e impresión de la ficha oficial correspondiente a la iteración en curso.
@@ -119,6 +119,9 @@ La arquitectura restante del flujo es:
 ├── css/
 │   ├── styles.css               # Estilos institucionales GORE Los Lagos (responsivo, grillas, tabs, flujograma)
 │   └── print.css                # Estilos oficiales para impresión limpia y exportación a PDF institucional
+├── assets/
+│   ├── gore-los-lagos.png        # Logotipo del Gobierno Regional de Los Lagos
+│   └── core-los-lagos.png        # Logotipo del Consejo Regional de Los Lagos
 ├── js/
 │   ├── app.js                   # Controlador cliente, auto-cálculos, visor JSON y motor de iteraciones
 │   └── schemas.js               # Contrato formal de modelos y esquemas JSON para el equipo de Base de Datos
@@ -145,14 +148,16 @@ La arquitectura restante del flujo es:
       - `[4] Registro Documental Evaluación`
 4. **Avance de iteración**
    - Al registrar un estado con observaciones, el botón **"Continuar a la siguiente instancia"** activa la instancia correspondiente y posiciona el formulario en el paso de evaluación.
-   - En las líneas con historial visible, el botón **"+ Agregar Iteración Anterior"** permite incorporar iteraciones ya concluidas. Pertinencia no incluye este control; su flujo archiva automáticamente los snapshots al avanzar.
+   - El botón **"Continuar a la siguiente instancia"** archiva automáticamente el snapshot de la evaluación concluida; no se capturan iteraciones anteriores manualmente en el formulario.
 5. **Botones de Caso Real ("Cargar Caso...")**
    - **Pertinencia**: *Caso Tehuaco* (Dalcahue, emisión ORD 1628 a MDSF) y *Caso Maillen* (Puerto Montt, Oficio 1644 con observaciones).
    - **Circular 33**: *Maquinaria Chiloé* (Anexo 1 con C.A.E.) y *Camión Aljibe Los Muermos* (Evaluación técnica).
    - **Menores a 5.000 UTM**: *Rev-2* (Puyehue con observaciones sectoriales) y *Rev-6* (Puyehue, reevaluación sin observaciones, con el historial de la Rev-2 ya cargado).
    - **Programas**: *Salud Osorno* (`40065461-0`) y *Cuidados Renales Puerto Montt* (`40080639-0`).
 6. **Impresión / Exportación a PDF Oficial**
-   - El botón **"Imprimir / Guardar PDF"** activa los estilos de `css/print.css`, ocultando la interfaz de captura y enviando a la impresora o convertidor PDF la **Ficha de Evaluación** con la identificación acotada y la evaluación de la iteración en curso. Pertinencia no imprime historial; éste se destina a la base de datos y el dashboard.
+   - El botón **"Imprimir / Guardar PDF"** activa los estilos de `css/print.css`, ocultando la interfaz de captura y enviando a la impresora o convertidor PDF la **Ficha de Evaluación** con la identificación acotada y la evaluación de la iteración en curso. El historial no se imprime; sus snapshots se destinan a la base de datos y el dashboard.
+   - Los logotipos institucionales del GORE y CORE aparecen en la cabecera de las cuatro fichas y se incluyen al exportarlas a PDF.
+   - En **Pertinencia**, la ficha presenta los antecedentes del proyecto en una tabla, la evaluación numerada y los datos del profesional y fecha. Utiliza los campos disponibles; no incorpora descripción del proyecto ni fuente y montos de financiamiento, que no se capturan actualmente.
 7. **Generar Payload JSON para Base de Datos**
    - El botón **"Generar carga útil JSON"** serializa la información en formato JSON estructurado, agregando el bloque `proceso` con la instancia activa y el número de iteración, además de los snapshots archivados. El payload está destinado a persistencia en la API REST o base de datos y posterior consulta por el dashboard.
 

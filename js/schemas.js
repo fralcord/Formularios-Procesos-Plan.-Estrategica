@@ -18,8 +18,8 @@
  * El ordinal de la iteración se calcula con las fechas del historial previo y
  * la instancia activa; no debe deducirse sólo de la categoría de instancia.
  *   Cuando el estado resultante contiene observaciones, la iniciativa vuelve a
- *   evaluación por una nueva iteración; cada vuelta queda registrada en el
- *   arreglo "iteraciones" y se imprime en la ficha oficial.
+ *   evaluación por una nueva iteración; cada etapa cerrada queda en el arreglo
+ *   "iteraciones" del payload para persistencia y consulta desde el dashboard.
  *
  * NOTA METODOLÓGICA:
  * La "Ficha IDI" no es un formulario del GORE, sino la ficha base de referencia
@@ -140,6 +140,11 @@ nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha ID
         comuna: { tipo: "string", enum: ["Ancud", "Castro", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Llanquihue", "Los Muermos", "Maullín", "Puerto Montt", "Puerto Varas", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena", "Provincial", "Regional"] },
         localidad: { tipo: "string", opcional: true }
       },
+      descripcion_proyecto: {
+        tipo: "text",
+        opcional: true,
+        descripcion: "Descripción general del proyecto capturada en el Registro de la Iniciativa"
+      },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true, descripcion: "N° de oficio de postulación (puede incluir letras)" },
         fecha: { tipo: "string", formato: "date", opcional: true },
@@ -147,7 +152,7 @@ nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha ID
         fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
       },
 
-      costo_total: { tipo: "number" },
+      costo_total: { tipo: "number", descripcion: "Costo total de la iniciativa expresado en M$" },
       // Evaluación Estratégica Regional GORE Los Lagos
 evaluacion_pertinencia: {
         erd_lineamiento: { tipo: "string", descripcion: "Lineamiento estratégico ERD (campo de texto libre)" },
@@ -225,8 +230,7 @@ trazabilidad: {
         estado: { tipo: "string", enum: ["OBSERVADO", "RECOMENDADO", "RECHAZADO"] },
         texto_observaciones: { tipo: "text" },
         evaluador_nombre: { tipo: "string" },
-        fecha_evaluacion: { tipo: "string", formato: "date" },
-        url_validador: { tipo: "string", opcional: true }
+        fecha_evaluacion: { tipo: "string", formato: "date" }
       },
       proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
       respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,
@@ -279,11 +283,7 @@ trazabilidad: {
       control_evaluacion: {
         evaluador_nombre: { tipo: "string" },
         evaluador_cargo: { tipo: "string" },
-        fecha_ingreso_evaluacion: { tipo: "string", formato: "date" },
-        fecha_termino_evaluacion: { tipo: "string", formato: "date" },
-        jefe_division_nombre: { tipo: "string" },
-        jefe_division_cargo: { tipo: "string" },
-        url_validador_firma: { tipo: "string", opcional: true }
+        fecha_evaluacion: { tipo: "string", formato: "date" }
       },
       proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
       respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,
@@ -327,8 +327,7 @@ trazabilidad: {
         estado: { tipo: "string", enum: ["RECOMENDADO", "OBSERVADO", "RECHAZADO"] },
         fecha: { tipo: "string", formato: "date" },
         texto_evaluacion: { tipo: "text" },
-        evaluador_nombre: { tipo: "string" },
-        url_validador_firma: { tipo: "string", opcional: true }
+        evaluador_nombre: { tipo: "string" }
       },
       proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
       respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,

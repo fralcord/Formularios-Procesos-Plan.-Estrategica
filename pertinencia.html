@@ -68,8 +68,6 @@
          data-campo-estado="estado_pertinencia"
          data-campo-fecha="fecha_evaluacion_fin"
          data-campo-detalle="analisis_pertinencia_tecnica"
-         data-tag-print="print_instancia_pert"
-         data-tag-iteracion="print_iteracion_pert"
          data-paso-evaluacion="evaluacion">
       <span class="instancia-selector-label">Instancia de Evaluación:</span>
       <div class="instancia-options">
@@ -187,7 +185,7 @@
             </div>
             <div class="col-6 pert-registro-field pert-orden-8">
               <div class="form-group">
-                <label class="form-label" for="costo_total">Costo Total</label>
+                <label class="form-label" for="costo_total">Costo Total (M$)</label>
                 <input type="number" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" min="0">
               </div>
             </div>
@@ -251,25 +249,31 @@
                 <input type="text" id="localidad_pert" name="localizacion.localidad" class="form-control" placeholder="Ej: Sector Tehuaco">
               </div>
             </div>
-            <div class="col-6 pert-registro-field pert-orden-12">
+            <div class="col-12 pert-registro-field pert-orden-12">
+              <div class="form-group">
+                <label class="form-label" for="descripcion_proyecto">Descripción del Proyecto</label>
+                <textarea id="descripcion_proyecto" name="descripcion_proyecto" rows="3" class="form-control" placeholder="Describa brevemente la necesidad que aborda el proyecto, su objetivo y principales componentes."></textarea>
+              </div>
+            </div>
+            <div class="col-6 pert-registro-field pert-orden-13">
               <div class="form-group">
                 <label class="form-label" for="oficioPostulacion">N° de Oficio de Postulación</label>
                 <input type="text" id="oficioPostulacion" name="oficio_postulacion.numero" class="form-control" placeholder="Ej: ORD. GR. N° 1234 / 01-2026">
               </div>
             </div>
-            <div class="col-6 pert-registro-field pert-orden-13">
+            <div class="col-6 pert-registro-field pert-orden-14">
               <div class="form-group">
                 <label class="form-label" for="oficioPostulacionFecha">Fecha de Oficio de Postulación</label>
                 <input type="date" id="oficioPostulacionFecha" name="oficio_postulacion.fecha" class="form-control">
               </div>
             </div>
-            <div class="col-6 pert-registro-field pert-orden-14">
+            <div class="col-6 pert-registro-field pert-orden-15">
               <div class="form-group">
                 <label class="form-label" for="oficioPostulacionOficinaPartes">Ingreso de Oficio a Oficina de Partes</label>
                 <input type="date" id="oficioPostulacionOficinaPartes" name="oficio_postulacion.fechaIngresoOficinaPartes" class="form-control">
               </div>
             </div>
-            <div class="col-6 pert-registro-field pert-orden-15">
+            <div class="col-6 pert-registro-field pert-orden-16">
               <div class="form-group">
                 <label class="form-label" for="oficioPostulacionEvaluacion">Ingreso a Evaluación</label>
                 <input type="date" id="oficioPostulacionEvaluacion" name="oficio_postulacion.fechaIngresoEvaluacion" class="form-control">
@@ -407,78 +411,42 @@
         <div class="official-sheet">
           <!-- Encabezado Oficial -->
           <div class="official-header">
-            <div class="org-name">Gobierno Regional de la Región de Los Lagos</div>
-            <div style="font-size: 0.78rem; color: #475569;">División de Planificación y Desarrollo Regional (DIPLADER)</div>
-            <div class="sheet-main-title">FICHA DE EVALUACIÓN DE PERTINENCIA REGIONAL</div>
-            <div class="budget-process-tag">PROCESO PRESUPUESTARIO <span id="print_ano">2027</span></div>
-            <div>
-              <span class="instancia-print-tag" id="print_instancia_pert">PRIMER INGRESO</span>
-              <span class="instancia-print-tag iteracion-tag" id="print_iteracion_pert">N° 1</span>
+            <div class="official-header-logos">
+              <img src="assets/gore-los-lagos.png" alt="Gobierno Regional de Los Lagos">
+              <img src="assets/core-los-lagos.png" alt="Consejo Regional de Los Lagos">
             </div>
+            <div class="sheet-main-title pert-print-title">FICHA DE EVALUACIÓN PROYECTOS</div>
           </div>
 
-          <!-- Antecedentes de la Iniciativa (Identificación Acotada) -->
-          <div class="sheet-section-title">ANTECEDENTES DE LA INICIATIVA:</div>
-          <div class="sheet-summary-grid">
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">PROVINCIA</span>
-              <span class="val" id="print_provincia">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">COMUNA</span>
-              <span class="val" id="print_comuna">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">AÑO POSTULACIÓN</span>
-              <span class="val" id="print_ano_post">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">CÓDIGO BIP / IDI</span>
-              <span class="val" id="print_bip">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">COSTO TOTAL</span>
-              <span class="val" id="print_costo_total_pert">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 12;">
-              <span class="label">NOMBRE DE LA INICIATIVA</span>
-              <span class="val" id="print_nombre">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 6;">
-              <span class="label">UNIDAD FORMULADORA</span>
-              <span class="val" id="print_unidad_formuladora">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 6;">
-              <span class="label">UNIDAD TÉCNICA</span>
-              <span class="val" id="print_unidad_tecnica">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 6;">
-              <span class="label">ETAPA</span>
-              <span class="val" id="print_etapa">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 6;">
-              <span class="label">SECTOR</span>
-              <span class="val" id="print_sector">-</span>
-            </div>
-            <div class="sheet-summary-cell" style="grid-column: span 12;">
-              <span class="label">N° OFICIO DE POSTULACIÓN</span>
-              <span class="val" id="print_oficio_postulacion">-</span>
-            </div>
+          <div class="sheet-section-title pert-print-section-title">ANTECEDENTES DEL PROYECTO:</div>
+          <table class="pert-print-table">
+            <tbody>
+              <tr><th>PROVINCIA</th><td id="print_provincia">-</td></tr>
+              <tr><th>COMUNA</th><td id="print_comuna">-</td></tr>
+              <tr><th>LOCALIDAD</th><td id="print_localidad">-</td></tr>
+              <tr><th>AÑO DE POSTULACIÓN</th><td id="print_ano_post">-</td></tr>
+              <tr><th>CÓDIGO IDI</th><td id="print_bip">-</td></tr>
+              <tr><th>NOMBRE</th><td id="print_nombre">-</td></tr>
+              <tr><th>PROPONENTE</th><td id="print_proponente">-</td></tr>
+              <tr><th>UNIDAD TÉCNICA</th><td id="print_unidad_tecnica">-</td></tr>
+              <tr><th>ETAPA</th><td id="print_etapa">-</td></tr>
+              <tr><th>SECTOR</th><td id="print_sector">-</td></tr>
+              <tr><th>COSTO TOTAL (M$)</th><td id="print_costo_total_pert">-</td></tr>
+            </tbody>
+          </table>
+
+          <div class="sheet-section-title pert-print-section-title">DESCRIPCIÓN DEL PROYECTO:</div>
+          <div class="pert-print-description" id="print_descripcion_proyecto">-</div>
+
+          <div class="sheet-section-title pert-print-section-title">EVALUACIÓN:</div>
+          <ol class="pert-print-evaluation" id="print_evaluacion_lista"></ol>
+
+          <div class="pert-print-status">
+            <strong>ESTADO:</strong> <span class="status-badge recomendado" id="print_estado_badge">PERTINENTE</span>
           </div>
-
-          <!-- Sección Evaluación -->
-          <div class="sheet-section-title" style="margin-top: 1.25rem;">EVALUACIÓN DE PERTINENCIA REGIONAL:</div>
-          <div class="sheet-box-text" id="print_evaluacion_texto"></div>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; margin: 0.75rem 0; font-size: 0.82rem;">
-            <div><strong>ESTADO:</strong> <span class="status-badge recomendado" id="print_estado_badge">PERTINENTE</span></div>
-            <div><strong>DICTAMEN N°:</strong> <span id="print_dic_evaluacion">-</span></div>
-          </div>
-
-          <!-- Las firmas y las referencias a oficios se gestionan en otra instancia -->
-          <div class="sheet-footer-note">
-            Las firmas electrónicas Ley N° 19.799 y las referencias a oficios asociadas
-            se registran en la instancia deOficios de la DIPLADER.
+          <div class="pert-print-footer">
+            <div><strong>Evaluado por:</strong> <span id="print_evaluador">-</span></div>
+            <div><strong>Fecha de Evaluación:</strong> <span id="print_fecha_evaluacion">-</span></div>
           </div>
         </div>
       </div>
@@ -612,29 +580,63 @@
           : 'El postulante respondió las observaciones; corresponde verificar la respuesta y emitir el nuevo dictamen.';
       }
 
-      document.getElementById('print_ano').textContent = getVal('proceso_presupuestario') || '2027';
-      document.getElementById('print_provincia').textContent = getVal('provincia_pert') || '-';
-      document.getElementById('print_comuna').textContent = getVal('comuna_pert') || '-';
-      document.getElementById('print_ano_post').textContent = getVal('proceso_presupuestario') || '-';
-      document.getElementById('print_bip').textContent = getVal('codigo_bip') || '-';
-      document.getElementById('print_nombre').textContent = getVal('nombre_proyecto') || '-';
-      document.getElementById('print_unidad_formuladora').textContent = getVal('unidad_formuladora') || '-';
-      document.getElementById('print_unidad_tecnica').textContent = getVal('unidad_tecnica_pert') || '-';
-      document.getElementById('print_etapa').textContent = getVal('etapa_postula') || '-';
-      document.getElementById('print_sector').textContent = getVal('sector_iniciativa') || '-';
-      document.getElementById('print_oficio_postulacion').textContent = getVal('oficioPostulacion') || '-';
-      document.getElementById('print_costo_total_pert').textContent = getVal('costo_total') || '-';
+      const asignarTexto = (id, valor) => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.textContent = valor || '-';
+      };
+      asignarTexto('print_provincia', getVal('provincia_pert'));
+      asignarTexto('print_comuna', getVal('comuna_pert'));
+      asignarTexto('print_localidad', getVal('localidad_pert'));
+      asignarTexto('print_ano_post', getVal('proceso_presupuestario'));
+      asignarTexto('print_bip', getVal('codigo_bip'));
+      asignarTexto('print_nombre', getVal('nombre_proyecto'));
+      asignarTexto('print_proponente', getVal('unidad_formuladora'));
+      asignarTexto('print_unidad_tecnica', getVal('unidad_tecnica_pert'));
+      asignarTexto('print_etapa', getVal('etapa_postula'));
+      asignarTexto('print_sector', getVal('sector_iniciativa'));
+      asignarTexto('print_descripcion_proyecto', getVal('descripcion_proyecto'));
+      const costoTotal = getVal('costo_total');
+      asignarTexto(
+        'print_costo_total_pert',
+        costoTotal ? Number(costoTotal).toLocaleString('es-CL') : ''
+      );
 
-      const erd = getVal('pert_erd_lineamiento');
-      const gob = getVal('pert_gob_pilar');
-      const analisis = getVal('analisis_pertinencia_tecnica');
+      const valorCompuesto = campos => campos
+        .map(([etiqueta, id]) => [etiqueta, getVal(id)])
+        .filter(([, valor]) => valor)
+        .map(([etiqueta, valor]) => `${etiqueta}: ${valor}`)
+        .join('\n');
+      const listaEvaluacion = document.getElementById('print_evaluacion_lista');
+      listaEvaluacion.replaceChildren();
+      const agregarItemEvaluacion = (titulo, detalle) => {
+        if (!detalle) return;
+        const item = document.createElement('li');
+        const encabezado = document.createElement('strong');
+        encabezado.textContent = titulo;
+        item.appendChild(encabezado);
+        item.appendChild(document.createTextNode(` ${detalle}`));
+        listaEvaluacion.appendChild(item);
+      };
+
+      agregarItemEvaluacion('Coherencia ERD:', valorCompuesto([
+        ['Lineamiento estratégico', 'pert_erd_lineamiento'],
+        ['Ítem', 'pert_erd_item'],
+        ['Objetivo estratégico', 'pert_erd_objetivo'],
+        ['Actividad / Programa', 'pert_erd_actividad']
+      ]));
+      agregarItemEvaluacion('Articulación con el Programa del Gobernador:', valorCompuesto([
+        ['Pilar', 'pert_gob_pilar'],
+        ['Eje / Letra', 'pert_gob_letra'],
+        ['Fundamento', 'pert_gob_justificacion']
+      ]));
+      agregarItemEvaluacion(
+        'Análisis de Pertinencia Técnica y Disponibilidad FNDR:',
+        getVal('analisis_pertinencia_tecnica')
+      );
       const obs = getVal('observaciones_devolucion');
-
-      let evalHtml = `1. Coherencia ERD: ${erd}\n2. Plan del Gobernador: ${gob}\n\n3. Análisis Técnico:\n${analisis}`;
-      if (document.getElementById('estado_pertinencia')?.value === 'CON_OBSERVACIONES' && obs) {
-        evalHtml += `\n\n4. Observaciones a Subsanar:\n${obs}`;
+      if (getVal('estado_pertinencia') === 'CON_OBSERVACIONES') {
+        agregarItemEvaluacion('Observaciones a Subsanar:', obs);
       }
-      document.getElementById('print_evaluacion_texto').textContent = evalHtml;
 
       const estadoVal = getVal('estado_pertinencia');
       const badge = document.getElementById('print_estado_badge');
@@ -649,9 +651,12 @@
         badge.textContent = estadoVal;
       }
 
-      // Se conserva la fecha de evaluación; el oficio asociado y las firmas
-      // electrónicas se registran en la instancia de Oficios de la DIPLADER.
-      document.getElementById('print_dic_evaluacion').textContent = getVal('fecha_evaluacion_fin') || '-';
+      asignarTexto('print_evaluador', getVal('evaluador_pert'));
+      const fechaEvaluacion = getVal('fecha_evaluacion_fin');
+      asignarTexto(
+        'print_fecha_evaluacion',
+        fechaEvaluacion ? fechaEvaluacion.split('-').reverse().join('.') : ''
+      );
 
       // Resultado del ciclo al cerrar el Registro Documental
       const cierre = document.getElementById('cierreResultadoPert');
@@ -756,6 +761,7 @@
       document.getElementById('provincia_pert').value = "LLANQUIHUE";
       document.getElementById('comuna_pert').value = "Puerto Montt";
       document.getElementById('localidad_pert').value = "Isla Maillen";
+      document.getElementById('descripcion_proyecto').value = "Existe un déficit de cobertura en la atención de salud primaria en la localidad de Isla Maillen, comuna de Puerto Montt.";
       document.getElementById('oficioPostulacion').value = "Oficio N° 1644";
       document.getElementById('oficioPostulacionFecha').value = "2026-06-15";
 
