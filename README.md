@@ -26,7 +26,7 @@ El sitio se publica desde este repositorio con **GitHub Pages** cuando se envía
 
 `https://fralcord.github.io/Formularios-Procesos-Plan.-Estrategica/`
 
-La página publicada es **pública** y accesible para cualquier persona en Internet. Antes de publicar, mantén los ejemplos ficticios: el flujo publica el código y los datos de muestra presentes en los formularios. Los formularios no envían ni guardan registros en un servidor: cada usuario trabaja en su propio navegador y genera su propio JSON. En **Settings → Pages** de este repositorio, selecciona **GitHub Actions** como fuente de publicación. GitHub Pages requiere que el repositorio sea público en los planes GitHub Free; los planes que admiten Pages para repositorios privados pueden mantener privado el código fuente mientras el sitio publicado sigue siendo público.
+La página publicada es **pública** y accesible para cualquier persona en Internet, aunque el código fuente de este repositorio sea privado. Antes de publicar, mantén los ejemplos ficticios: el flujo publica el código y los datos de muestra presentes en los formularios. Los formularios no envían ni guardan registros en un servidor: cada usuario trabaja en su propio navegador y genera su propio JSON. El flujo habilita GitHub Pages automáticamente usando el secreto `PUBLIC_SITE_TOKEN`; ese token debe tener permisos de Pages y de Actions workflows para este repositorio. Una vez habilitado Pages y confirmada una publicación correcta, se puede retirar ese token y dejar el despliegue con `GITHUB_TOKEN`.
 
 ## Flujo General del Proceso
 
