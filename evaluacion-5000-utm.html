@@ -183,14 +183,14 @@
               <section class="form-section-card pert-financing-capture">
                 <div class="section-header">
                   <h3>Fuentes de Financiamiento</h3>
-                  <span class="section-badge">FNDR · Subtítulo 31</span>
+                  <span class="section-badge">FNDR · 31 INICIATIVAS DE INVERSIÓN · 02 PROYECTOS</span>
                 </div>
-                <p class="form-hint">Agregue una fila por ítem y asignación presupuestaria. Ingrese los montos en pesos; la ficha de evaluación los presenta en M$.</p>
+                <p class="form-hint">Agregue una fila por asignación presupuestaria. Para esta ficha se utiliza el ítem 02 PROYECTOS del subtítulo 31. Ingrese los montos en pesos; la ficha de evaluación los presenta en M$.</p>
                 <div class="table-responsive">
                   <table class="data-table pert-financing-table" id="tablaFinanciamiento5000" data-table-id="fuentes_financiamiento">
                     <thead>
                       <tr>
-                        <th>Fuente</th>
+                        <th>Fuente / Subtítulo</th>
                         <th>Ítem</th>
                         <th>Asignación</th>
                         <th>Solicitado Año ($)</th>
@@ -212,7 +212,7 @@
                   </table>
                 </div>
                 <div class="table-actions">
-                  <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaFinanciamiento5000()">Agregar fuente / ítem +</button>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaFinanciamiento5000()">Agregar asignación +</button>
                   <strong>Costo Total calculado: <span id="costo_total_calculado_5000">$0</span></strong>
                 </div>
               </section>
@@ -771,7 +771,7 @@
         linea: 'Iniciativas Menores a 5.000 UTM'
       });
       data.fuentes_financiamiento = (data.fuentes_financiamiento || []).filter(fuente =>
-        fuente.item || fuente.clasificador ||
+        fuente.clasificador ||
         Number(fuente.solicitado_ano_actual) > 0 || Number(fuente.solicitado_ano_siguiente) > 0
       );
       data.costo_total = Math.round(data.fuentes_financiamiento.reduce((total, fuente) =>
@@ -780,26 +780,15 @@
       showJsonModal('Ficha de Evaluación de Iniciativas Menores a 5.000 UTM - Payload para Backend', data);
     }
 
-    const clasificadoresPresupuestarios31_5000 = [
-      { grupo: '01 ESTUDIOS BÁSICOS', opciones: [
-        ['001', 'G. ADMINISTRATIVOS'],
-        ['002', 'CONSULTORÍA']
-      ] },
-      { grupo: '02 PROYECTOS', opciones: [
-        ['001', 'G. ADMINISTRATIVOS'],
-        ['002', 'CONSULTORÍA'],
-        ['003', 'TERRENO'],
-        ['004', 'OBRAS CIVILES'],
-        ['005', 'EQUIPAMIENTO'],
-        ['006', 'EQUIPOS'],
-        ['007', 'VEHÍCULOS'],
-        ['999', 'OTROS GASTOS']
-      ] },
-      { grupo: '03 PROGRAMAS DE INVERSIÓN', opciones: [
-        ['001', 'G. ADMINISTRATIVOS CONSULTORÍA'],
-        ['002', 'CONSULTORÍA'],
-        ['003', 'CONTRATACIÓN DEL PROGRAMA']
-      ] }
+    const asignacionesPresupuestarias31_5000 = [
+      ['001', 'G. ADMINISTRATIVOS'],
+      ['002', 'CONSULTORÍA'],
+      ['003', 'TERRENO'],
+      ['004', 'OBRAS CIVILES'],
+      ['005', 'EQUIPAMIENTO'],
+      ['006', 'EQUIPOS'],
+      ['007', 'VEHÍCULOS'],
+      ['999', 'OTROS GASTOS']
     ];
 
     function crearCampoFinanciamiento5000(fila, campo, tipo, valorInicial = '') {
@@ -822,32 +811,29 @@
       fila.dataset.tableRow = '';
 
       const fuenteCelda = document.createElement('td');
-      fuenteCelda.textContent = 'FNDR';
+      fuenteCelda.textContent = 'FNDR / 31 INICIATIVAS DE INVERSIÓN';
       fuenteCelda.appendChild(crearCampoFinanciamiento5000(fila, 'fuente', 'hidden', 'FNDR'));
       fila.appendChild(fuenteCelda);
 
       const itemCelda = document.createElement('td');
-      const selectorItem = document.createElement('select');
-      selectorItem.className = 'form-control';
-      selectorItem.dataset.field = 'item';
-      selectorItem.innerHTML = '<option value="">Seleccione ítem...</option>';
-      clasificadoresPresupuestarios31_5000.forEach(grupo => {
-        const opcion = document.createElement('option');
-        opcion.value = grupo.grupo.slice(0, 2);
-        opcion.textContent = grupo.grupo;
-        selectorItem.appendChild(opcion);
-      });
-      itemCelda.appendChild(selectorItem);
+      itemCelda.textContent = '02 PROYECTOS';
+      itemCelda.appendChild(crearCampoFinanciamiento5000(fila, 'item', 'hidden', '02'));
       itemCelda.appendChild(crearCampoFinanciamiento5000(fila, 'subtitulo', 'hidden', '31'));
-      itemCelda.appendChild(crearCampoFinanciamiento5000(fila, 'grupo_inversion', 'hidden'));
+      itemCelda.appendChild(crearCampoFinanciamiento5000(fila, 'grupo_inversion', 'hidden', '02 PROYECTOS'));
       fila.appendChild(itemCelda);
 
       const asignacionCelda = document.createElement('td');
       const selectorAsignacion = document.createElement('select');
       selectorAsignacion.className = 'form-control';
       selectorAsignacion.dataset.field = 'clasificador';
-      selectorAsignacion.disabled = true;
-      selectorAsignacion.innerHTML = '<option value="">Seleccione ítem primero...</option>';
+      selectorAsignacion.innerHTML = '<option value="">Seleccione asignación...</option>';
+      asignacionesPresupuestarias31_5000.forEach(([codigo, nombre]) => {
+        const opcion = document.createElement('option');
+        opcion.value = codigo;
+        opcion.textContent = `${codigo} - ${nombre}`;
+        opcion.dataset.descripcion = nombre;
+        selectorAsignacion.appendChild(opcion);
+      });
       asignacionCelda.appendChild(selectorAsignacion);
       asignacionCelda.appendChild(crearCampoFinanciamiento5000(fila, 'clasificador_descripcion', 'hidden'));
       fila.appendChild(asignacionCelda);
@@ -884,27 +870,6 @@
       acciones.appendChild(eliminar);
       fila.appendChild(acciones);
 
-      selectorItem.addEventListener('change', () => {
-        const grupoSeleccionado = clasificadoresPresupuestarios31_5000.find(grupo =>
-          grupo.grupo.slice(0, 2) === selectorItem.value
-        );
-        fila.querySelector('[data-field="grupo_inversion"]').value = grupoSeleccionado?.grupo || '';
-        fila.querySelector('[data-field="clasificador_descripcion"]').value = '';
-        selectorAsignacion.replaceChildren();
-        const placeholder = document.createElement('option');
-        placeholder.value = '';
-        placeholder.textContent = grupoSeleccionado ? 'Seleccione asignación...' : 'Seleccione ítem primero...';
-        selectorAsignacion.appendChild(placeholder);
-        (grupoSeleccionado?.opciones || []).forEach(([codigo, nombre]) => {
-          const opcion = document.createElement('option');
-          opcion.value = codigo;
-          opcion.textContent = `${codigo} - ${nombre}`;
-          opcion.dataset.descripcion = nombre;
-          selectorAsignacion.appendChild(opcion);
-        });
-        selectorAsignacion.disabled = !grupoSeleccionado;
-        actualizarFichaImprimible5000();
-      });
       selectorAsignacion.addEventListener('change', () => {
         fila.querySelector('[data-field="clasificador_descripcion"]').value =
           selectorAsignacion.selectedOptions[0]?.dataset.descripcion || '';
@@ -943,11 +908,10 @@
         totalActual += actual;
         totalSiguiente += siguiente;
 
-        const selectorItem = fila.querySelector('[data-field="item"]');
         const selectorAsignacion = fila.querySelector('[data-field="clasificador"]');
-        if (!selectorItem.value && !selectorAsignacion.value && costo === 0) return;
+        if (!selectorAsignacion.value && costo === 0) return;
         const celdas = [
-          'FNDR / 31',
+          'FNDR / 31 INICIATIVAS DE INVERSIÓN',
           fila.querySelector('[data-field="grupo_inversion"]').value || '-',
           selectorAsignacion.selectedOptions[0]?.textContent || '-',
           formatearMontoFinanciamientoM5000(actual),
@@ -974,14 +938,11 @@
       return total;
     }
 
-    function configurarEjemploFinanciamiento5000({ item, clasificador, actual, siguiente }) {
+    function configurarEjemploFinanciamiento5000({ clasificador, actual, siguiente }) {
       const cuerpo = document.getElementById('financiamiento_5000_body');
       cuerpo.replaceChildren();
       const fila = crearFilaFinanciamiento5000();
       cuerpo.appendChild(fila);
-      const selectorItem = fila.querySelector('[data-field="item"]');
-      selectorItem.value = item;
-      selectorItem.dispatchEvent(new Event('change', { bubbles: true }));
       const selectorAsignacion = fila.querySelector('[data-field="clasificador"]');
       selectorAsignacion.value = clasificador;
       selectorAsignacion.dispatchEvent(new Event('change', { bubbles: true }));
@@ -1002,7 +963,6 @@
       document.getElementById('localidad_5000').value = "Localidad de ejemplo";
 
       configurarEjemploFinanciamiento5000({
-        item: '02',
         clasificador: '004',
         actual: 193063000,
         siguiente: 0
