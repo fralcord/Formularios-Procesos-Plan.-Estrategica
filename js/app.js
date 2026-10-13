@@ -50,7 +50,9 @@ function serializeForm(formElement) {
       inputs.forEach(input => {
         const fieldName = input.getAttribute('data-field') || input.name;
         if (fieldName) {
-          rowObj[fieldName] = parseValue(input.value);
+          rowObj[fieldName] = fieldName === 'registro' && input.value
+            ? JSON.parse(input.value)
+            : parseValue(input.value);
         }
       });
       // Solo agregar si tiene algún dato
@@ -193,11 +195,29 @@ const AppIteracion = {
     return this.CLAVES.includes(normalizado) ? normalizado : 'PRIMER_INGRESO';
   },
 
-  /** Número de iteración que corresponde a cada instancia. */
+  /** Ordinal mínimo asociado a una instancia para casos sin historial previo. */
   numeroDe(clave) {
     if (clave === 'RESPONDE_OBSERVACIONES') return 2;
     if (clave === 'REEVALUACION') return 3;
     return 1;
+  },
+
+  /** Cuenta las iteraciones anteriores con fecha registrada en el historial. */
+  iteracionesPreviasConFecha(selectorId) {
+    const cfg = this.config(selectorId);
+    const tabla = document.getElementById(cfg.tablaIteraciones);
+    return tabla
+      ? Array.from(tabla.querySelectorAll('tbody tr[data-table-row]'))
+        .filter(fila => Boolean(fila.querySelector('[data-field="fecha"]')?.value.trim())).length
+      : 0;
+  },
+
+  /** Deriva el ordinal del historial fechado, sin quedar bajo el mínimo de la instancia. */
+  numeroActual(selectorId) {
+    return Math.max(
+      this.numeroDe(this.actual(selectorId)),
+      this.iteracionesPreviasConFecha(selectorId) + 1
+    );
   },
 
   /** Instancia seleccionada según la configuración declarativa del selector. */
@@ -216,7 +236,11 @@ const AppIteracion = {
       permiteReevaluacion: el.dataset.permiteReevaluacion === 'true',
       bloqueRespuesta: el.dataset.bloqueRespuesta || '',
       bloqueReevaluacion: el.dataset.bloqueReevaluacion || '',
-      campoIteracion: el.dataset.campoIteracion || '',
+      tablaIteraciones: el.dataset.tablaIteraciones || '',
+      panelEvaluacion: el.dataset.panelEvaluacion || '',
+      campoEstado: el.dataset.campoEstado || '',
+      campoFecha: el.dataset.campoFecha || '',
+      campoDetalle: el.dataset.campoDetalle || '',
       tagsPrint: (el.dataset.tagPrint || '').split(',').map(t => t.trim()).filter(Boolean),
       tagsIteracion: (el.dataset.tagIteracion || '').split(',').map(t => t.trim()).filter(Boolean),
       pasoEvaluacion: el.dataset.pasoEvaluacion || ''
@@ -225,15 +249,15 @@ const AppIteracion = {
 
   /**
    * Aplica la instancia seleccionada: muestra/oculta los bloques propios de
-   * cada instancia, fija el número de iteración y actualiza las etiquetas de
-   * la ficha imprimible. Es idempotente y no dispara la actualización de la
-   * ficha, para evitar ciclos de actualización recursivos.
+   * cada instancia, deriva el número de iteración desde el historial fechado y
+   * actualiza las etiquetas de la ficha imprimible. Es idempotente y no dispara
+   * la actualización de la ficha, para evitar ciclos recursivos.
    */
   aplicar(selectorId) {
     const cfg = this.config(selectorId);
     const clave = this.actual(selectorId);
     const etiqueta = this.ETIQUETAS[clave];
-    const numero = this.numeroDe(clave);
+    const numero = this.numeroActual(selectorId);
 
     // Bloques condicionales de la evaluación
     this.mostrarElemento(cfg.bloqueRespuesta, clave !== 'PRIMER_INGRESO');
@@ -250,12 +274,6 @@ const AppIteracion = {
           if (opcion) opcion.style.display = 'none';
         }
       });
-    }
-
-    // Número de iteración
-    if (cfg.campoIteracion) {
-      const campo = document.getElementById(cfg.campoIteracion);
-      if (campo && !campo.dataset.editado) campo.value = numero;
     }
 
     // Etiquetas de la ficha oficial
@@ -296,9 +314,154 @@ const AppIteracion = {
    */
   siguiente(estado, instanciaActual, selectorId) {
     const cfg = this.config(selectorId);
-    if (this.exigeIteracion(estado)) return 'RESPONDE_OBSERVACIONES';
+    if (!this.exigeIteracion(estado)) return null;
+    if (instanciaActual === 'PRIMER_INGRESO') return 'RESPONDE_OBSERVACIONES';
     if (instanciaActual === 'RESPONDE_OBSERVACIONES' && cfg.permiteReevaluacion) return 'REEVALUACION';
+    if (instanciaActual === 'REEVALUACION' || !cfg.permiteReevaluacion) return 'RESPONDE_OBSERVACIONES';
     return null;
+  },
+
+  /** Controles de la etapa actual que forman parte del registro de evaluación. */
+  controlesEtapa(selectorId) {
+    const cfg = this.config(selectorId);
+    const panel = document.getElementById(cfg.panelEvaluacion);
+    if (!panel) return [];
+
+    const clave = this.actual(selectorId);
+    const controles = new Set(
+      Array.from(panel.querySelectorAll('input[name], select[name], textarea[name]'))
+        .filter(campo => !campo.closest('table') && !campo.closest('.bloque-iteracion'))
+    );
+    const bloqueId = clave === 'REEVALUACION' ? cfg.bloqueReevaluacion
+      : clave === 'RESPONDE_OBSERVACIONES' ? cfg.bloqueRespuesta
+        : '';
+    const bloque = bloqueId ? document.getElementById(bloqueId) : null;
+    if (bloque) {
+      bloque.querySelectorAll('input[name], select[name], textarea[name]').forEach(campo => controles.add(campo));
+    }
+    return Array.from(controles);
+  },
+
+  /** Valida los campos requeridos, la respuesta y la secuencia cronológica antes del cierre. */
+  validarEtapa(selectorId) {
+    const cfg = this.config(selectorId);
+    const controles = this.controlesEtapa(selectorId);
+    const requeridosInvalidos = controles.filter(campo =>
+      campo.required && !campo.checkValidity()
+    );
+    if (requeridosInvalidos.length) {
+      requeridosInvalidos[0].reportValidity();
+      return false;
+    }
+
+    if (this.actual(selectorId) === 'RESPONDE_OBSERVACIONES') {
+      const respuestaId = cfg.bloqueRespuesta;
+      const bloqueRespuesta = respuestaId ? document.getElementById(respuestaId) : null;
+      const tieneRespuesta = bloqueRespuesta && Array.from(
+        bloqueRespuesta.querySelectorAll('input[name], select[name], textarea[name]')
+      ).some(campo => campo.value.trim());
+      if (bloqueRespuesta && !tieneRespuesta) {
+        alert('Registre al menos un antecedente de la respuesta del postulante antes de continuar.');
+        return false;
+      }
+    }
+
+    const fechaActual = document.getElementById(cfg.campoFecha)?.value;
+    const fechasPrevias = Array.from(
+      document.getElementById(cfg.tablaIteraciones)?.querySelectorAll('tbody [data-field="fecha"]') || []
+    ).map(campo => campo.value).filter(Boolean).sort();
+    const fechaAnterior = fechasPrevias[fechasPrevias.length - 1];
+    if (fechaAnterior && fechaActual < fechaAnterior) {
+      const campoFecha = document.getElementById(cfg.campoFecha);
+      campoFecha?.setCustomValidity('La fecha debe ser igual o posterior a la última iteración registrada.');
+      campoFecha?.reportValidity();
+      campoFecha?.setCustomValidity('');
+      return false;
+    }
+    return true;
+  },
+
+  /** Copia la etapa cerrada al historial, incluida la captura completa de sus campos. */
+  archivarEtapa(selectorId) {
+    const cfg = this.config(selectorId);
+    const tabla = document.getElementById(cfg.tablaIteraciones);
+    const cuerpo = tabla?.querySelector('tbody');
+    if (!cuerpo) {
+      throw new Error('No se encontró el historial de iteraciones para archivar la evaluación.');
+    }
+
+    const clave = this.actual(selectorId);
+    const numero = this.numeroActual(selectorId);
+    const fecha = document.getElementById(cfg.campoFecha)?.value || '';
+    const estado = document.getElementById(cfg.campoEstado)?.value || '';
+    const detalle = document.getElementById(cfg.campoDetalle)?.value.trim() || '';
+    const campos = this.controlesEtapa(selectorId).map(campo => ({
+      nombre: campo.name,
+      valor: campo.type === 'checkbox' || campo.type === 'radio' ? campo.checked : campo.value
+    }));
+    const registro = {
+      numero,
+      fecha,
+      instancia: this.ETIQUETAS[clave],
+      clave_instancia: clave,
+      estado,
+      campos
+    };
+
+    cuerpo.querySelectorAll('tr[data-table-row]').forEach(fila => {
+      const tieneDatos = Array.from(fila.querySelectorAll('[data-field]'))
+        .some(campo => campo.dataset.field !== 'registro' && campo.value.trim());
+      if (!tieneDatos) fila.remove();
+    });
+
+    const fila = document.createElement('tr');
+    fila.dataset.tableRow = '';
+    [
+      ['numero', numero],
+      ['fecha', fecha],
+      ['instancia', this.ETIQUETAS[clave]],
+      ['estado', estado],
+      ['detalle', detalle]
+    ].forEach(([campo, valor]) => {
+      const celda = document.createElement('td');
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'form-control';
+      input.dataset.field = campo;
+      input.value = valor;
+      input.readOnly = true;
+      celda.appendChild(input);
+      fila.appendChild(celda);
+    });
+
+    const celdaAccion = document.createElement('td');
+    const registroOculto = document.createElement('input');
+    registroOculto.type = 'hidden';
+    registroOculto.dataset.field = 'registro';
+    registroOculto.value = JSON.stringify(registro);
+    celdaAccion.appendChild(registroOculto);
+    fila.appendChild(celdaAccion);
+    cuerpo.appendChild(fila);
+
+  },
+
+  /** Limpia los campos de captura del paso de evaluación para la instancia nueva. */
+  limpiarEtapa(selectorId) {
+    const cfg = this.config(selectorId);
+    const panel = document.getElementById(cfg.panelEvaluacion);
+    if (!panel) return;
+    panel.querySelectorAll('input[name], select[name], textarea[name]').forEach(campo => {
+      if (campo.closest('table')) return;
+      if (campo.type === 'checkbox' || campo.type === 'radio') {
+        campo.checked = false;
+      } else if (campo.tagName === 'SELECT') {
+        campo.value = '';
+      } else {
+        campo.value = '';
+      }
+      campo.setCustomValidity('');
+    });
+    document.getElementById(cfg.campoEstado)?.dispatchEvent(new Event('change', { bubbles: true }));
   },
 
   /**
@@ -308,6 +471,7 @@ const AppIteracion = {
   avanzar(estado, opciones) {
     const cfg = this.config(opciones.selectorId);
     const actual = this.actual(opciones.selectorId);
+    if (!this.validarEtapa(opciones.selectorId)) return null;
     const siguiente = this.siguiente(estado, actual, opciones.selectorId);
 
     if (!siguiente) {
@@ -316,11 +480,13 @@ const AppIteracion = {
       return null;
     }
 
+    this.archivarEtapa(opciones.selectorId);
+    this.limpiarEtapa(opciones.selectorId);
     this.establecer(siguiente, opciones.actualizar);
     if (cfg.pasoEvaluacion && typeof opciones.irAlPaso === 'function') {
       opciones.irAlPaso('evaluacion');
     }
-    alert('Instancia activada: ' + this.ETIQUETAS[siguiente] + ' (iteración N° ' + this.numeroDe(siguiente) + ').\n' +
+    alert('Instancia activada: ' + this.ETIQUETAS[siguiente] + ' (iteración N° ' + this.numeroActual(opciones.selectorId) + ').\n' +
       'Registre en el paso de evaluación el resultado de esta nueva instancia.');
     return siguiente;
   }
@@ -347,9 +513,9 @@ function serializarEvaluacion(formId, opciones) {
     linea_evaluacion: opciones.linea,
     instancia_evaluacion: AppIteracion.ETIQUETAS[clave],
     clave_instancia: clave,
-    numero_iteracion: parseInt(document.getElementById(cfg.campoIteracion)?.value, 10) || AppIteracion.numeroDe(clave),
+    numero_iteracion: AppIteracion.numeroActual(opciones.selectorId),
     admite_reevaluacion: cfg.permiteReevaluacion,
-    iteraciones_registradas: Array.isArray(data.iteraciones) ? data.iteraciones.length : 0
+    iteraciones_registradas: AppIteracion.iteracionesPreviasConFecha(opciones.selectorId)
   };
 
   return data;
@@ -408,7 +574,7 @@ function filaIteracionActual(cfg) {
   return {
     clave: clave,
     valores: {
-      numero: getVal(cfg.campoIteracion) || AppIteracion.numeroDe(clave),
+      numero: AppIteracion.numeroActual(cfg.selectorId),
       fecha: getVal(cfg.campoFecha),
       instancia: AppIteracion.ETIQUETAS[clave],
       estado: getVal(cfg.campoEstado),

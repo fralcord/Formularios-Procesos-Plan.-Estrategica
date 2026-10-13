@@ -61,9 +61,13 @@
     <div class="instancia-selector no-print" id="selectorInstancia"
          data-nombre-campo="instancia_evaluacion"
          data-permite-reevaluacion="false"
-         data-bloque-respuesta="bloqueRespuestaObsPert"
+         data-bloque-respuesta=""
          data-bloque-reevaluacion=""
-         data-campo-iteracion="pert_num_iteracion"
+         data-tabla-iteraciones="tablaIteracionesPert"
+         data-panel-evaluacion="pasoEvaluacion"
+         data-campo-estado="estado_pertinencia"
+         data-campo-fecha="fecha_evaluacion_fin"
+         data-campo-detalle="analisis_pertinencia_tecnica"
          data-tag-print="print_instancia_pert"
          data-tag-iteracion="print_iteracion_pert"
          data-paso-evaluacion="evaluacion">
@@ -289,18 +293,11 @@
           </div>
 
           <div class="callout callout-info">
-            <span>Instancia en registro: <strong id="instanciaDescripcionEvalPert">Primer Ingreso</strong>. Complete el dictamen de esta iteración; si el resultado exige observaciones, use <strong>&laquo;Continuar a la siguiente instancia&raquo;</strong> para registrar la respuesta del postulante y reevaluar.</span>
+            <span>Instancia en registro: <strong id="instanciaDescripcionEvalPert">Primer Ingreso</strong>. Si el dictamen queda con observaciones, avance para abrir un nuevo registro de evaluación de la iniciativa con la instancia <strong>Responde Observaciones</strong>.</span>
           </div>
 
           <div class="form-grid">
-            <div class="col-3">
-              <div class="form-group">
-                <label class="form-label" for="pert_num_iteracion">N° de Iteración <span class="required">*</span></label>
-                <input type="number" id="pert_num_iteracion" name="proceso.numero_iteracion" class="form-control" min="1" value="1" required oninput="this.dataset.editado='1'">
-                <span class="form-hint">Se completa según la instancia activa.</span>
-              </div>
-            </div>
-            <div class="col-9">
+            <div class="col-12">
               <div class="callout callout-warning" style="margin-bottom:0;">
                 <span id="ayudaInstanciaPert">Se registra la primera evaluación técnica de la iniciativa.</span>
               </div>
@@ -359,7 +356,7 @@
               </div>
             </div>
 
-            <!-- Dictamen de Pertinencia y Oficio -->
+            <!-- Dictamen de Pertinencia -->
             <div class="col-6">
               <div class="form-group">
                 <label class="form-label" for="estado_pertinencia">Dictamen de Pertinencia <span class="required">*</span></label>
@@ -371,25 +368,6 @@
             </div>
             <div class="col-6" style="display: flex; align-items: flex-end; padding-bottom: 0.5rem;">
               <span class="status-badge recomendado" id="badgePertinencia">ESTADO: PERTINENTE (ENVÍA A MDSF)</span>
-            </div>
-
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="oficio_numero">N° de Oficio / ORD. GORE <span class="required">*</span></label>
-                <input type="text" id="oficio_numero" name="resolucion.oficio_numero" class="form-control" placeholder="Ej: ORD. GR. N° 1628" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="oficio_fecha">Fecha de Emisión Oficio <span class="required">*</span></label>
-                <input type="date" id="oficio_fecha" name="resolucion.oficio_fecha" class="form-control" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="oficio_destinatario">Destinatario del Oficio <span class="required">*</span></label>
-                <input type="text" id="oficio_destinatario" name="resolucion.oficio_destinatario" class="form-control" placeholder="Ej: SEREMI MDSF Región de Los Lagos" required>
-              </div>
             </div>
 
             <div class="col-12" id="contenedorObservaciones" style="display: none;">
@@ -415,85 +393,13 @@
           </div>
         </section>
 
-        <!-- BLOQUE: RESPUESTA DEL POSTULANTE A OBSERVACIONES -->
-        <section class="form-section-card bloque-iteracion" id="bloqueRespuestaObsPert" style="display: none;">
-          <div class="section-header">
-            <h3>2.1 Respuesta del Postulante a Observaciones</h3>
-            <span class="section-badge">Instancia N° 2</span>
-          </div>
-          <div class="callout callout-warning">
-            <span>Se activa únicamente en la instancia <strong>&laquo;Responde Observaciones&raquo;</strong>. Registre aquí lo que el postulante responde o adjunta; la evaluación vuelve a la División para su verificación.</span>
-          </div>
-          <div class="form-grid">
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="pert_resp_fecha">Fecha de Respuesta del Postulante <span class="required">*</span></label>
-                <input type="date" id="pert_resp_fecha" name="respuesta_observaciones.fecha_respuesta" class="form-control">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="pert_resp_documento">N° de Documento / ORD Received</label>
-                <input type="text" id="pert_resp_documento" name="respuesta_observaciones.numero_documento" class="form-control" placeholder="Ej: ORD. GR. N° 1702">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="pert_resp_entrada">Fecha de Ingreso a DIPLADER</label>
-                <input type="date" id="pert_resp_entrada" name="respuesta_observaciones.fecha_ingreso_diplader" class="form-control">
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label" for="pert_resp_detalle">Detalle de la Respuesta y Documentos Adjuntos</label>
-                <textarea id="pert_resp_detalle" name="respuesta_observaciones.detalle_respuesta" rows="4" class="form-control" placeholder="Punto por punto: qué se subsanó y con qué documento..."></textarea>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- HISTORIAL DE ITERACIONES -->
-        <section class="form-section-card">
-          <div class="section-header">
-            <h3>2.2 Historial de Iteraciones de la Evaluación</h3>
-            <span class="section-badge">Trazabilidad</span>
-          </div>
-          <div class="table-responsive">
-            <table class="data-table" id="tablaIteracionesPert" data-table-id="iteraciones">
-              <thead>
-                <tr>
-                  <th style="width: 10%;">N°</th>
-                  <th style="width: 15%;">Fecha</th>
-                  <th style="width: 22%;">Instancia</th>
-                  <th style="width: 18%;">Estado</th>
-                  <th style="width: 27%;">Síntesis / Fundamento</th>
-                  <th style="width: 8%; text-align: center;"></th>
-                </tr>
-              </thead>
-              <tbody id="tbodyIteracionesPert">
-                <tr data-table-row>
-                  <td><input type="text" class="form-control" data-field="numero" placeholder="N°"></td>
-                  <td><input type="date" class="form-control" data-field="fecha"></td>
-                  <td>
-                    <select class="form-control" data-field="instancia">
-                      <option value="">-</option>
-                      <option>Primer Ingreso</option>
-                      <option>Responde Observaciones</option>
-                    </select>
-                  </td>
-                  <td><input type="text" class="form-control" data-field="estado" placeholder="PERTINENTE / CON OBSERVACIONES"></td>
-                  <td><input type="text" class="form-control" data-field="detalle" placeholder="Resumen del resultado"></td>
-                  <td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" onclick="removeTableRow(this)">Eliminar</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="table-actions">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaIteracionPert()">+ Agregar Iteración Anterior</button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarPaso('imprimible')">Ver Ficha de Evaluación (PDF) &rarr;</button>
-            <button type="button" class="btn btn-primary btn-sm" onclick="cambiarPaso('documental')">Continuar a Registro Documental &rarr;</button>
-          </div>
-        </section>
+        <table id="tablaIteracionesPert" data-table-id="iteraciones" hidden aria-hidden="true">
+          <tbody></tbody>
+        </table>
+        <div class="table-actions">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarPaso('imprimible')">Ver Ficha de Evaluación (PDF) &rarr;</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="cambiarPaso('documental')">Continuar a Registro Documental &rarr;</button>
+        </div>
       </div>
 
 <!-- ================= PASO 3: FICHA DE EVALUACIÓN (PDF) ================= -->
@@ -564,41 +470,10 @@
           <div class="sheet-section-title" style="margin-top: 1.25rem;">EVALUACIÓN DE PERTINENCIA REGIONAL:</div>
           <div class="sheet-box-text" id="print_evaluacion_texto"></div>
 
-          <!-- Respuesta del postulante (instancia N° 2) -->
-          <div id="print_respuesta_observaciones" style="display: none;">
-            <div class="sheet-section-title">RESPUESTA DEL POSTULANTE A OBSERVACIONES:</div>
-            <div class="sheet-summary-grid">
-              <div class="sheet-summary-cell" style="grid-column: span 6;">
-                <span class="label">FECHA DE RESPUESTA</span>
-                <span class="val" id="print_resp_fecha">-</span>
-              </div>
-              <div class="sheet-summary-cell" style="grid-column: span 6;">
-                <span class="label">DOCUMENTO / ORD RECIBIDO</span>
-                <span class="val" id="print_resp_documento">-</span>
-              </div>
-            </div>
-            <div class="sheet-box-text" id="print_resp_detalle">-</div>
-          </div>
-
           <div style="display: flex; justify-content: space-between; align-items: center; margin: 0.75rem 0; font-size: 0.82rem;">
             <div><strong>ESTADO:</strong> <span class="status-badge recomendado" id="print_estado_badge">PERTINENTE</span></div>
             <div><strong>DICTAMEN N°:</strong> <span id="print_dic_evaluacion">-</span></div>
           </div>
-
-          <!-- Historial de iteraciones -->
-          <div class="sheet-section-title">HISTORIAL DE ITERACIONES DE LA EVALUACIÓN:</div>
-          <table class="data-table" id="tablaPrintIteracionesPert">
-            <thead>
-              <tr>
-                <th style="width: 8%;">N°</th>
-                <th style="width: 14%;">FECHA</th>
-                <th style="width: 22%;">INSTANCIA</th>
-                <th style="width: 20%;">ESTADO</th>
-                <th style="width: 36%;">SÍNTESIS / FUNDAMENTO</th>
-              </tr>
-            </thead>
-            <tbody id="print_tbody_iteraciones"></tbody>
-          </table>
 
           <!-- Las firmas y las referencias a oficios se gestionan en otra instancia -->
           <div class="sheet-footer-note">
@@ -624,27 +499,33 @@
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="pert_reg_registrado_por">Registrado por (Profesional) <span class="required">*</span></label>
-                <input type="text" id="pert_reg_registrado_por" name="registro_documental.registradoPor" class="form-control" placeholder="Nombre del profesional" required>
+                <input type="text" id="pert_reg_registrado_por" name="registro_documental_evaluacion.registrado_por" class="form-control" placeholder="Nombre del profesional" required>
               </div>
             </div>
 
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="pert_reg_oficio">N° de Oficio (Instancia de Oficios)</label>
-                <input type="text" id="pert_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: ORD. GR. N° 1628">
+                <input type="text" id="pert_reg_oficio" name="registro_documental_evaluacion.referencia_oficio" class="form-control" placeholder="Ej: ORD. GR. N° 1628">
               </div>
             </div>
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="pert_reg_oficio_fecha">Fecha del Oficio</label>
-                <input type="date" id="pert_reg_oficio_fecha" name="registro_documental.fechaOficio" class="form-control">
+                <input type="date" id="pert_reg_oficio_fecha" name="registro_documental_evaluacion.fecha_oficio" class="form-control">
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="pert_reg_oficio_destinatario">Destinatario del Oficio</label>
+                <input type="text" id="pert_reg_oficio_destinatario" name="registro_documental_evaluacion.destinatario_oficio" class="form-control" placeholder="Ej: SEREMI MDSF Región de Los Lagos o municipio">
               </div>
             </div>
 
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="pert_reg_observaciones">Constancia y Observaciones del Registro</label>
-                <textarea id="pert_reg_observaciones" name="registro_documental.constanciaRegistro" rows="3" class="form-control" placeholder="Dónde se conserva el documento, a quién se remitió, observaciones de archivo..."></textarea>
+                <textarea id="pert_reg_observaciones" name="registro_documental_evaluacion.constancia_registro" rows="3" class="form-control" placeholder="Dónde se conserva el documento, a quién se remitió, observaciones de archivo..."></textarea>
               </div>
             </div>
           </div>
@@ -711,27 +592,6 @@
 
     function getValEstado() {
       return document.getElementById('estado_pertinencia')?.value || '';
-    }
-
-    function agregarFilaIteracionPert() {
-      const template = `
-        <tr data-table-row>
-          <td><input type="text" class="form-control" data-field="numero" placeholder="N°"></td>
-          <td><input type="date" class="form-control" data-field="fecha"></td>
-          <td>
-            <select class="form-control" data-field="instancia">
-              <option value="">-</option>
-              <option>Primer Ingreso</option>
-              <option>Responde Observaciones</option>
-            </select>
-          </td>
-          <td><input type="text" class="form-control" data-field="estado" placeholder="PERTINENTE / CON OBSERVACIONES"></td>
-          <td><input type="text" class="form-control" data-field="detalle" placeholder="Resumen del resultado"></td>
-          <td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" onclick="removeTableRow(this)">Eliminar</button></td>
-        </tr>
-      `;
-      addTableRow('tablaIteracionesPert', template);
-      actualizarFichaImprimible();
     }
 
     function actualizarFichaImprimible() {
@@ -802,36 +662,7 @@
           : 'Resultado RECOMENDADO / PERTINENTE: fin del proceso.';
       }
 
-      // Respuesta del postulante (sólo en iteraciones > 1)
-      const bloqueRespuesta = document.getElementById('print_respuesta_observaciones');
-      if (bloqueRespuesta) {
-        bloqueRespuesta.style.display = claveInstancia === 'PRIMER_INGRESO' ? 'none' : 'block';
-        document.getElementById('print_resp_fecha').textContent = getVal('pert_resp_fecha') || '-';
-        document.getElementById('print_resp_documento').textContent = getVal('pert_resp_documento') || '-';
-        document.getElementById('print_resp_detalle').textContent = getVal('pert_resp_detalle') || 'Sin respuesta registrada.';
-      }
-
-      // Historial de iteraciones (iteraciones previas + iteración en curso)
-      renderHistorialIteraciones(
-        'tablaIteracionesPert',
-        'print_tbody_iteraciones',
-        COLUMNAS_ITERACIONES,
-        filaIteracionActual({
-          campoIteracion: 'pert_num_iteracion',
-          campoFecha: 'fecha_evaluacion_fin',
-          campoEstado: 'estado_pertinencia',
-          campoDetalle: 'analisis_pertinencia_tecnica'
-        })
-      );
     }
-
-    const COLUMNAS_ITERACIONES = [
-      { campo: 'numero', label: 'N°' },
-      { campo: 'fecha', label: 'Fecha' },
-      { campo: 'instancia', label: 'Instancia' },
-      { campo: 'estado', label: 'Estado' },
-      { campo: 'detalle', label: 'Síntesis' }
-    ];
 
     function imprimirFichaOficial() {
       actualizarFichaImprimible();
@@ -847,7 +678,11 @@
       const obsContainer = document.getElementById('contenedorObservaciones');
 
       badge.className = 'status-badge';
-      if (val === 'PERTINENTE_A_MDSF') {
+      if (!val) {
+        badge.classList.add('revision');
+        badge.textContent = 'ESTADO: PENDIENTE DE REGISTRO';
+        obsContainer.style.display = 'none';
+      } else if (val === 'PERTINENTE_A_MDSF') {
         badge.classList.add('recomendado');
         badge.textContent = 'ESTADO: PERTINENTE (ENVÍA A MDSF)';
         obsContainer.style.display = 'none';
@@ -897,9 +732,6 @@
 
       document.getElementById('estado_pertinencia').value = "PERTINENTE_A_MDSF";
       actualizarEstadoPertinencia("PERTINENTE_A_MDSF");
-      document.getElementById('oficio_numero').value = "ORD. GR. N° 1628";
-      document.getElementById('oficio_fecha').value = "2026-06-26";
-      document.getElementById('oficio_destinatario').value = "MINISTERIO DE DESARROLLO SOCIAL Y FAMILIA REGION DE LOS LAGOS";
       document.getElementById('evaluador_pert').value = "Diego Alexis Castro Henríquez";
       document.getElementById('fecha_evaluacion_fin').value = "2026-06-26";
 
@@ -907,6 +739,7 @@
       document.getElementById('pert_reg_registrado_por').value = "Diego Alexis Castro Henríquez";
       document.getElementById('pert_reg_oficio').value = "ORD. GR. N° 1628";
       document.getElementById('pert_reg_oficio_fecha').value = "2026-06-26";
+      document.getElementById('pert_reg_oficio_destinatario').value = "MINISTERIO DE DESARROLLO SOCIAL Y FAMILIA REGION DE LOS LAGOS";
       document.getElementById('pert_reg_observaciones').value = "Ficha remitida a la SEREMI MDSF Región de Los Lagos para análisis técnico económico (RATE).";
 
       actualizarFichaImprimible();
@@ -937,9 +770,6 @@
       document.getElementById('estado_pertinencia').value = "CON_OBSERVACIONES";
       actualizarEstadoPertinencia("CON_OBSERVACIONES");
       document.getElementById('observaciones_devolucion').value = "1. Adjuntar certificado de dominio vigente actualizado del inmueble en Isla Maillen.\n2. Detallar los Términos de Referencia (TTR) de la consultoría de diseño.\n3. Acreditar acuerdo del Concejo Municipal para costos de mantención futura.";
-      document.getElementById('oficio_numero').value = "Oficio N° 1644";
-      document.getElementById('oficio_fecha').value = "2026-06-30";
-      document.getElementById('oficio_destinatario').value = "Sr. Rodrigo Wainraihgt Galilea - Alcalde I. Municipalidad de Puerto Montt";
       document.getElementById('evaluador_pert').value = "Diego Alexis Castro Henríquez";
       document.getElementById('fecha_evaluacion_fin').value = "2026-06-30";
 
@@ -947,6 +777,7 @@
       document.getElementById('pert_reg_registrado_por').value = "Diego Alexis Castro Henríquez";
       document.getElementById('pert_reg_oficio').value = "Oficio N° 1644";
       document.getElementById('pert_reg_oficio_fecha').value = "2026-06-30";
+      document.getElementById('pert_reg_oficio_destinatario').value = "Sr. Rodrigo Wainraihgt Galilea - Alcalde I. Municipalidad de Puerto Montt";
       document.getElementById('pert_reg_observaciones').value = "observaciones remitidas a la Municipalidad de Puerto Montt. Se espera respuesta del postulante para nueva iteración.";
 
       actualizarFichaImprimible();

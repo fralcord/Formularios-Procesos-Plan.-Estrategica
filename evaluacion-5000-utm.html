@@ -63,9 +63,13 @@
          data-permite-reevaluacion="true"
          data-bloque-respuesta="bloqueRespuestaObs5000"
          data-bloque-reevaluacion="bloqueReevaluacion5000"
-         data-campo-iteracion="ut5000_num_iteracion"
+         data-tabla-iteraciones="tablaIteraciones5000"
+         data-panel-evaluacion="pasoEvaluacion5000"
+         data-campo-estado="estado_resultado_evaluacion"
+         data-campo-fecha="fecha_termino_ev"
+         data-campo-detalle="sintesis_evaluacion"
          data-tag-print="print_instancia_5000"
-         data-tag-iteracion="print_iteracion_5000"
+         data-tag-iteracion="print_iteracion_5000, badgeIteracionRespuesta5000, badgeIteracionReevaluacion5000"
          data-paso-evaluacion="evaluacion">
       <span class="instancia-selector-label">Instancia de Evaluación:</span>
       <div class="instancia-options">
@@ -289,14 +293,7 @@
           </div>
 
           <div class="form-grid">
-            <div class="col-3">
-              <div class="form-group">
-                <label class="form-label" for="ut5000_num_iteracion">N° de Iteración <span class="required">*</span></label>
-                <input type="number" id="ut5000_num_iteracion" name="proceso.numero_iteracion" class="form-control" min="1" value="1" required oninput="this.dataset.editado='1'">
-                <span class="form-hint">Se completa según la instancia activa.</span>
-              </div>
-            </div>
-            <div class="col-9">
+            <div class="col-12">
               <div class="callout callout-warning" style="margin-bottom:0;">
                 <span id="ayudaInstancia5000">Se registra la primera revisión técnica de la iniciativa.</span>
               </div>
@@ -415,7 +412,7 @@
         <section class="form-section-card bloque-iteracion" id="bloqueRespuestaObs5000" style="display: none;">
           <div class="section-header">
             <h3>2.1 Respuesta del Postulante a Observaciones</h3>
-            <span class="section-badge">Instancia N° 2</span>
+            <span class="section-badge" id="badgeIteracionRespuesta5000">Iteración N° 2</span>
           </div>
           <div class="callout callout-warning">
             <span>Instancia <strong>&laquo;Responde Observaciones&raquo;</strong>. Registre los antecedentes y documentos con que la unidad formuladora subsana cada observación emitida en la revisión anterior.</span>
@@ -452,7 +449,7 @@
         <section class="form-section-card bloque-iteracion" id="bloqueReevaluacion5000" style="display: none;">
           <div class="section-header">
             <h3>2.2 Reevaluación de la Iniciativa</h3>
-            <span class="section-badge">Instancia N° 3</span>
+            <span class="section-badge" id="badgeIteracionReevaluacion5000">Iteración N° 3</span>
           </div>
           <div class="callout callout-info">
             <span>Instancia <strong>&laquo;Reevaluación&raquo;</strong>. Verifique la subsanación de las observaciones y registre el resultado de esta nueva revisión técnica.</span>
@@ -743,7 +740,10 @@
     function actualizarBadgeResultado5000(val) {
       const badge = document.getElementById('badgePreview5000');
       badge.className = 'status-badge';
-      if (val === 'OBSERVADO') {
+      if (!val) {
+        badge.classList.add('revision');
+        badge.textContent = 'ESTADO: PENDIENTE DE REGISTRO';
+      } else if (val === 'OBSERVADO') {
         badge.classList.add('observado');
         badge.textContent = 'ESTADO: OBSERVADO';
       } else if (val === 'SIN OBSERVACIONES' || val === 'RECOMENDADO') {
@@ -864,7 +864,6 @@
         'print_5000_tbody_iteraciones',
         COLUMNAS_ITERACIONES_5000,
         filaIteracionActual({
-          campoIteracion: 'ut5000_num_iteracion',
           campoFecha: 'fecha_termino_ev',
           campoEstado: 'estado_resultado_evaluacion',
           campoDetalle: 'sintesis_evaluacion'

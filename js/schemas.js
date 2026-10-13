@@ -12,9 +12,11 @@
  *   3. Generación de la ficha de evaluación -> documento oficial imprimible (PDF)
  *
  * CICLO DE ITERACIONES (el proceso es iterativo):
- *   - PRIMER_INGRESO          -> iteración N° 1 (todas las líneas)
- *   - RESPONDE_OBSERVACIONES  -> iteración N° 2 (todas las líneas)
- *   - REEVALUACION            -> iteración N° 3 (Circular 33, Menores a 5.000 UTM y Programas)
+ *   - PRIMER_INGRESO          -> primera instancia (todas las líneas)
+ *   - RESPONDE_OBSERVACIONES  -> respuesta a observaciones (todas las líneas)
+ *   - REEVALUACION            -> reevaluación (Circular 33, Menores a 5.000 UTM y Programas)
+ * El ordinal de la iteración se calcula con las fechas del historial previo y
+ * la instancia activa; no debe deducirse sólo de la categoría de instancia.
  *   Cuando el estado resultante contiene observaciones, la iniciativa vuelve a
  *   evaluación por una nueva iteración; cada vuelta queda registrada en el
  *   arreglo "iteraciones" y se imprime en la ficha oficial.
@@ -41,9 +43,13 @@ const BLOQUE_PROCESO_EVALUACION = {
     tipo: "string",
     enum: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"]
   },
-  numero_iteracion: { tipo: "integer", minimo: 1 },
+  numero_iteracion: {
+    tipo: "integer",
+    minimo: 1,
+    descripcion: "Calculado desde las iteraciones previas fechadas y la instancia activa"
+  },
   admite_reevaluacion: { tipo: "boolean", descripcion: "true en Circular 33, Menores a 5.000 UTM y Programas" },
-  iteraciones_registradas: { tipo: "integer", descripcion: "Cantidad de iteraciones previas en el historial" }
+  iteraciones_registradas: { tipo: "integer", descripcion: "Cantidad de iteraciones previas con fecha en el historial" }
 };
 
 /** Respuesta del postulante a las observaciones de la iteración anterior. */
@@ -61,14 +67,19 @@ const BLOQUE_REEVALUACION = {
   fundamento_resultado: { tipo: "text", condicional: "clave_instancia = REEVALUACION" }
 };
 
-/** Historial completo de las iteraciones de la evaluación. */
+/** Historial de etapas cerradas, con snapshot para conservar la evaluación completa. */
 const HISTORIAL_ITERACIONES = [
   {
     numero: { tipo: "integer" },
     fecha: { tipo: "string", formato: "date" },
     instancia: { tipo: "string", enum: ["Primer Ingreso", "Responde Observaciones", "Reevaluación"] },
     estado: { tipo: "string", descripcion: "Estado o resultado de esa iteración" },
-    detalle: { tipo: "text", descripcion: "Síntesis o fundamento del resultado" }
+    detalle: { tipo: "text", descripcion: "Síntesis o fundamento del resultado" },
+    registro: {
+      tipo: "object",
+      opcional: true,
+      descripcion: "Snapshot inmutable de los campos de evaluación y respuesta capturados al cerrar la instancia"
+    }
   }
 ];
 
@@ -87,6 +98,7 @@ const BLOQUE_REGISTRO_DOCUMENTAL = {
     descripcion: "N° de oficio u ORD emitido en la instancia de Oficios de la DIPLADER"
   },
   fecha_oficio: { tipo: "string", formato: "date", opcional: true },
+  destinatario_oficio: { tipo: "string", opcional: true },
   url_validador_docdigital: { tipo: "string", opcional: true, descripcion: "Enlace validador Ley N° 19.799" },
   constancia_registro: { tipo: "text", opcional: true, descripcion: "Dónde se conserva, a quién se remitió, observaciones de archivo" }
 };
@@ -150,9 +162,6 @@ evaluacion_pertinencia: {
       // Resolución y Acto Administrativo
       resolucion: {
         estado_pertinencia: { tipo: "string", enum: ["PERTINENTE_A_MDSF", "CON_OBSERVACIONES"] },
-        oficio_numero: { tipo: "string", descripcion: "ej: ORD. GR. N° 1628 o Oficio N° 1644" },
-        oficio_fecha: { tipo: "string", formato: "date" },
-        oficio_destinatario: { tipo: "string", descripcion: "ej: SEREMI MDSF Los Lagos o Municipalidad" },
         oficio_materia: { tipo: "string" },
         observaciones_devolucion: { tipo: "text", opcional: true, descripcion: "Requerimientos para subsanación del municipio" }
       },
@@ -166,11 +175,9 @@ trazabilidad: {
         fecha_evaluacion: { tipo: "string", formato: "date" },
         cumple_15_dias_habiles: { tipo: "boolean" }
       },
-      // Estado de la iteración en curso (registro / evaluación / ficha PDF)
+      // Instancia de evaluación asociada al registro de la iniciativa.
       proceso_evaluacion: BLOQUE_PROCESO_EVALUACION,
-      // Instancia N° 2: respuesta del postulante a las observaciones
-      respuesta_observaciones: BLOQUE_RESPUESTA_OBSERVACIONES,
-      // Historial de iteraciones de la evaluación
+      // Historial de las instancias evaluativas para persistencia y dashboard
       iteraciones: HISTORIAL_ITERACIONES,
       // Paso 3: Registro Documental Evaluación y cierre del ciclo
       registro_documental_evaluacion: BLOQUE_REGISTRO_DOCUMENTAL,

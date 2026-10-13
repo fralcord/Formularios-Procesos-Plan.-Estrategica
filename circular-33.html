@@ -63,9 +63,13 @@
          data-permite-reevaluacion="true"
          data-bloque-respuesta="bloqueRespuestaObsC33"
          data-bloque-reevaluacion="bloqueReevaluacionC33"
-         data-campo-iteracion="c33_num_iteracion"
+         data-tabla-iteraciones="tablaIteracionesC33"
+         data-panel-evaluacion="pasoEvaluacionC33"
+         data-campo-estado="c33_estado"
+         data-campo-fecha="c33_fecha_eval"
+         data-campo-detalle="c33_observaciones_eval"
          data-tag-print="print_instancia_c33"
-         data-tag-iteracion="print_iteracion_c33"
+         data-tag-iteracion="print_iteracion_c33, badgeIteracionRespuestaC33, badgeIteracionReevaluacionC33"
          data-paso-evaluacion="evaluacion">
       <span class="instancia-selector-label">Instancia de Evaluación:</span>
       <div class="instancia-options">
@@ -299,14 +303,7 @@
           </div>
 
           <div class="form-grid">
-            <div class="col-3">
-              <div class="form-group">
-                <label class="form-label" for="c33_num_iteracion">N° de Iteración <span class="required">*</span></label>
-                <input type="number" id="c33_num_iteracion" name="proceso.numero_iteracion" class="form-control" min="1" value="1" required oninput="this.dataset.editado='1'">
-                <span class="form-hint">Se completa según la instancia activa.</span>
-              </div>
-            </div>
-            <div class="col-9">
+            <div class="col-12">
               <div class="callout callout-warning" style="margin-bottom:0;">
                 <span id="ayudaInstanciaC33">Se registra la primera evaluación técnica de la iniciativa.</span>
               </div>
@@ -360,7 +357,7 @@
         <section class="form-section-card bloque-iteracion" id="bloqueRespuestaObsC33" style="display: none;">
           <div class="section-header">
             <h3>2.1 Respuesta del Postulante a Observaciones</h3>
-            <span class="section-badge">Instancia N° 2</span>
+            <span class="section-badge" id="badgeIteracionRespuestaC33">Iteración N° 2</span>
           </div>
           <div class="callout callout-warning">
             <span>Instancia <strong>&laquo;Responde Observaciones&raquo;</strong>. Registre lo que el postulante responde o adjunta respecto de las observaciones de la iteración anterior.</span>
@@ -397,7 +394,7 @@
         <section class="form-section-card bloque-iteracion" id="bloqueReevaluacionC33" style="display: none;">
           <div class="section-header">
             <h3>2.2 Reevaluación de la Iniciativa</h3>
-            <span class="section-badge">Instancia N° 3</span>
+            <span class="section-badge" id="badgeIteracionReevaluacionC33">Iteración N° 3</span>
           </div>
           <div class="callout callout-info">
             <span>Instancia <strong>&laquo;Reevaluación&raquo;</strong>, disponible en esta línea. Verifique la subsanación y registre el resultado de esta nueva evaluación técnica.</span>
@@ -688,7 +685,10 @@
     function actualizarBadgeC33(val) {
       const badge = document.getElementById('badgeC33');
       badge.className = 'status-badge';
-      if (val === 'OBSERVADO') {
+      if (!val) {
+        badge.classList.add('revision');
+        badge.textContent = 'ESTADO: PENDIENTE DE REGISTRO';
+      } else if (val === 'OBSERVADO') {
         badge.classList.add('observado');
         badge.textContent = 'ESTADO: OBSERVADO';
       } else if (val === 'RECOMENDADO') {
@@ -786,7 +786,6 @@
         'print_c33_tbody_iteraciones',
         COLUMNAS_ITERACIONES_C33,
         filaIteracionActual({
-          campoIteracion: 'c33_num_iteracion',
           campoFecha: 'c33_fecha_eval',
           campoEstado: 'c33_estado',
           campoDetalle: 'c33_observaciones_eval'

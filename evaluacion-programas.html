@@ -63,9 +63,13 @@
          data-permite-reevaluacion="true"
          data-bloque-respuesta="bloqueRespuestaObsProg"
          data-bloque-reevaluacion="bloqueReevaluacionProg"
-         data-campo-iteracion="prog_num_iteracion"
+         data-tabla-iteraciones="tablaIteracionesProg"
+         data-panel-evaluacion="pasoEvaluacionProg"
+         data-campo-estado="prog_estado_evaluacion"
+         data-campo-fecha="prog_fecha_evaluacion"
+         data-campo-detalle="prog_analisis"
          data-tag-print="print_instancia_prog"
-         data-tag-iteracion="print_iteracion_prog"
+         data-tag-iteracion="print_iteracion_prog, badgeIteracionRespuestaProg, badgeIteracionReevaluacionProg"
          data-paso-evaluacion="evaluacion">
       <span class="instancia-selector-label">Instancia de Evaluación:</span>
       <div class="instancia-options">
@@ -274,14 +278,7 @@
           </div>
 
           <div class="form-grid">
-            <div class="col-3">
-              <div class="form-group">
-                <label class="form-label" for="prog_num_iteracion">N° de Iteración <span class="required">*</span></label>
-                <input type="number" id="prog_num_iteracion" name="proceso.numero_iteracion" class="form-control" min="1" value="1" required oninput="this.dataset.editado='1'">
-                <span class="form-hint">Se completa según la instancia activa.</span>
-              </div>
-            </div>
-            <div class="col-9">
+            <div class="col-12">
               <div class="callout callout-warning" style="margin-bottom:0;">
                 <span id="ayudaInstanciaProg">Se registra la primera evaluación técnica del programa.</span>
               </div>
@@ -332,7 +329,7 @@
         <section class="form-section-card bloque-iteracion" id="bloqueRespuestaObsProg" style="display: none;">
           <div class="section-header">
             <h3>2.1 Respuesta del Postulante a Observaciones</h3>
-            <span class="section-badge">Instancia N° 2</span>
+            <span class="section-badge" id="badgeIteracionRespuestaProg">Iteración N° 2</span>
           </div>
           <div class="callout callout-warning">
             <span>Instancia <strong>&laquo;Responde Observaciones&raquo;</strong>. Registre los antecedentes con que la unidad formuladora responde las observaciones de la evaluación anterior.</span>
@@ -369,7 +366,7 @@
         <section class="form-section-card bloque-iteracion" id="bloqueReevaluacionProg" style="display: none;">
           <div class="section-header">
             <h3>2.2 Reevaluación del Programa</h3>
-            <span class="section-badge">Instancia N° 3</span>
+            <span class="section-badge" id="badgeIteracionReevaluacionProg">Iteración N° 3</span>
           </div>
           <div class="callout callout-info">
             <span>Instancia <strong>&laquo;Reevaluación&raquo;</strong>. Verifique la subsanación y registre el resultado de esta nueva evaluación técnica del programa.</span>
@@ -648,7 +645,10 @@
     function actualizarBadgeProg(val) {
       const badge = document.getElementById('badgeProg');
       badge.className = 'status-badge';
-      if (val === 'RECOMENDADO') {
+      if (!val) {
+        badge.classList.add('revision');
+        badge.textContent = 'ESTADO: PENDIENTE DE REGISTRO';
+      } else if (val === 'RECOMENDADO') {
         badge.classList.add('recomendado');
         badge.textContent = 'ESTADO: RECOMENDADO';
       } else if (val === 'OBSERVADO') {
@@ -742,7 +742,6 @@
         'print_prog_tbody_iteraciones',
         COLUMNAS_ITERACIONES_PROG,
         filaIteracionActual({
-          campoIteracion: 'prog_num_iteracion',
           campoFecha: 'prog_fecha_evaluacion',
           campoEstado: 'prog_estado_evaluacion',
           campoDetalle: 'prog_analisis'
