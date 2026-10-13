@@ -179,12 +179,43 @@
                 </select>
               </div>
             </div>
-            <div class="col-6 ut5000-registro-field ut5000-orden-8">
-              <div class="form-group">
-                <label class="form-label" for="costo_total">Costo Total (Pesos $)</label>
-                <input type="text" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" inputmode="numeric" data-format-currency autocomplete="off">
-                <span class="form-hint">Ingrese el monto en pesos; se formatea automáticamente.</span>
-              </div>
+            <div class="col-12 ut5000-registro-field ut5000-orden-8">
+              <section class="form-section-card pert-financing-capture">
+                <div class="section-header">
+                  <h3>Fuentes de Financiamiento</h3>
+                  <span class="section-badge">FNDR · Subtítulo 31</span>
+                </div>
+                <p class="form-hint">Agregue una fila por ítem y asignación presupuestaria. Ingrese los montos en pesos; la ficha de evaluación los presenta en M$.</p>
+                <div class="table-responsive">
+                  <table class="data-table pert-financing-table" id="tablaFinanciamiento5000" data-table-id="fuentes_financiamiento">
+                    <thead>
+                      <tr>
+                        <th>Fuente</th>
+                        <th>Ítem</th>
+                        <th>Asignación</th>
+                        <th>Solicitado Año ($)</th>
+                        <th>Solicitado Año Siguiente ($)</th>
+                        <th>Costo Total ($)</th>
+                        <th><span class="sr-only">Acciones</span></th>
+                      </tr>
+                    </thead>
+                    <tbody id="financiamiento_5000_body"></tbody>
+                    <tfoot>
+                      <tr>
+                        <th colspan="3">TOTAL ($)</th>
+                        <td data-total-for="solicitado_ano_actual">0</td>
+                        <td data-total-for="solicitado_ano_siguiente">0</td>
+                        <td data-total-for="costo_total">0</td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <div class="table-actions">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaFinanciamiento5000()">Agregar fuente / ítem +</button>
+                  <strong>Costo Total calculado: <span id="costo_total_calculado_5000">$0</span></strong>
+                </div>
+              </section>
             </div>
             <div class="col-4 ut5000-registro-field ut5000-orden-9">
               <div class="form-group">
@@ -459,11 +490,30 @@
               <span class="label">UNIDAD TÉCNICA</span>
               <span class="val" id="print_5000_unidad_tecnica">-</span>
             </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">COSTO TOTAL (M$)</span>
-              <span class="val" id="print_5000_costo_total">-</span>
-            </div>
           </div>
+
+          <div class="sheet-section-title" style="margin-top: 1.25rem;">FUENTE DE FINANCIAMIENTO:</div>
+          <table class="data-table pert-print-financing-table">
+            <thead>
+              <tr>
+                <th>FUENTE / SUBTÍTULO</th>
+                <th>ÍTEM</th>
+                <th>ASIGNACIÓN</th>
+                <th>SOLICITADO AÑO M$</th>
+                <th>SOLICITADO AÑO SIGUIENTE M$</th>
+                <th>COSTO TOTAL M$</th>
+              </tr>
+            </thead>
+            <tbody id="print_financiamiento_5000_body"></tbody>
+            <tfoot>
+              <tr>
+                <th colspan="3">TOTAL</th>
+                <td id="print_total_ano_actual_5000">0</td>
+                <td id="print_total_ano_siguiente_5000">0</td>
+                <td id="print_5000_costo_total">0</td>
+              </tr>
+            </tfoot>
+          </table>
 
           <div class="sheet-section-title" style="margin-top: 1.25rem;">EVALUACIÓN:</div>
           <div class="sheet-box-text" id="print_5000_evaluacion_bloque"></div>
@@ -614,7 +664,7 @@
 
     function actualizarFichaImprimible5000() {
       AppIteracion.aplicar();
-      formatPesosInput(document.getElementById('costo_total'));
+      actualizarFinanciamiento5000();
       const getVal = id => document.getElementById(id)?.value || '';
       const claveInstancia = AppIteracion.actual();
 
@@ -645,8 +695,6 @@
       document.getElementById('print_5000_nombre').textContent = getVal('nombre_iniciativa') || '-';
       document.getElementById('print_5000_unidad_formuladora').textContent = getVal('unidad_formuladora_5000') || '-';
       document.getElementById('print_5000_unidad_tecnica').textContent = getVal('unidad_tecnica_5000') || '-';
-      document.getElementById('print_5000_costo_total').textContent =
-        formatCurrencyInThousands(getVal('costo_total'));
 
       // Desglose de Evaluación
       const estado = getVal('estado_resultado_evaluacion');
@@ -722,7 +770,223 @@
         modelo: 'FichaEvaluacion5000UTM',
         linea: 'Iniciativas Menores a 5.000 UTM'
       });
+      data.fuentes_financiamiento = (data.fuentes_financiamiento || []).filter(fuente =>
+        fuente.item || fuente.clasificador ||
+        Number(fuente.solicitado_ano_actual) > 0 || Number(fuente.solicitado_ano_siguiente) > 0
+      );
+      data.costo_total = Math.round(data.fuentes_financiamiento.reduce((total, fuente) =>
+        total + Number(fuente.solicitado_ano_actual || 0) + Number(fuente.solicitado_ano_siguiente || 0), 0
+      ));
       showJsonModal('Ficha de Evaluación de Iniciativas Menores a 5.000 UTM - Payload para Backend', data);
+    }
+
+    const clasificadoresPresupuestarios31_5000 = [
+      { grupo: '01 ESTUDIOS BÁSICOS', opciones: [
+        ['001', 'G. ADMINISTRATIVOS'],
+        ['002', 'CONSULTORÍA']
+      ] },
+      { grupo: '02 PROYECTOS', opciones: [
+        ['001', 'G. ADMINISTRATIVOS'],
+        ['002', 'CONSULTORÍA'],
+        ['003', 'TERRENO'],
+        ['004', 'OBRAS CIVILES'],
+        ['005', 'EQUIPAMIENTO'],
+        ['006', 'EQUIPOS'],
+        ['007', 'VEHÍCULOS'],
+        ['999', 'OTROS GASTOS']
+      ] },
+      { grupo: '03 PROGRAMAS DE INVERSIÓN', opciones: [
+        ['001', 'G. ADMINISTRATIVOS CONSULTORÍA'],
+        ['002', 'CONSULTORÍA'],
+        ['003', 'CONTRATACIÓN DEL PROGRAMA']
+      ] }
+    ];
+
+    function crearCampoFinanciamiento5000(fila, campo, tipo, valorInicial = '') {
+      const input = document.createElement('input');
+      input.type = tipo;
+      input.dataset.field = campo;
+      input.value = valorInicial;
+      return input;
+    }
+
+    function agregarCeldaFinanciamiento5000(fila, contenido) {
+      const celda = document.createElement('td');
+      celda.appendChild(contenido);
+      fila.appendChild(celda);
+    }
+
+    function crearFilaFinanciamiento5000() {
+      const fila = document.createElement('tr');
+      fila.dataset.tableRow = '';
+
+      const fuenteCelda = document.createElement('td');
+      fuenteCelda.textContent = 'FNDR';
+      fuenteCelda.appendChild(crearCampoFinanciamiento5000(fila, 'fuente', 'hidden', 'FNDR'));
+      fila.appendChild(fuenteCelda);
+
+      const itemCelda = document.createElement('td');
+      const selectorItem = document.createElement('select');
+      selectorItem.className = 'form-control';
+      selectorItem.dataset.field = 'item';
+      selectorItem.innerHTML = '<option value="">Seleccione ítem...</option>';
+      clasificadoresPresupuestarios31_5000.forEach(grupo => {
+        const opcion = document.createElement('option');
+        opcion.value = grupo.grupo.slice(0, 2);
+        opcion.textContent = grupo.grupo;
+        selectorItem.appendChild(opcion);
+      });
+      itemCelda.appendChild(selectorItem);
+      itemCelda.appendChild(crearCampoFinanciamiento5000(fila, 'subtitulo', 'hidden', '31'));
+      itemCelda.appendChild(crearCampoFinanciamiento5000(fila, 'grupo_inversion', 'hidden'));
+      fila.appendChild(itemCelda);
+
+      const asignacionCelda = document.createElement('td');
+      const selectorAsignacion = document.createElement('select');
+      selectorAsignacion.className = 'form-control';
+      selectorAsignacion.dataset.field = 'clasificador';
+      selectorAsignacion.disabled = true;
+      selectorAsignacion.innerHTML = '<option value="">Seleccione ítem primero...</option>';
+      asignacionCelda.appendChild(selectorAsignacion);
+      asignacionCelda.appendChild(crearCampoFinanciamiento5000(fila, 'clasificador_descripcion', 'hidden'));
+      fila.appendChild(asignacionCelda);
+
+      ['solicitado_ano_actual', 'solicitado_ano_siguiente'].forEach(campo => {
+        const input = crearCampoFinanciamiento5000(fila, campo, 'number');
+        input.className = 'form-control';
+        input.min = '0';
+        input.step = '1';
+        input.placeholder = '0';
+        input.setAttribute('aria-label', campo === 'solicitado_ano_actual' ? 'Solicitado año actual en pesos' : 'Solicitado año siguiente en pesos');
+        agregarCeldaFinanciamiento5000(fila, input);
+      });
+
+      const costoCelda = document.createElement('td');
+      const costoFila = crearCampoFinanciamiento5000(fila, 'costo_total', 'number', '0');
+      costoFila.className = 'form-control auto-calc';
+      costoFila.readOnly = true;
+      costoFila.step = '1';
+      costoFila.setAttribute('aria-label', 'Costo total calculado en pesos');
+      costoCelda.appendChild(costoFila);
+      fila.appendChild(costoCelda);
+
+      const acciones = document.createElement('td');
+      const eliminar = document.createElement('button');
+      eliminar.type = 'button';
+      eliminar.className = 'btn btn-danger btn-sm';
+      eliminar.textContent = 'Quitar';
+      eliminar.setAttribute('aria-label', 'Quitar fuente de financiamiento');
+      eliminar.addEventListener('click', () => {
+        fila.remove();
+        actualizarFichaImprimible5000();
+      });
+      acciones.appendChild(eliminar);
+      fila.appendChild(acciones);
+
+      selectorItem.addEventListener('change', () => {
+        const grupoSeleccionado = clasificadoresPresupuestarios31_5000.find(grupo =>
+          grupo.grupo.slice(0, 2) === selectorItem.value
+        );
+        fila.querySelector('[data-field="grupo_inversion"]').value = grupoSeleccionado?.grupo || '';
+        fila.querySelector('[data-field="clasificador_descripcion"]').value = '';
+        selectorAsignacion.replaceChildren();
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = grupoSeleccionado ? 'Seleccione asignación...' : 'Seleccione ítem primero...';
+        selectorAsignacion.appendChild(placeholder);
+        (grupoSeleccionado?.opciones || []).forEach(([codigo, nombre]) => {
+          const opcion = document.createElement('option');
+          opcion.value = codigo;
+          opcion.textContent = `${codigo} - ${nombre}`;
+          opcion.dataset.descripcion = nombre;
+          selectorAsignacion.appendChild(opcion);
+        });
+        selectorAsignacion.disabled = !grupoSeleccionado;
+        actualizarFichaImprimible5000();
+      });
+      selectorAsignacion.addEventListener('change', () => {
+        fila.querySelector('[data-field="clasificador_descripcion"]').value =
+          selectorAsignacion.selectedOptions[0]?.dataset.descripcion || '';
+        actualizarFichaImprimible5000();
+      });
+      fila.querySelectorAll('input[type="number"]').forEach(input =>
+        input.addEventListener('input', actualizarFichaImprimible5000)
+      );
+      return fila;
+    }
+
+    function agregarFilaFinanciamiento5000() {
+      document.getElementById('financiamiento_5000_body').appendChild(crearFilaFinanciamiento5000());
+      actualizarFichaImprimible5000();
+    }
+
+    function formatearMontoFinanciamiento5000(monto) {
+      return Number(monto || 0).toLocaleString('es-CL', { maximumFractionDigits: 3 });
+    }
+
+    function formatearMontoFinanciamientoM5000(montoEnPesos) {
+      return formatearMontoFinanciamiento5000(Number(montoEnPesos || 0) / 1000);
+    }
+
+    function actualizarFinanciamiento5000() {
+      let totalActual = 0;
+      let totalSiguiente = 0;
+      const cuerpoImpresion = document.getElementById('print_financiamiento_5000_body');
+      cuerpoImpresion.replaceChildren();
+
+      document.querySelectorAll('#financiamiento_5000_body tr[data-table-row]').forEach(fila => {
+        const actual = Number(fila.querySelector('[data-field="solicitado_ano_actual"]').value) || 0;
+        const siguiente = Number(fila.querySelector('[data-field="solicitado_ano_siguiente"]').value) || 0;
+        const costo = actual + siguiente;
+        fila.querySelector('[data-field="costo_total"]').value = String(costo);
+        totalActual += actual;
+        totalSiguiente += siguiente;
+
+        const selectorItem = fila.querySelector('[data-field="item"]');
+        const selectorAsignacion = fila.querySelector('[data-field="clasificador"]');
+        if (!selectorItem.value && !selectorAsignacion.value && costo === 0) return;
+        const celdas = [
+          'FNDR / 31',
+          fila.querySelector('[data-field="grupo_inversion"]').value || '-',
+          selectorAsignacion.selectedOptions[0]?.textContent || '-',
+          formatearMontoFinanciamientoM5000(actual),
+          formatearMontoFinanciamientoM5000(siguiente),
+          formatearMontoFinanciamientoM5000(costo)
+        ];
+        const filaImpresion = document.createElement('tr');
+        celdas.forEach(texto => {
+          const celda = document.createElement('td');
+          celda.textContent = texto;
+          filaImpresion.appendChild(celda);
+        });
+        cuerpoImpresion.appendChild(filaImpresion);
+      });
+
+      const total = totalActual + totalSiguiente;
+      document.querySelector('#tablaFinanciamiento5000 [data-total-for="solicitado_ano_actual"]').textContent = formatearMontoFinanciamiento5000(totalActual);
+      document.querySelector('#tablaFinanciamiento5000 [data-total-for="solicitado_ano_siguiente"]').textContent = formatearMontoFinanciamiento5000(totalSiguiente);
+      document.querySelector('#tablaFinanciamiento5000 [data-total-for="costo_total"]').textContent = formatearMontoFinanciamiento5000(total);
+      document.getElementById('costo_total_calculado_5000').textContent = `$${formatearMontoFinanciamiento5000(total)}`;
+      document.getElementById('print_total_ano_actual_5000').textContent = formatearMontoFinanciamientoM5000(totalActual);
+      document.getElementById('print_total_ano_siguiente_5000').textContent = formatearMontoFinanciamientoM5000(totalSiguiente);
+      document.getElementById('print_5000_costo_total').textContent = formatearMontoFinanciamientoM5000(total);
+      return total;
+    }
+
+    function configurarEjemploFinanciamiento5000({ item, clasificador, actual, siguiente }) {
+      const cuerpo = document.getElementById('financiamiento_5000_body');
+      cuerpo.replaceChildren();
+      const fila = crearFilaFinanciamiento5000();
+      cuerpo.appendChild(fila);
+      const selectorItem = fila.querySelector('[data-field="item"]');
+      selectorItem.value = item;
+      selectorItem.dispatchEvent(new Event('change', { bubbles: true }));
+      const selectorAsignacion = fila.querySelector('[data-field="clasificador"]');
+      selectorAsignacion.value = clasificador;
+      selectorAsignacion.dispatchEvent(new Event('change', { bubbles: true }));
+      fila.querySelector('[data-field="solicitado_ano_actual"]').value = actual;
+      fila.querySelector('[data-field="solicitado_ano_siguiente"]').value = siguiente;
+      actualizarFichaImprimible5000();
     }
 
     function cargarEjemplo5000UtmConObs() {
@@ -736,7 +1000,12 @@
       document.getElementById('comuna_5000').value = "Palena";
       document.getElementById('localidad_5000').value = "Localidad de ejemplo";
 
-      document.getElementById('costo_total').value = "193063000";
+      configurarEjemploFinanciamiento5000({
+        item: '02',
+        clasificador: '004',
+        actual: 193063000,
+        siguiente: 0
+      });
 
       document.getElementById('estado_resultado_evaluacion').value = "OBSERVADO";
       actualizarBadgeResultado5000("OBSERVADO");
@@ -798,6 +1067,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+      agregarFilaFinanciamiento5000();
       actualizarFichaImprimible5000();
     });
   </script>

@@ -272,7 +272,22 @@ trazabilidad: {
       },
       unidad_formuladora: { tipo: "string" },
       unidad_tecnica: { tipo: "string" },
-      costo_total: { tipo: "number", descripcion: "Costo total expresado en pesos; las fichas lo muestran convertido a M$" },
+      fuentes_financiamiento: {
+        tipo: "array",
+        descripcion: "Partidas de financiamiento de subtítulo 31; los montos se capturan y almacenan en pesos",
+        elementos: {
+          fuente: { tipo: "string", valor_predeterminado: "FNDR" },
+          subtitulo: { tipo: "string", valor_predeterminado: "31" },
+          grupo_inversion: { tipo: "string", enum: ["01 ESTUDIOS BÁSICOS", "02 PROYECTOS", "03 PROGRAMAS DE INVERSIÓN"] },
+          item: { tipo: "string", descripcion: "Código del ítem presupuestario (01, 02 o 03)" },
+          clasificador: { tipo: "string", descripcion: "Código de asignación seleccionado para el ítem" },
+          clasificador_descripcion: { tipo: "string", descripcion: "Nombre de la asignación presupuestaria" },
+          solicitado_ano_actual: { tipo: "number", unidad: "pesos" },
+          solicitado_ano_siguiente: { tipo: "number", unidad: "pesos" },
+          costo_total: { tipo: "number", unidad: "pesos", descripcion: "Suma de los montos solicitados de ambos años para la partida" }
+        }
+      },
+      costo_total: { tipo: "number", unidad: "pesos", descripcion: "Total derivado de sumar las partidas de fuentes_financiamiento; la ficha lo presenta convertido a M$" },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true },
         fecha: { tipo: "string", formato: "date", opcional: true, descripcion: "La ficha deriva de esta fecha el año de postulación" },
