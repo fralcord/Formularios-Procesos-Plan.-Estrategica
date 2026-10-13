@@ -504,7 +504,11 @@
               <span class="val" id="print_5000_sector">-</span>
             </div>
             <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">AÑO POSTULACIÓN</span>
+              <span class="label">PROCESO PRESUPUESTARIO</span>
+              <span class="val" id="print_5000_proceso_presupuestario">-</span>
+            </div>
+            <div class="sheet-summary-cell" style="grid-column: span 3;">
+              <span class="label">AÑO DE POSTULACIÓN</span>
               <span class="val" id="print_5000_ano_post">-</span>
             </div>
             <div class="sheet-summary-cell" style="grid-column: span 3;">
@@ -722,7 +726,9 @@
       document.getElementById('print_5000_comuna').textContent = getVal('comuna_5000') || '-';
       document.getElementById('print_5000_localidad').textContent = getVal('localidad_5000') || '-';
       document.getElementById('print_5000_sector').textContent = getVal('sector_5000') || '-';
-      document.getElementById('print_5000_ano_post').textContent = getVal('ano_postulacion') || '-';
+      document.getElementById('print_5000_proceso_presupuestario').textContent = getVal('ano_postulacion') || '-';
+      const fechaOficioPostulacion = getVal('ut5000_oficio_postulacion_fecha');
+      document.getElementById('print_5000_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_5000_bip').textContent = getVal('codigo_idi') || '-';
       document.getElementById('print_5000_nombre').textContent = getVal('nombre_iniciativa') || '-';
       document.getElementById('print_5000_unidad_formuladora').textContent = getVal('unidad_formuladora_5000') || '-';

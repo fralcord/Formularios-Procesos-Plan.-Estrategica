@@ -147,7 +147,12 @@ nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha ID
       },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true, descripcion: "N° de oficio de postulación (puede incluir letras)" },
-        fecha: { tipo: "string", formato: "date", opcional: true },
+        fecha: {
+          tipo: "string",
+          formato: "date",
+          opcional: true,
+          descripcion: "La ficha deriva de esta fecha el año de postulación"
+        },
         fechaIngresoOficinaPartes: { tipo: "string", formato: "date", opcional: true },
         fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
       },
@@ -200,7 +205,7 @@ trazabilidad: {
     flujo: ["Registro de la iniciativa (Anexo 1)", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
     instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"],
     campos: {
-      proceso_presupuestario_ano: { tipo: "integer", descripcion: "Año presupuestario de postulación" },
+      proceso_presupuestario_ano: { tipo: "integer", descripcion: "Año del proceso presupuestario; la ficha deriva el año de postulación de la fecha del oficio" },
       subtitulo: { tipo: "integer", enum: [22, 29, 31] },
       codigo_bip: { tipo: "string" },
       nombre_accion: { tipo: "string" },
@@ -216,7 +221,7 @@ trazabilidad: {
       costo_total: { tipo: "number" },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true },
-        fecha: { tipo: "string", formato: "date", opcional: true },
+        fecha: { tipo: "string", formato: "date", opcional: true, descripcion: "La ficha deriva de esta fecha el año de postulación" },
         fechaIngresoOficinaPartes: { tipo: "string", formato: "date", opcional: true },
         fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
       },
@@ -252,7 +257,7 @@ trazabilidad: {
     flujo: ["Registro de la iniciativa", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
     instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"],
     campos: {
-      ano_postulacion: { tipo: "integer" },
+      proceso_presupuestario_ano: { tipo: "integer", descripcion: "Año del proceso presupuestario; el año de postulación se deriva de la fecha del oficio" },
       etapa_postulacion: { tipo: "string", enum: ["Diseño", "Ejecución"] },
       codigo_idi: { tipo: "string" },
       nombre_iniciativa: { tipo: "string" },
@@ -267,7 +272,7 @@ trazabilidad: {
       costo_total: { tipo: "number" },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true },
-        fecha: { tipo: "string", formato: "date", opcional: true },
+        fecha: { tipo: "string", formato: "date", opcional: true, descripcion: "La ficha deriva de esta fecha el año de postulación" },
         fechaIngresoOficinaPartes: { tipo: "string", formato: "date", opcional: true },
         fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
       },
@@ -305,7 +310,7 @@ trazabilidad: {
     flujo: ["Registro de la iniciativa", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
     instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"],
     campos: {
-      ano_postulacion: { tipo: "integer" },
+      proceso_presupuestario_ano: { tipo: "integer", descripcion: "Año del proceso presupuestario; el año de postulación se deriva de la fecha del oficio" },
       codigo_idi: { tipo: "string" },
       localizacion: {
         provincia: { tipo: "string" },
@@ -319,7 +324,7 @@ trazabilidad: {
       costo_total: { tipo: "number" },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true },
-        fecha: { tipo: "string", formato: "date", opcional: true },
+        fecha: { tipo: "string", formato: "date", opcional: true, descripcion: "La ficha deriva de esta fecha el año de postulación" },
         fechaIngresoOficinaPartes: { tipo: "string", formato: "date", opcional: true },
         fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
       },

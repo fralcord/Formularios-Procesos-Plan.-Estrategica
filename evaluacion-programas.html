@@ -421,6 +421,10 @@
               <span class="val" id="print_prog_provincia">-</span>
             </div>
             <div class="sheet-summary-cell" style="grid-column: span 3;">
+              <span class="label">PROCESO PRESUPUESTARIO</span>
+              <span class="val" id="print_prog_proceso_presupuestario">-</span>
+            </div>
+            <div class="sheet-summary-cell" style="grid-column: span 3;">
               <span class="label">AÑO DE POSTULACIÓN</span>
               <span class="val" id="print_prog_ano_post">-</span>
             </div>
@@ -636,7 +640,9 @@
 
       document.getElementById('print_prog_ano').textContent = getVal('prog_ano_postulacion') || '2026';
       document.getElementById('print_prog_provincia').textContent = getVal('prog_provincia') || '-';
-      document.getElementById('print_prog_ano_post').textContent = getVal('prog_ano_postulacion') || '-';
+      document.getElementById('print_prog_proceso_presupuestario').textContent = getVal('prog_ano_postulacion') || '-';
+      const fechaOficioPostulacion = getVal('prog_fecha_oficio');
+      document.getElementById('print_prog_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_prog_bip').textContent = getVal('prog_codigo_idi') || '-';
       document.getElementById('print_prog_nombre').textContent = getVal('prog_nombre') || '-';
       document.getElementById('print_prog_unidad_formuladora').textContent = getVal('prog_unidad_formuladora') || '-';

@@ -424,6 +424,7 @@
               <tr><th>PROVINCIA</th><td id="print_provincia">-</td></tr>
               <tr><th>COMUNA</th><td id="print_comuna">-</td></tr>
               <tr><th>LOCALIDAD</th><td id="print_localidad">-</td></tr>
+              <tr><th>PROCESO PRESUPUESTARIO</th><td id="print_proceso_presupuestario">-</td></tr>
               <tr><th>AÑO DE POSTULACIÓN</th><td id="print_ano_post">-</td></tr>
               <tr><th>CÓDIGO IDI</th><td id="print_bip">-</td></tr>
               <tr><th>NOMBRE</th><td id="print_nombre">-</td></tr>
@@ -587,7 +588,9 @@
       asignarTexto('print_provincia', getVal('provincia_pert'));
       asignarTexto('print_comuna', getVal('comuna_pert'));
       asignarTexto('print_localidad', getVal('localidad_pert'));
-      asignarTexto('print_ano_post', getVal('proceso_presupuestario'));
+      asignarTexto('print_proceso_presupuestario', getVal('proceso_presupuestario'));
+      const fechaOficioPostulacion = getVal('oficioPostulacionFecha');
+      asignarTexto('print_ano_post', fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '');
       asignarTexto('print_bip', getVal('codigo_bip'));
       asignarTexto('print_nombre', getVal('nombre_proyecto'));
       asignarTexto('print_proponente', getVal('unidad_formuladora'));
