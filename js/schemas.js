@@ -116,6 +116,7 @@ window.AppSchemas = {
       proceso_presupuestario_ano: { tipo: "integer", descripcion: "Año presupuestario (ej: 2026 / 2027)" },
       codigo_bip: { tipo: "string", descripcion: "Código BIP con dígito verificador ej: '40052180-0'" },
 nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha IDI" },
+      tipologia: { tipo: "string", enum: ["01", "02", "03"] },
       etapa_postulacion: { tipo: "string", enum: ["Ejecución", "Diseño", "Factibilidad", "Prefactibilidad"] },
       sector: { tipo: "string", enum: ["Salud", "Agua Potable Rural (SSR)", "Deporte", "Seguridad", "Educación", "Recursos Naturales y Medio Ambiente", "Multisectorial", "Fomento Productivo", "Desarrollo Social", "Otros"] },
       unidad_formuladora: { tipo: "string", descripcion: "Nombre de la unidad formuladora" },

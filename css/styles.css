@@ -826,6 +826,7 @@ body {
   .form-grid .pert-registro-field.pert-orden-14,
   .form-grid .pert-registro-field.pert-orden-15,
   .form-grid .pert-registro-field.pert-orden-16 { grid-column: span 6; }
+  .form-grid .pert-registro-field.pert-orden-1 { grid-column: span 12; }
   .form-grid .pert-registro-field.pert-orden-3 { grid-column: span 4; }
   .form-grid .pert-registro-field.pert-orden-4 { grid-column: span 8; }
   .form-grid .pert-registro-field.pert-orden-9,

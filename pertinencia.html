@@ -120,20 +120,28 @@
           </div>
 
           <div class="form-grid">
-            <div class="col-6 pert-registro-field pert-orden-1">
+            <div class="col-4 pert-registro-field pert-orden-1">
               <div class="form-group">
                 <label class="form-label" for="proceso_presupuestario">Proceso Presupuestario (Año) <span class="required">*</span></label>
                 <input type="number" id="proceso_presupuestario" name="proceso_presupuestario_ano" class="form-control" value="2027" required>
               </div>
             </div>
-            <div class="col-6 pert-registro-field pert-orden-2">
+            <div class="col-4 pert-registro-field pert-orden-2">
+              <div class="form-group">
+                <label class="form-label" for="tipologia_pert">Tipología <span class="required">*</span></label>
+                <select id="tipologia_pert" name="tipologia" class="form-control" required>
+                  <option value="">Seleccione tipología...</option>
+                  <option value="01">01 ESTUDIOS BÁSICOS</option>
+                  <option value="02">02 PROYECTOS</option>
+                  <option value="03">03 PROGRAMAS DE INVERSIÓN</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-4 pert-registro-field pert-orden-2">
               <div class="form-group">
                 <label class="form-label" for="etapa_postula">Etapa a la que Postula <span class="required">*</span></label>
-                <select id="etapa_postula" name="etapa_postulacion" class="form-control" required>
-                  <option value="Ejecución">Ejecución</option>
-                  <option value="Diseño">Diseño</option>
-                  <option value="Factibilidad">Factibilidad</option>
-                  <option value="Prefactibilidad">Prefactibilidad</option>
+                <select id="etapa_postula" name="etapa_postulacion" class="form-control" required disabled>
+                  <option value="">Seleccione tipología primero...</option>
                 </select>
               </div>
             </div>
@@ -164,7 +172,7 @@
             </div>
             <div class="col-6 pert-registro-field pert-orden-7">
               <div class="form-group">
-                <label class="form-label" for="sector_iniciativa">Sector / Tipología <span class="required">*</span></label>
+                <label class="form-label" for="sector_iniciativa">Sector <span class="required">*</span></label>
                 <select id="sector_iniciativa" name="sector" class="form-control" required>
                   <option value="">Seleccione sector...</option>
                   <option value="Salud">Salud</option>
@@ -186,7 +194,7 @@
                   <h3>Fuentes de Financiamiento</h3>
                   <span class="section-badge">Subtítulo 31</span>
                 </div>
-                <p class="form-hint">Agregue una fila por ítem y clasificador presupuestario. Ingrese los montos en pesos; la ficha de evaluación los presenta en M$.</p>
+                <p class="form-hint">Los ítems y asignaciones disponibles dependen de la Tipología y Etapa seleccionadas. Ingrese los montos en pesos; la ficha de evaluación los presenta en M$.</p>
                 <div class="table-responsive">
                   <table class="data-table pert-financing-table" id="tablaFinanciamientoPert" data-table-id="fuentes_financiamiento">
                     <thead>
@@ -463,6 +471,7 @@
               <tr><th>NOMBRE</th><td id="print_nombre">-</td></tr>
               <tr><th>PROPONENTE</th><td id="print_proponente">-</td></tr>
               <tr><th>UNIDAD TÉCNICA</th><td id="print_unidad_tecnica">-</td></tr>
+              <tr><th>TIPOLOGÍA</th><td id="print_tipologia">-</td></tr>
               <tr><th>ETAPA</th><td id="print_etapa">-</td></tr>
               <tr><th>SECTOR</th><td id="print_sector">-</td></tr>
             </tbody>
@@ -632,11 +641,16 @@
     }
 
     const clasificadoresPresupuestarios31 = [
-      { grupo: '01 ESTUDIOS BÁSICOS', opciones: [
+      { codigo: '01', grupo: '01 ESTUDIOS BÁSICOS', etapas: { 'Ejecución': ['001', '002'] }, opciones: [
         ['001', 'G. ADMINISTRATIVOS'],
         ['002', 'CONSULTORÍA']
       ] },
-      { grupo: '02 PROYECTOS', opciones: [
+      { codigo: '02', grupo: '02 PROYECTOS', etapas: {
+        'Prefactibilidad': ['001', '002'],
+        'Factibilidad': ['001', '002', '003'],
+        'Diseño': ['001', '002', '003', '004', '005'],
+        'Ejecución': ['001', '002', '003', '004', '005', '006', '007', '999']
+      }, opciones: [
         ['001', 'G. ADMINISTRATIVOS'],
         ['002', 'CONSULTORÍA'],
         ['003', 'TERRENO'],
@@ -646,12 +660,84 @@
         ['007', 'VEHÍCULOS'],
         ['999', 'OTROS GASTOS']
       ] },
-      { grupo: '03 PROGRAMAS DE INVERSIÓN', opciones: [
+      { codigo: '03', grupo: '03 PROGRAMAS DE INVERSIÓN', etapas: { 'Ejecución': ['001', '002', '003'] }, opciones: [
         ['001', 'G. ADMINISTRATIVOS CONSULTORÍA'],
         ['002', 'CONSULTORÍA'],
         ['003', 'CONTRATACIÓN DEL PROGRAMA']
       ] }
     ];
+
+    function obtenerClasificadoresDisponiblesPert() {
+      const tipologia = document.getElementById('tipologia_pert').value;
+      const etapa = document.getElementById('etapa_postula').value;
+      const grupo = clasificadoresPresupuestarios31.find(item => item.codigo === tipologia);
+      const codigosDisponibles = grupo?.etapas[etapa] || [];
+      if (!grupo || !codigosDisponibles.length) return [];
+
+      return [{
+        ...grupo,
+        opciones: grupo.opciones.filter(([codigo]) => codigosDisponibles.includes(codigo))
+      }];
+    }
+
+    function actualizarEtapasTipologiaPert() {
+      const selectorTipologia = document.getElementById('tipologia_pert');
+      const selectorEtapa = document.getElementById('etapa_postula');
+      const grupo = clasificadoresPresupuestarios31.find(item => item.codigo === selectorTipologia.value);
+      const etapas = Object.keys(grupo?.etapas || {});
+      const etapaActual = etapas.includes(selectorEtapa.value) ? selectorEtapa.value : '';
+
+      selectorEtapa.replaceChildren(new Option(
+        grupo ? 'Seleccione etapa...' : 'Seleccione tipología primero...',
+        ''
+      ));
+      etapas.forEach(etapa => selectorEtapa.add(new Option(etapa, etapa)));
+      selectorEtapa.disabled = !grupo;
+      selectorEtapa.value = etapaActual;
+      actualizarOpcionesFinanciamientoPert();
+    }
+
+    function actualizarOpcionesFinanciamientoPert() {
+      const gruposDisponibles = obtenerClasificadoresDisponiblesPert();
+      document.querySelectorAll('#financiamiento_pert_body tr[data-table-row]').forEach(fila => {
+        const selectorItem = fila.querySelector('[data-field="item"]');
+        const selectorClasificador = fila.querySelector('[data-field="clasificador"]');
+        const itemAnterior = selectorItem.value;
+        const asignacionAnterior = selectorClasificador.value;
+        const grupos = gruposDisponibles.filter(grupo => grupo.codigo === itemAnterior);
+        const grupoSeleccionado = grupos[0];
+
+        selectorItem.replaceChildren(new Option(
+          gruposDisponibles.length ? 'Seleccione ítem...' : 'Seleccione tipología y etapa...',
+          ''
+        ));
+        gruposDisponibles.forEach(grupo => selectorItem.add(new Option(grupo.grupo, grupo.codigo)));
+        selectorItem.disabled = !gruposDisponibles.length;
+        selectorItem.value = grupoSeleccionado?.codigo || '';
+
+        const asignaciones = grupoSeleccionado?.opciones || [];
+        selectorClasificador.replaceChildren(new Option(
+          grupoSeleccionado
+            ? (asignaciones.length ? 'Seleccione asignación...' : 'Sin asignación (no aplica)')
+            : 'Seleccione ítem primero...',
+          ''
+        ));
+        asignaciones.forEach(([codigo, nombre]) => {
+          const opcion = new Option(`${codigo} - ${nombre}`, codigo);
+          opcion.dataset.descripcion = nombre;
+          selectorClasificador.add(opcion);
+        });
+        selectorClasificador.disabled = !grupoSeleccionado || !asignaciones.length;
+        selectorClasificador.value = asignaciones.some(([codigo]) => codigo === asignacionAnterior)
+          ? asignacionAnterior
+          : '';
+
+        fila.querySelector('[data-field="grupo_inversion"]').value = grupoSeleccionado?.grupo || '';
+        fila.querySelector('[data-field="clasificador_descripcion"]').value =
+          selectorClasificador.selectedOptions[0]?.dataset.descripcion || '';
+      });
+      actualizarFichaImprimible();
+    }
 
     function agregarCampoFinanciamiento(fila, campo, tipo, valorInicial = '') {
       const input = document.createElement('input');
@@ -679,14 +765,8 @@
       const selectorItem = document.createElement('select');
       selectorItem.className = 'form-control';
       selectorItem.dataset.field = 'item';
-      selectorItem.innerHTML = '<option value="">Seleccione ítem...</option>';
-      clasificadoresPresupuestarios31.forEach(grupo => {
-        const opcion = document.createElement('option');
-        opcion.value = grupo.grupo.slice(0, 2);
-        opcion.textContent = grupo.grupo;
-        opcion.dataset.grupo = grupo.grupo;
-        selectorItem.appendChild(opcion);
-      });
+      selectorItem.disabled = true;
+      selectorItem.add(new Option('Seleccione tipología y etapa...', ''));
       itemCelda.appendChild(selectorItem);
       itemCelda.appendChild(agregarCampoFinanciamiento(fila, 'subtitulo', 'hidden', '31'));
       itemCelda.appendChild(agregarCampoFinanciamiento(fila, 'grupo_inversion', 'hidden'));
@@ -734,8 +814,8 @@
       fila.appendChild(acciones);
 
       selectorItem.addEventListener('change', () => {
-        const grupoSeleccionado = clasificadoresPresupuestarios31.find(grupo =>
-          grupo.grupo.slice(0, 2) === selectorItem.value
+        const grupoSeleccionado = obtenerClasificadoresDisponiblesPert().find(grupo =>
+          grupo.codigo === selectorItem.value
         );
         fila.querySelector('[data-field="grupo_inversion"]').value = grupoSeleccionado?.grupo || '';
         fila.querySelector('[data-field="clasificador_descripcion"]').value = '';
@@ -767,7 +847,7 @@
 
     function agregarFilaFinanciamientoPert() {
       document.getElementById('financiamiento_pert_body').appendChild(crearFilaFinanciamientoPert());
-      actualizarFichaImprimible();
+      actualizarOpcionesFinanciamientoPert();
     }
 
     function formatearMontoFinanciamiento(monto) {
@@ -838,6 +918,7 @@
       cuerpo.replaceChildren();
       const fila = crearFilaFinanciamientoPert();
       cuerpo.appendChild(fila);
+      actualizarOpcionesFinanciamientoPert();
       const selectorItem = fila.querySelector('[data-field="item"]');
       selectorItem.value = item;
       selectorItem.dispatchEvent(new Event('change', { bubbles: true }));
@@ -883,6 +964,7 @@
       asignarTexto('print_nombre', getVal('nombre_proyecto'));
       asignarTexto('print_proponente', getVal('unidad_formuladora'));
       asignarTexto('print_unidad_tecnica', getVal('unidad_tecnica_pert'));
+      asignarTexto('print_tipologia', document.getElementById('tipologia_pert').selectedOptions[0]?.textContent);
       asignarTexto('print_etapa', getVal('etapa_postula'));
       asignarTexto('print_sector', getVal('sector_iniciativa'));
       asignarTexto('print_descripcion_proyecto', getVal('descripcion_proyecto'));
@@ -1008,7 +1090,10 @@
       document.getElementById('proceso_presupuestario').value = 2027;
       document.getElementById('codigo_bip').value = "00000000-0";
       document.getElementById('nombre_proyecto').value = "Proyecto demostrativo de infraestructura pública";
+      document.getElementById('tipologia_pert').value = "02";
+      actualizarEtapasTipologiaPert();
       document.getElementById('etapa_postula').value = "Ejecución";
+      actualizarOpcionesFinanciamientoPert();
       document.getElementById('sector_iniciativa').value = "Agua Potable Rural (SSR)";
       document.getElementById('unidad_formuladora').value = "Entidad formuladora de ejemplo";
       document.getElementById('unidad_tecnica_pert').value = "Unidad técnica de ejemplo";
@@ -1052,7 +1137,10 @@
       document.getElementById('proceso_presupuestario').value = 2026;
       document.getElementById('codigo_bip').value = "00000001-0";
       document.getElementById('nombre_proyecto').value = "Proyecto demostrativo de equipamiento comunitario";
+      document.getElementById('tipologia_pert').value = "02";
+      actualizarEtapasTipologiaPert();
       document.getElementById('etapa_postula').value = "Diseño";
+      actualizarOpcionesFinanciamientoPert();
       document.getElementById('sector_iniciativa').value = "Salud";
       document.getElementById('unidad_formuladora').value = "Entidad formuladora de ejemplo";
       document.getElementById('unidad_tecnica_pert').value = "Unidad técnica de ejemplo";
@@ -1094,6 +1182,8 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       configurarFechasDesdePostulacion('formPertinencia', 'oficioPostulacionFecha');
+      document.getElementById('tipologia_pert').addEventListener('change', actualizarEtapasTipologiaPert);
+      document.getElementById('etapa_postula').addEventListener('change', actualizarOpcionesFinanciamientoPert);
       agregarFilaFinanciamientoPert();
       actualizarFichaImprimible();
     });
