@@ -223,6 +223,12 @@
                 <input type="text" id="prog_localidad" name="localizacion.localidad" class="form-control" placeholder="Ej: Localidad de ejemplo">
               </div>
             </div>
+            <div class="col-12 prog-registro-field prog-orden-desc">
+              <div class="form-group">
+                <label class="form-label" for="prog_descripcion">Descripción de la Iniciativa</label>
+                <textarea id="prog_descripcion" name="descripcion_proyecto" rows="3" class="form-control" placeholder="Describa brevemente la necesidad que aborda la iniciativa, su objetivo y principales componentes."></textarea>
+              </div>
+            </div>
             <div class="col-6 prog-registro-field prog-orden-10">
               <div class="form-group">
                 <label class="form-label" for="prog_oficio_postulacion">N° de Oficio de Postulación</label>
@@ -250,10 +256,51 @@
             </div>
             <div class="col-6 prog-registro-field prog-orden-14">
               <div class="form-group">
-                <label class="form-label" for="costo_total">Costo Total (Pesos $)</label>
-                <input type="text" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" inputmode="numeric" data-format-currency autocomplete="off">
-                <span class="form-hint">Ingrese el monto en pesos; se formatea automáticamente.</span>
+                <label class="form-label" for="subtitulo">Subtítulo <span class="required">*</span></label>
+                <select id="subtitulo" name="subtitulo" class="form-control" required>
+                  <option value="">Seleccione subtítulo...</option>
+                  <option value="24">24</option>
+                  <option value="33">33</option>
+                </select>
               </div>
+            </div>
+            <div class="col-12 prog-registro-field prog-orden-fin">
+              <section class="form-section-card pert-financing-capture">
+                <div class="section-header">
+                  <h3>Fuentes de Financiamiento</h3>
+                  <span class="section-badge" id="prog_fin_badge_subtitulo">Subtítulo sin seleccionar</span>
+                </div>
+                <p class="form-hint">Los ítems disponibles dependen del subtítulo seleccionado. Ingrese los montos en pesos.</p>
+                <div class="table-responsive">
+                  <table class="data-table pert-financing-table" id="tablaFinanciamientoProg" data-table-id="fuentes_financiamiento">
+                    <thead>
+                      <tr>
+                        <th>Fuente</th>
+                        <th>Ítem</th>
+                        <th>Asignación</th>
+                        <th id="prog_fin_ano_actual_label">Solicitado Año ($)</th>
+                        <th>Solicitado Año Siguiente ($)</th>
+                        <th>Costo Total ($)</th>
+                        <th><span class="sr-only">Acciones</span></th>
+                      </tr>
+                    </thead>
+                    <tbody id="prog_fin_body"></tbody>
+                    <tfoot>
+                      <tr>
+                        <th colspan="3">TOTAL ($)</th>
+                        <td data-total-for="solicitado_ano_actual">0</td>
+                        <td data-total-for="solicitado_ano_siguiente">0</td>
+                        <td data-total-for="costo_total">0</td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <div class="table-actions">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaFinanciamientoProg()">Agregar fuente / ítem +</button>
+                  <strong>Costo Total calculado: <span id="prog_fin_total_calculado">$0</span></strong>
+                </div>
+              </section>
             </div>
           </div>
         </section>
@@ -282,8 +329,11 @@
               </div>
             </div>
             <div class="col-12">
+              <h4 class="form-subsection-title">Evaluación técnica de la iniciativa</h4>
+            </div>
+            <div class="col-12">
               <div class="form-group">
-                <label class="form-label" for="prog_analisis">Contenido de la Evaluación Técnica <span class="required">*</span></label>
+                <label class="form-label" for="prog_analisis">Detalle de la evaluación <span class="required">*</span></label>
                 <textarea id="prog_analisis" name="evaluacion.texto_evaluacion" rows="5" class="form-control" placeholder="El programa brindará atención sanitaria por un equipo profesional... Cumple con los objetivos de la ERD..." required></textarea>
               </div>
             </div>
@@ -376,11 +426,33 @@
               <span class="label">UNIDAD TÉCNICA</span>
               <span class="val" id="print_prog_unidad_tecnica">-</span>
             </div>
-            <div class="sheet-summary-cell" style="grid-column: span 3;">
-              <span class="label">COSTO TOTAL (M$)</span>
-              <span class="val" id="print_prog_costo_total">-</span>
-            </div>
           </div>
+
+          <div class="sheet-section-title pert-print-section-title">DESCRIPCIÓN DE LA INICIATIVA:</div>
+          <div class="pert-print-description" id="print_prog_descripcion">-</div>
+
+          <div class="sheet-section-title pert-print-section-title">FUENTE DE FINANCIAMIENTO:</div>
+          <table class="pert-print-table pert-print-financing-table">
+            <thead>
+              <tr>
+                <th>FUENTE / SUBTÍTULO</th>
+                <th>ÍTEM</th>
+                <th>ASIGNACIÓN</th>
+                <th id="print_prog_fin_ano_actual_label">SOLICITADO AÑO M$</th>
+                <th>SOLICITADO AÑO SIGUIENTE M$</th>
+                <th>COSTO TOTAL M$</th>
+              </tr>
+            </thead>
+            <tbody id="print_prog_fin_body"></tbody>
+            <tfoot>
+              <tr>
+                <th colspan="3">TOTAL</th>
+                <td id="print_prog_total_ano_actual">0</td>
+                <td id="print_prog_total_ano_siguiente">0</td>
+                <td id="print_prog_costo_total">0</td>
+              </tr>
+            </tfoot>
+          </table>
 
           <div class="sheet-section-title" style="margin-top: 1.25rem;">EVALUACIÓN:</div>
           <div class="sheet-box-text" id="print_prog_evaluacion_bloque"></div>
@@ -531,7 +603,7 @@
 
     function actualizarFichaImprimibleProg() {
       AppIteracion.aplicar();
-      formatPesosInput(document.getElementById('costo_total'));
+      sincronizarSubtituloFinanciamientoProg();
       const getVal = id => document.getElementById(id)?.value || '';
       const claveInstancia = AppIteracion.actual();
 
@@ -559,8 +631,8 @@
       document.getElementById('print_prog_nombre').textContent = getVal('prog_nombre') || '-';
       document.getElementById('print_prog_unidad_formuladora').textContent = getVal('prog_unidad_formuladora') || '-';
       document.getElementById('print_prog_unidad_tecnica').textContent = getVal('prog_unidad_tecnica') || '-';
-      document.getElementById('print_prog_costo_total').textContent =
-        formatCurrencyInThousands(getVal('costo_total'));
+      document.getElementById('print_prog_descripcion').textContent = getVal('prog_descripcion') || '-';
+      actualizarFinanciamientoProg();
 
       // Evaluación bloque
       const evalText = getVal('prog_analisis');
@@ -625,7 +697,8 @@
       document.getElementById('prog_unidad_formuladora').value = "Entidad formuladora de ejemplo";
       document.getElementById('prog_unidad_tecnica').value = "Unidad técnica de ejemplo";
 
-      document.getElementById('costo_total').value = "1304793570";
+      cargarFinanciamientoEjemploProg('24', '09', 247477057, 1057316513);
+      document.getElementById('prog_descripcion').value = "Descripción ficticia para probar la captura de un programa.";
 
       document.getElementById('prog_estado_evaluacion').value = "RECOMENDADO";
       actualizarBadgeProg("RECOMENDADO");
@@ -654,7 +727,8 @@
       document.getElementById('prog_unidad_formuladora').value = "Entidad formuladora de ejemplo";
       document.getElementById('prog_unidad_tecnica').value = "Unidad técnica de ejemplo";
 
-      document.getElementById('costo_total').value = "400000000";
+      cargarFinanciamientoEjemploProg('33', '01', 400000000, 0);
+      document.getElementById('prog_descripcion').value = "Descripción ficticia para probar la captura de un programa.";
 
       document.getElementById('prog_estado_evaluacion').value = "RECOMENDADO";
       actualizarBadgeProg("RECOMENDADO");
@@ -674,7 +748,191 @@
       actualizarFichaImprimibleProg();
     }
 
+    const catalogoFinanciamientoProg = {
+      '24': [
+        { item: '01', nombre: 'AL SECTOR PRIVADO' },
+        { item: '02', nombre: 'AL GOBIERNO CENTRAL' },
+        { item: '03', nombre: 'A OTRAS ENTIDADES PÚBLICAS' },
+        { item: '04', nombre: 'A EMPRESAS PÚBLICAS NO FINANCIERAS' },
+        { item: '05', nombre: 'A EMPRESAS PÚBLICAS FINANCIERAS' },
+        { item: '06', nombre: 'A GOBIERNOS EXTRANJEROS' },
+        { item: '07', nombre: 'A ORGANISMOS INTERNACIONALES' },
+        { item: '08', nombre: 'A INSTITUCIONES PRIVADAS EJECUTORAS DE POLÍTICAS PÚBLICAS' },
+        { item: '09', nombre: 'A UNIDADES O PROGRAMAS DEL SERVICIO' }
+      ],
+      '33': [
+        { item: '01', nombre: 'AL SECTOR PRIVADO' },
+        { item: '02', nombre: 'AL GOBIERNO CENTRAL' },
+        { item: '03', nombre: 'A OTRAS ENTIDADES PÚBLICAS' },
+        { item: '04', nombre: 'A EMPRESAS PÚBLICAS NO FINANCIERAS' },
+        { item: '05', nombre: 'A EMPRESAS PÚBLICAS FINANCIERAS' },
+        { item: '06', nombre: 'A GOBIERNOS EXTRANJEROS' },
+        { item: '07', nombre: 'A ORGANISMOS INTERNACIONALES' }
+      ]
+    };
+
+    function itemsFinanciamientoProg() {
+      return catalogoFinanciamientoProg[document.getElementById('subtitulo').value] || [];
+    }
+
+    function campoFinanciamientoProg(campo, tipo, valor = '') {
+      const input = document.createElement('input');
+      input.type = tipo;
+      input.dataset.field = campo;
+      input.value = valor;
+      return input;
+    }
+
+    // Al cambiar el subtítulo se reconstruyen los ítems disponibles de cada fila.
+    function actualizarItemsFilaProg(fila) {
+      const selectItem = fila.querySelector('[data-field="item"]');
+      const subtitulo = document.getElementById('subtitulo').value;
+      selectItem.replaceChildren();
+      const base = document.createElement('option');
+      base.value = '';
+      base.textContent = subtitulo ? 'Seleccione ítem...' : 'Seleccione subtítulo primero...';
+      selectItem.appendChild(base);
+      itemsFinanciamientoProg().forEach(({ item, nombre }) => {
+        const opcion = document.createElement('option');
+        opcion.value = item;
+        opcion.textContent = `${item} ${nombre}`;
+        selectItem.appendChild(opcion);
+      });
+      selectItem.disabled = !subtitulo;
+      fila.querySelector('[data-field="subtitulo"]').value = subtitulo;
+    }
+
+    function crearFilaFinanciamientoProg() {
+      const fila = document.createElement('tr');
+      fila.dataset.tableRow = '';
+
+      const celdaFuente = document.createElement('td');
+      celdaFuente.append('FNDR', campoFinanciamientoProg('fuente', 'hidden', 'FNDR'));
+      fila.appendChild(celdaFuente);
+
+      const celdaItem = document.createElement('td');
+      const selectItem = document.createElement('select');
+      selectItem.className = 'form-control';
+      selectItem.dataset.field = 'item';
+      celdaItem.append(selectItem, campoFinanciamientoProg('subtitulo', 'hidden'));
+      fila.appendChild(celdaItem);
+
+      const celdaAsig = document.createElement('td');
+      celdaAsig.textContent = 'No aplica';
+      fila.appendChild(celdaAsig);
+
+      ['solicitado_ano_actual', 'solicitado_ano_siguiente'].forEach(campo => {
+        const input = campoFinanciamientoProg(campo, 'number');
+        input.className = 'form-control';
+        input.min = '0';
+        input.step = '1';
+        input.placeholder = '0';
+        input.addEventListener('input', actualizarFinanciamientoProg);
+        const celda = document.createElement('td');
+        celda.appendChild(input);
+        fila.appendChild(celda);
+      });
+
+      const costo = campoFinanciamientoProg('costo_total', 'number', '0');
+      costo.className = 'form-control auto-calc';
+      costo.readOnly = true;
+      const celdaCosto = document.createElement('td');
+      celdaCosto.appendChild(costo);
+      fila.appendChild(celdaCosto);
+
+      const celdaAcciones = document.createElement('td');
+      const quitar = document.createElement('button');
+      quitar.type = 'button';
+      quitar.className = 'btn btn-danger btn-sm';
+      quitar.textContent = 'Quitar';
+      quitar.addEventListener('click', () => {
+        fila.remove();
+        actualizarFinanciamientoProg();
+      });
+      celdaAcciones.appendChild(quitar);
+      fila.appendChild(celdaAcciones);
+
+      actualizarItemsFilaProg(fila);
+      return fila;
+    }
+
+    function agregarFilaFinanciamientoProg() {
+      document.getElementById('prog_fin_body').appendChild(crearFilaFinanciamientoProg());
+      actualizarFinanciamientoProg();
+    }
+
+    function sincronizarSubtituloFinanciamientoProg() {
+      const tabla = document.getElementById('tablaFinanciamientoProg');
+      const subtitulo = document.getElementById('subtitulo').value;
+      if (tabla.dataset.subtitulo === subtitulo) return;
+      tabla.dataset.subtitulo = subtitulo;
+      document.getElementById('prog_fin_badge_subtitulo').textContent =
+        subtitulo ? `Subtítulo ${subtitulo}` : 'Subtítulo sin seleccionar';
+      document.querySelectorAll('#prog_fin_body tr[data-table-row]').forEach(actualizarItemsFilaProg);
+      if (subtitulo && !document.querySelector('#prog_fin_body tr[data-table-row]')) {
+        agregarFilaFinanciamientoProg();
+      }
+    }
+
+    function cargarFinanciamientoEjemploProg(subtitulo, item, actual, siguiente) {
+      document.getElementById('subtitulo').value = subtitulo;
+      document.getElementById('prog_fin_body').replaceChildren();
+      document.getElementById('tablaFinanciamientoProg').dataset.subtitulo = '';
+      sincronizarSubtituloFinanciamientoProg();
+      const fila = document.querySelector('#prog_fin_body tr[data-table-row]');
+      fila.querySelector('[data-field="item"]').value = item;
+      fila.querySelector('[data-field="solicitado_ano_actual"]').value = actual;
+      fila.querySelector('[data-field="solicitado_ano_siguiente"]').value = siguiente;
+      actualizarFinanciamientoProg();
+    }
+
+    function actualizarFinanciamientoProg() {
+      const ano = Number(document.getElementById('prog_ano_postulacion').value) || new Date().getFullYear();
+      document.getElementById('prog_fin_ano_actual_label').textContent = `Solicitado Año ${ano} ($)`;
+      document.getElementById('print_prog_fin_ano_actual_label').textContent = `SOLICITADO AÑO ${ano} M$`;
+      const formato = n => n.toLocaleString('es-CL');
+      const formatoM = n => (n / 1000).toLocaleString('es-CL', { maximumFractionDigits: 3 });
+      const subtitulo = document.getElementById('subtitulo').value;
+      const cuerpoImpresion = document.getElementById('print_prog_fin_body');
+      cuerpoImpresion.replaceChildren();
+      let totalActual = 0;
+      let totalSiguiente = 0;
+      document.querySelectorAll('#prog_fin_body tr[data-table-row]').forEach(fila => {
+        const actual = Number(fila.querySelector('[data-field="solicitado_ano_actual"]').value) || 0;
+        const siguiente = Number(fila.querySelector('[data-field="solicitado_ano_siguiente"]').value) || 0;
+        fila.querySelector('[data-field="costo_total"]').value = String(actual + siguiente);
+        totalActual += actual;
+        totalSiguiente += siguiente;
+
+        const selItem = fila.querySelector('[data-field="item"]');
+        if (!selItem.value && actual + siguiente === 0) return;
+        const filaImpresion = document.createElement('tr');
+        [
+          `FNDR / ${subtitulo || '-'}`,
+          selItem.selectedOptions[0]?.textContent || '-',
+          '-',
+          formatoM(actual),
+          formatoM(siguiente),
+          formatoM(actual + siguiente)
+        ].forEach(texto => {
+          const celda = document.createElement('td');
+          celda.textContent = texto;
+          filaImpresion.appendChild(celda);
+        });
+        cuerpoImpresion.appendChild(filaImpresion);
+      });
+      const tabla = document.getElementById('tablaFinanciamientoProg');
+      tabla.querySelector('[data-total-for="solicitado_ano_actual"]').textContent = formato(totalActual);
+      tabla.querySelector('[data-total-for="solicitado_ano_siguiente"]').textContent = formato(totalSiguiente);
+      tabla.querySelector('[data-total-for="costo_total"]').textContent = formato(totalActual + totalSiguiente);
+      document.getElementById('prog_fin_total_calculado').textContent = `$${formato(totalActual + totalSiguiente)}`;
+      document.getElementById('print_prog_total_ano_actual').textContent = formatoM(totalActual);
+      document.getElementById('print_prog_total_ano_siguiente').textContent = formatoM(totalSiguiente);
+      document.getElementById('print_prog_costo_total').textContent = formatoM(totalActual + totalSiguiente);
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('subtitulo').addEventListener('change', sincronizarSubtituloFinanciamientoProg);
       actualizarFichaImprimibleProg();
     });
   </script>
