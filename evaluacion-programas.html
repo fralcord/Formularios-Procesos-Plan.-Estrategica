@@ -51,9 +51,6 @@
         <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploProgramaRenal()">
           <span>Cargar ejemplo: Programa preventivo</span>
         </button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="imprimirFichaOficialProg()">
-          <span>Imprimir documento / Exportar a PDF</span>
-        </button>
       </div>
     </section>
 
@@ -505,11 +502,11 @@
             <div><strong>EVALUACIÓN:</strong> <span id="print_prog_evaluador_texto">-</span> &middot; <span id="print_prog_fecha_eval">-</span></div>
           </div>
 
-          <!-- Las firmas y las referencias a oficios se gestionan en otra instancia -->
-          <div class="sheet-footer-note">
-            Las firmas electrónicas Ley N° 19.799 y las referencias a oficios asociadas
-            se registran en la instancia de Oficios de la DIPLADER.
-          </div>
+        </div>
+        <div class="official-sheet-actions no-print">
+          <button type="button" class="btn btn-primary" onclick="imprimirFichaOficialProg()">
+            <span>Imprimir Ficha de Evaluación / Exportar a PDF</span>
+          </button>
         </div>
       </div>
 

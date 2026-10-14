@@ -22,7 +22,7 @@ La aplicación actual es una interfaz cliente: el botón de generación produce 
 
 ## Publicación en línea
 
-El sitio se publica desde este repositorio con **GitHub Pages** únicamente cuando se ejecuta manualmente el flujo **Deploy forms to GitHub Pages** en Actions. Los cambios enviados a `main` se acumulan en el repositorio y no se reflejan en el sitio hasta solicitar y ejecutar esa publicación. Para publicar, abre **Actions → Deploy forms to GitHub Pages → Run workflow** en GitHub. El flujo publica sólo la portada, los cuatro formularios, estilos, scripts y recursos necesarios; no publica el README ni la carpeta `Referencia de los procesos`. La actualización tarda lo que dure el flujo, no es instantánea al guardar un archivo.
+El sitio se publica desde este repositorio con **GitHub Pages** al enviar cambios a `main`, o manualmente mediante **Deploy forms to GitHub Pages** en Actions. El flujo publica sólo la portada, los cuatro formularios, estilos, scripts y recursos necesarios; no publica el README ni la carpeta `Referencia de los procesos`. La actualización tarda lo que dure el flujo, no es instantánea al guardar un archivo.
 
 `https://fralcord.github.io/Formularios-Procesos-Plan.-Estrategica/`
 

@@ -51,9 +51,6 @@
         <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploPertinenciaObservada()">
           <span>Cargar ejemplo: Iniciativa con observaciones</span>
         </button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="imprimirFichaOficial()">
-          <span>Imprimir documento / Exportar a PDF</span>
-        </button>
       </div>
     </section>
 
@@ -507,6 +504,11 @@
             <div><strong>Evaluado por:</strong> <span id="print_evaluador">-</span></div>
             <div><strong>Fecha de Evaluación:</strong> <span id="print_fecha_evaluacion">-</span></div>
           </div>
+        </div>
+        <div class="official-sheet-actions no-print">
+          <button type="button" class="btn btn-primary" onclick="imprimirFichaOficial()">
+            <span>Imprimir Ficha de Evaluación / Exportar a PDF</span>
+          </button>
         </div>
       </div>
 

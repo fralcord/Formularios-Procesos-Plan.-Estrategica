@@ -618,6 +618,12 @@ body {
   flex-wrap: wrap;
 }
 
+.official-sheet-actions {
+  display: flex;
+  justify-content: center;
+  margin: 1rem auto 2rem;
+}
+
 /* Botones */
 .btn {
   display: inline-flex;

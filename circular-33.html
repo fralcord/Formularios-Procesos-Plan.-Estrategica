@@ -51,9 +51,6 @@
         <button type="button" class="btn btn-secondary btn-sm" onclick="cargarEjemploEvaluacionC33()">
           <span>Cargar ejemplo: Iniciativa con observaciones</span>
         </button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="imprimirFichaOficialC33()">
-          <span>Imprimir documento / Exportar a PDF</span>
-        </button>
       </div>
     </section>
 
@@ -465,11 +462,11 @@
             <div><strong>Fecha de Evaluación:</strong> <span id="print_c33_fecha_eval">-</span></div>
           </div>
 
-          <!-- Las firmas y las referencias a oficios se gestionan en otra instancia -->
-          <div class="sheet-footer-note">
-            Las firmas electrónicas Ley N° 19.799 y las referencias a oficios asociadas
-            se registran en la instancia de Oficios de la DIPLADER.
-          </div>
+        </div>
+        <div class="official-sheet-actions no-print">
+          <button type="button" class="btn btn-primary" onclick="imprimirFichaOficialC33()">
+            <span>Imprimir Ficha de Evaluación / Exportar a PDF</span>
+          </button>
         </div>
       </div>
 
