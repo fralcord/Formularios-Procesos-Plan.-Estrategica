@@ -164,10 +164,10 @@
                 <input type="text" id="prog_unidad_tecnica" name="unidad_tecnica" class="form-control" placeholder="Ej: Unidad técnica responsable" required>
               </div>
             </div>
-            <div class="col-4 prog-registro-field prog-orden-7">
+            <div class="col-4 prog-registro-field prog-orden-8">
               <div class="form-group">
                 <label class="form-label" for="prog_provincia">Provincia <span class="required">*</span></label>
-                <select id="prog_provincia" name="localizacion.provincia" class="form-control" required>
+                <select id="prog_provincia" name="localizacion.provincia" class="form-control" data-location-province required>
                   <option value="">Seleccione provincia...</option>
                   <option value="CHILOÉ">CHILOÉ</option>
                   <option value="LLANQUIHUE">LLANQUIHUE</option>
@@ -177,10 +177,10 @@
                 </select>
               </div>
             </div>
-            <div class="col-4 prog-registro-field prog-orden-8">
+            <div class="col-4 prog-registro-field prog-orden-7">
               <div class="form-group">
                 <label class="form-label" for="prog_comuna">Comuna <span class="required">*</span></label>
-                <select id="prog_comuna" name="localizacion.comuna" class="form-control" required>
+                <select id="prog_comuna" name="localizacion.comuna" class="form-control" data-location-commune required>
                   <option value="">Selecciona comuna...</option>
                   <option value="Ancud">Ancud</option>
                   <option value="Castro">Castro</option>
@@ -591,6 +591,7 @@
   <!-- Scripts -->
   <script src="js/schemas.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/localizacion.js"></script>
   <script>
     function cambiarPasoProg(paso) {
       ['tabBtn1', 'tabBtn2', 'tabBtn3', 'tabBtn4'].forEach(id => {
@@ -638,6 +639,7 @@
     }
 
     function actualizarFichaImprimibleProg() {
+      sincronizarSelectoresUbicacion();
       AppIteracion.aplicar();
       sincronizarSubtituloFinanciamientoProg();
       const getVal = id => document.getElementById(id)?.value || '';

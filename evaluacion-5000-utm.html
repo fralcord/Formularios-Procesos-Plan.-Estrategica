@@ -217,10 +217,10 @@
                 </div>
               </section>
             </div>
-            <div class="col-4 ut5000-registro-field ut5000-orden-9">
+            <div class="col-4 ut5000-registro-field ut5000-orden-10">
               <div class="form-group">
                 <label class="form-label" for="provincia_5000">Provincia <span class="required">*</span></label>
-                <select id="provincia_5000" name="provincia" class="form-control" required>
+                <select id="provincia_5000" name="provincia" class="form-control" data-location-province required>
                   <option value="">Seleccione provincia...</option>
                   <option value="OSORNO">OSORNO</option>
                   <option value="LLANQUIHUE">LLANQUIHUE</option>
@@ -230,10 +230,10 @@
                 </select>
               </div>
             </div>
-            <div class="col-4 ut5000-registro-field ut5000-orden-10">
+            <div class="col-4 ut5000-registro-field ut5000-orden-9">
               <div class="form-group">
                 <label class="form-label" for="comuna_5000">Comuna <span class="required">*</span></label>
-                <select id="comuna_5000" name="comuna" class="form-control" required>
+                <select id="comuna_5000" name="comuna" class="form-control" data-location-commune required>
                   <option value="">Seleccione comuna...</option>
                   <option value="Ancud">Ancud</option>
                   <option value="Castro">Castro</option>
@@ -646,6 +646,7 @@
   <!-- Scripts -->
   <script src="js/schemas.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/localizacion.js"></script>
   <script>
     function cambiarPaso5000(paso) {
       ['tabBtn1', 'tabBtn2', 'tabBtn3', 'tabBtn4'].forEach(id => {
@@ -693,6 +694,7 @@
     }
 
     function actualizarFichaImprimible5000() {
+      sincronizarSelectoresUbicacion();
       AppIteracion.aplicar();
       actualizarFinanciamiento5000();
       const getVal = id => document.getElementById(id)?.value || '';

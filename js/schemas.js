@@ -121,8 +121,8 @@ nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha ID
       unidad_formuladora: { tipo: "string", descripcion: "Nombre de la unidad formuladora" },
       unidad_tecnica: { tipo: "string", descripcion: "Unidad técnica responsable de la revisión (ej: DOH MOP, DIPLADER)" },
       localizacion: {
-        provincia: { tipo: "string", enum: ["CHILOÉ", "LLANQUIHUE", "OSORNO", "PALENA", "REGIONAL"] },
-        comuna: { tipo: "string", enum: ["Ancud", "Castro", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Llanquihue", "Los Muermos", "Maullín", "Puerto Montt", "Puerto Varas", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena", "Provincial", "Regional"] },
+        provincia: { tipo: "string", enum: ["LLANQUIHUE", "CHILOÉ", "OSORNO", "PALENA", "REGIONAL"] },
+        comuna: { tipo: "string", enum: ["Calbuco", "Cochamó", "Fresia", "Frutillar", "Llanquihue", "Los Muermos", "Maullín", "Puerto Montt", "Puerto Varas", "Ancud", "Castro", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena", "Provincial", "Regional"] },
         localidad: { tipo: "string", opcional: true }
       },
       descripcion_proyecto: {
