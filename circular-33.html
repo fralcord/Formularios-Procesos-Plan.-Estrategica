@@ -186,13 +186,6 @@
                 </select>
               </div>
             </div>
-            <div class="col-6 c33-registro-field c33-orden-8">
-              <div class="form-group">
-                <label class="form-label" for="costo_total">Costo Total (Pesos $)</label>
-                <input type="text" id="costo_total" name="costo_total" class="form-control costo-total-burdeo" inputmode="numeric" data-format-currency autocomplete="off">
-                <span class="form-hint">Ingrese el monto en pesos; se formatea automáticamente.</span>
-              </div>
-            </div>
             <div class="col-4 c33-registro-field c33-orden-9">
               <div class="form-group">
                 <label class="form-label" for="provincia">Provincia <span class="required">*</span></label>
@@ -256,6 +249,45 @@
                 <label class="form-label" for="c33_descripcion_proyecto">Descripción de la Iniciativa</label>
                 <textarea id="c33_descripcion_proyecto" name="descripcion_proyecto" rows="3" class="form-control" placeholder="Describa brevemente el objetivo, la necesidad que aborda y los principales componentes de la iniciativa."></textarea>
               </div>
+            </div>
+
+            <div class="col-12 c33-registro-field c33-orden-12">
+              <section class="form-section-card pert-financing-capture">
+                <div class="section-header">
+                  <h3>Fuentes de Financiamiento</h3>
+                  <span class="section-badge" id="c33_fin_badge_subtitulo">Subtítulo sin seleccionar</span>
+                </div>
+                <p class="form-hint">Los ítems y asignaciones disponibles dependen del subtítulo seleccionado. Ingrese los montos en pesos.</p>
+                <div class="table-responsive">
+                  <table class="data-table pert-financing-table" id="tablaFinanciamientoC33" data-table-id="fuentes_financiamiento">
+                    <thead>
+                      <tr>
+                        <th>Fuente</th>
+                        <th>Ítem</th>
+                        <th>Asignación</th>
+                        <th id="c33_fin_ano_actual_label">Solicitado Año ($)</th>
+                        <th>Solicitado Año Siguiente ($)</th>
+                        <th>Costo Total ($)</th>
+                        <th><span class="sr-only">Acciones</span></th>
+                      </tr>
+                    </thead>
+                    <tbody id="c33_fin_body"></tbody>
+                    <tfoot>
+                      <tr>
+                        <th colspan="3">TOTAL ($)</th>
+                        <td data-total-for="solicitado_ano_actual">0</td>
+                        <td data-total-for="solicitado_ano_siguiente">0</td>
+                        <td data-total-for="costo_total">0</td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <div class="table-actions">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFilaFinanciamientoC33()">Agregar fuente / ítem +</button>
+                  <strong>Costo Total calculado: <span id="c33_fin_total_calculado">$0</span></strong>
+                </div>
+              </section>
             </div>
 
             <div class="col-12 c33-registro-field c33-orden-13 form-grid-divider"></div>
@@ -397,11 +429,27 @@
           <div class="sheet-section-title pert-print-section-title">DESCRIPCIÓN DE LA INICIATIVA:</div>
           <div class="pert-print-description" id="print_c33_descripcion">-</div>
 
-          <div class="sheet-section-title pert-print-section-title">COSTO TOTAL:</div>
-          <table class="pert-print-table">
-            <tbody>
-              <tr><th>COSTO TOTAL (M$)</th><td id="print_c33_costo_total">-</td></tr>
-            </tbody>
+          <div class="sheet-section-title pert-print-section-title">FUENTE DE FINANCIAMIENTO:</div>
+          <table class="pert-print-table pert-print-financing-table">
+            <thead>
+              <tr>
+                <th>FUENTE / SUBTÍTULO</th>
+                <th>ÍTEM</th>
+                <th>ASIGNACIÓN</th>
+                <th id="print_c33_fin_ano_actual_label">SOLICITADO AÑO M$</th>
+                <th>SOLICITADO AÑO SIGUIENTE M$</th>
+                <th>COSTO TOTAL M$</th>
+              </tr>
+            </thead>
+            <tbody id="print_c33_fin_body"></tbody>
+            <tfoot>
+              <tr>
+                <th colspan="3">TOTAL</th>
+                <td id="print_c33_total_ano_actual">0</td>
+                <td id="print_c33_total_ano_siguiente">0</td>
+                <td id="print_c33_costo_total">0</td>
+              </tr>
+            </tfoot>
           </table>
 
           <div class="sheet-section-title pert-print-section-title">EVALUACIÓN:</div>
@@ -555,7 +603,7 @@
 
     function actualizarFichaImprimibleC33() {
       AppIteracion.aplicar();
-      formatPesosInput(document.getElementById('costo_total'));
+      sincronizarSubtituloFinanciamientoC33();
       const getVal = id => document.getElementById(id)?.value || '';
       const claveInstancia = AppIteracion.actual();
 
@@ -587,8 +635,7 @@
       document.getElementById('print_c33_unidad_tecnica').textContent = getVal('c33_unidad_tecnica') || '-';
       document.getElementById('print_c33_descripcion').textContent = getVal('c33_descripcion_proyecto') || '-';
       document.getElementById('print_c33_subtitulo').textContent = getVal('subtitulo') || '-';
-      document.getElementById('print_c33_costo_total').textContent =
-        formatCurrencyInThousands(getVal('costo_total'));
+      actualizarFinanciamientoC33();
 
       // Evaluación bloque
       const obs = getVal('c33_observaciones_eval');
@@ -644,6 +691,22 @@
       showJsonModal('Ficha Circular 33 - Payload para Backend', data);
     }
 
+    function cargarFinanciamientoEjemploC33(item, clasificador, actual, siguiente) {
+      document.getElementById('c33_fin_body').replaceChildren();
+      document.getElementById('tablaFinanciamientoC33').dataset.subtitulo = '';
+      sincronizarSubtituloFinanciamientoC33();
+      const fila = document.querySelector('#c33_fin_body tr[data-table-row]');
+      const selItem = fila.querySelector('[data-field="item"]');
+      selItem.value = item;
+      selItem.dispatchEvent(new Event('change'));
+      const selAsig = fila.querySelector('[data-field="clasificador"]');
+      selAsig.value = clasificador;
+      selAsig.dispatchEvent(new Event('change'));
+      fila.querySelector('[data-field="solicitado_ano_actual"]').value = actual;
+      fila.querySelector('[data-field="solicitado_ano_siguiente"]').value = siguiente;
+      actualizarFinanciamientoC33();
+    }
+
     function cargarEjemploCircular33() {
       document.getElementById('c33_proceso_ano').value = 2026;
       document.getElementById('subtitulo').value = '29';
@@ -656,7 +719,7 @@
       document.getElementById('comuna').value = "Castro";
       document.getElementById('c33_localidad').value = "";
       document.getElementById('c33_descripcion_proyecto').value = "Descripción ficticia para probar la captura de una iniciativa.";
-      document.getElementById('costo_total').value = "230000000";
+      cargarFinanciamientoEjemploC33('05', '001', 230000000, 0);
 
       document.getElementById('c33_estado').value = "RECOMENDADO";
       actualizarBadgeC33("RECOMENDADO");
@@ -687,7 +750,7 @@
       document.getElementById('comuna').value = "Regional";
       document.getElementById('c33_localidad').value = "";
       document.getElementById('c33_descripcion_proyecto').value = "Descripción ficticia para probar la captura de una iniciativa.";
-      document.getElementById('costo_total').value = "210148000";
+      cargarFinanciamientoEjemploC33('06', '001', 210148000, 0);
 
       document.getElementById('c33_estado').value = "OBSERVADO";
       actualizarBadgeC33("OBSERVADO");
@@ -706,7 +769,245 @@
       actualizarFichaImprimibleC33();
     }
 
+    const catalogoFinanciamientoC33 = {
+      '22': [
+        { item: '11', nombre: 'SERVICIOS TÉCNICOS Y PROFESIONALES', asignaciones: [['001', 'Estudios e Investigaciones']] }
+      ],
+      '29': [
+        { item: '02', nombre: 'EDIFICIOS', asignaciones: [] },
+        { item: '03', nombre: 'VEHÍCULOS', asignaciones: [] },
+        { item: '04', nombre: 'MOBILIARIO Y OTROS', asignaciones: [] },
+        { item: '05', nombre: 'MÁQUINAS Y EQUIPOS', asignaciones: [
+          ['001', 'Máquinas y Equipos de Oficina'],
+          ['002', 'Maquinarias y Equipos para la Producción'],
+          ['999', 'Otras']
+        ] },
+        { item: '06', nombre: 'EQUIPOS INFORMÁTICOS', asignaciones: [
+          ['001', 'Equipos Computacionales y Periféricos'],
+          ['002', 'Equipos de Comunicaciones para Redes Informáticas']
+        ] },
+        { item: '07', nombre: 'PROGRAMAS INFORMÁTICOS', asignaciones: [
+          ['001', 'Programas Computacionales'],
+          ['002', 'Sistemas de Información']
+        ] },
+        { item: '99', nombre: 'OTROS ACTIVOS NO FINANCIEROS', asignaciones: [] }
+      ],
+      '31': [
+        { item: '01', nombre: 'ESTUDIOS BÁSICOS', asignaciones: [
+          ['001', 'G. Administrativos'],
+          ['002', 'Consultoría']
+        ] },
+        { item: '02', nombre: 'PROYECTOS', asignaciones: [
+          ['001', 'G. Administrativos'],
+          ['002', 'Consultoría'],
+          ['004', 'Obras Civiles'],
+          ['005', 'Equipamiento'],
+          ['006', 'Equipos'],
+          ['999', 'Otros Gastos']
+        ] },
+        { item: '03', nombre: 'PROGRAMAS DE INVERSIÓN', asignaciones: [
+          ['001', 'G. Administrativos Consultoría'],
+          ['002', 'Consultoría'],
+          ['003', 'Contratación del Programa']
+        ] }
+      ]
+    };
+
+    function itemsFinanciamientoC33() {
+      return catalogoFinanciamientoC33[document.getElementById('subtitulo').value] || [];
+    }
+
+    function llenarSelectC33(select, placeholder, opciones) {
+      select.replaceChildren();
+      const base = document.createElement('option');
+      base.value = '';
+      base.textContent = placeholder;
+      select.appendChild(base);
+      opciones.forEach(([valor, texto, descripcion]) => {
+        const opcion = document.createElement('option');
+        opcion.value = valor;
+        opcion.textContent = texto;
+        opcion.dataset.descripcion = descripcion;
+        select.appendChild(opcion);
+      });
+    }
+
+    function campoFinanciamientoC33(campo, tipo, valor = '') {
+      const input = document.createElement('input');
+      input.type = tipo;
+      input.dataset.field = campo;
+      input.value = valor;
+      return input;
+    }
+
+    function actualizarItemsFilaC33(fila) {
+      const selectItem = fila.querySelector('[data-field="item"]');
+      const items = itemsFinanciamientoC33();
+      const subtitulo = document.getElementById('subtitulo').value;
+      llenarSelectC33(
+        selectItem,
+        subtitulo ? 'Seleccione ítem...' : 'Seleccione subtítulo primero...',
+        items.map(i => [i.item, `${i.item} ${i.nombre}`, i.nombre])
+      );
+      selectItem.disabled = !subtitulo;
+      fila.querySelector('[data-field="subtitulo"]').value = subtitulo;
+      fila.querySelector('[data-field="item_descripcion"]').value = '';
+      actualizarAsignacionesFilaC33(fila);
+    }
+
+    function actualizarAsignacionesFilaC33(fila) {
+      const selectItem = fila.querySelector('[data-field="item"]');
+      const selectAsig = fila.querySelector('[data-field="clasificador"]');
+      const item = itemsFinanciamientoC33().find(i => i.item === selectItem.value);
+      let placeholder = 'Seleccione ítem primero...';
+      if (item) placeholder = item.asignaciones.length ? 'Seleccione asignación...' : 'Sin asignación (no aplica)';
+      llenarSelectC33(
+        selectAsig,
+        placeholder,
+        (item?.asignaciones || []).map(([cod, nombre]) => [cod, `${cod} - ${nombre}`, nombre])
+      );
+      selectAsig.disabled = !item || item.asignaciones.length === 0;
+      fila.querySelector('[data-field="item_descripcion"]').value = item?.nombre || '';
+      fila.querySelector('[data-field="clasificador_descripcion"]').value = '';
+    }
+
+    function crearFilaFinanciamientoC33() {
+      const fila = document.createElement('tr');
+      fila.dataset.tableRow = '';
+
+      const celdaFuente = document.createElement('td');
+      celdaFuente.append('FNDR', campoFinanciamientoC33('fuente', 'hidden', 'FNDR'));
+      fila.appendChild(celdaFuente);
+
+      const celdaItem = document.createElement('td');
+      const selectItem = document.createElement('select');
+      selectItem.className = 'form-control';
+      selectItem.dataset.field = 'item';
+      celdaItem.append(
+        selectItem,
+        campoFinanciamientoC33('subtitulo', 'hidden'),
+        campoFinanciamientoC33('item_descripcion', 'hidden')
+      );
+      fila.appendChild(celdaItem);
+
+      const celdaAsig = document.createElement('td');
+      const selectAsig = document.createElement('select');
+      selectAsig.className = 'form-control';
+      selectAsig.dataset.field = 'clasificador';
+      celdaAsig.append(selectAsig, campoFinanciamientoC33('clasificador_descripcion', 'hidden'));
+      fila.appendChild(celdaAsig);
+
+      ['solicitado_ano_actual', 'solicitado_ano_siguiente'].forEach(campo => {
+        const input = campoFinanciamientoC33(campo, 'number');
+        input.className = 'form-control';
+        input.min = '0';
+        input.step = '1';
+        input.placeholder = '0';
+        input.addEventListener('input', actualizarFinanciamientoC33);
+        const celda = document.createElement('td');
+        celda.appendChild(input);
+        fila.appendChild(celda);
+      });
+
+      const costo = campoFinanciamientoC33('costo_total', 'number', '0');
+      costo.className = 'form-control auto-calc';
+      costo.readOnly = true;
+      const celdaCosto = document.createElement('td');
+      celdaCosto.appendChild(costo);
+      fila.appendChild(celdaCosto);
+
+      const celdaAcciones = document.createElement('td');
+      const quitar = document.createElement('button');
+      quitar.type = 'button';
+      quitar.className = 'btn btn-danger btn-sm';
+      quitar.textContent = 'Quitar';
+      quitar.addEventListener('click', () => {
+        fila.remove();
+        actualizarFinanciamientoC33();
+      });
+      celdaAcciones.appendChild(quitar);
+      fila.appendChild(celdaAcciones);
+
+      selectItem.addEventListener('change', () => actualizarAsignacionesFilaC33(fila));
+      selectAsig.addEventListener('change', () => {
+        fila.querySelector('[data-field="clasificador_descripcion"]').value =
+          selectAsig.selectedOptions[0]?.dataset.descripcion || '';
+      });
+
+      actualizarItemsFilaC33(fila);
+      return fila;
+    }
+
+    function agregarFilaFinanciamientoC33() {
+      document.getElementById('c33_fin_body').appendChild(crearFilaFinanciamientoC33());
+      actualizarFinanciamientoC33();
+    }
+
+    // Al cambiar el subtítulo se reconstruye la disponibilidad de ítems/asignaciones de cada fila.
+    function sincronizarSubtituloFinanciamientoC33() {
+      const tabla = document.getElementById('tablaFinanciamientoC33');
+      const subtitulo = document.getElementById('subtitulo').value;
+      if (tabla.dataset.subtitulo === subtitulo) return;
+      tabla.dataset.subtitulo = subtitulo;
+      document.getElementById('c33_fin_badge_subtitulo').textContent =
+        subtitulo ? `Subtítulo ${subtitulo}` : 'Subtítulo sin seleccionar';
+      document.querySelectorAll('#c33_fin_body tr[data-table-row]').forEach(actualizarItemsFilaC33);
+      if (subtitulo && !document.querySelector('#c33_fin_body tr[data-table-row]')) {
+        agregarFilaFinanciamientoC33();
+      }
+    }
+
+    function actualizarFinanciamientoC33() {
+      const ano = Number(document.getElementById('c33_proceso_ano').value) || new Date().getFullYear();
+      document.getElementById('c33_fin_ano_actual_label').textContent = `Solicitado Año ${ano} ($)`;
+      let totalActual = 0;
+      let totalSiguiente = 0;
+      const cuerpoImpresion = document.getElementById('print_c33_fin_body');
+      cuerpoImpresion.replaceChildren();
+      const formatoM = n => (n / 1000).toLocaleString('es-CL', { maximumFractionDigits: 3 });
+      const subtituloSel = document.getElementById('subtitulo').value;
+      document.querySelectorAll('#c33_fin_body tr[data-table-row]').forEach(fila => {
+        const actual = Number(fila.querySelector('[data-field="solicitado_ano_actual"]').value) || 0;
+        const siguiente = Number(fila.querySelector('[data-field="solicitado_ano_siguiente"]').value) || 0;
+        fila.querySelector('[data-field="costo_total"]').value = String(actual + siguiente);
+        totalActual += actual;
+        totalSiguiente += siguiente;
+
+        const selItem = fila.querySelector('[data-field="item"]');
+        const selAsig = fila.querySelector('[data-field="clasificador"]');
+        if (!selItem.value && actual + siguiente === 0) return;
+        const filaImpresion = document.createElement('tr');
+        [
+          `FNDR / ${subtituloSel || '-'}`,
+          selItem.selectedOptions[0]?.textContent || '-',
+          selAsig.value ? selAsig.selectedOptions[0].textContent : '-',
+          formatoM(actual),
+          formatoM(siguiente),
+          formatoM(actual + siguiente)
+        ].forEach(texto => {
+          const celda = document.createElement('td');
+          celda.textContent = texto;
+          filaImpresion.appendChild(celda);
+        });
+        cuerpoImpresion.appendChild(filaImpresion);
+      });
+      const formato = n => n.toLocaleString('es-CL');
+      const tabla = document.getElementById('tablaFinanciamientoC33');
+      tabla.querySelector('[data-total-for="solicitado_ano_actual"]').textContent = formato(totalActual);
+      tabla.querySelector('[data-total-for="solicitado_ano_siguiente"]').textContent = formato(totalSiguiente);
+      tabla.querySelector('[data-total-for="costo_total"]').textContent = formato(totalActual + totalSiguiente);
+      document.getElementById('c33_fin_total_calculado').textContent = `$${formato(totalActual + totalSiguiente)}`;
+      document.getElementById('print_c33_fin_ano_actual_label').textContent = `SOLICITADO AÑO ${ano} M$`;
+      document.getElementById('print_c33_total_ano_actual').textContent = formatoM(totalActual);
+      document.getElementById('print_c33_total_ano_siguiente').textContent = formatoM(totalSiguiente);
+      document.getElementById('print_c33_costo_total').textContent = formatoM(totalActual + totalSiguiente);
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('subtitulo').addEventListener('change', sincronizarSubtituloFinanciamientoC33);
+      document.getElementById('c33_proceso_ano').addEventListener('input', actualizarFinanciamientoC33);
+      sincronizarSubtituloFinanciamientoC33();
+      actualizarFinanciamientoC33();
       actualizarFichaImprimibleC33();
     });
   </script>
