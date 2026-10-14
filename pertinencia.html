@@ -551,6 +551,13 @@
 
             <div class="col-12">
               <div class="form-group">
+                <label class="form-label" for="pert_reg_validador">Enlace Validador DocDigital (Ley N° 19.799)</label>
+                <input type="url" id="pert_reg_validador" name="registro_documental_evaluacion.url_validador_docdigital" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
                 <label class="form-label" for="pert_reg_observaciones">Constancia y Observaciones del Registro</label>
                 <textarea id="pert_reg_observaciones" name="registro_documental_evaluacion.constancia_registro" rows="3" class="form-control" placeholder="Dónde se conserva el documento, a quién se remitió, observaciones de archivo..."></textarea>
               </div>
@@ -693,11 +700,13 @@
       fila.appendChild(clasificadorCelda);
 
       ['solicitado_ano_actual', 'solicitado_ano_siguiente'].forEach(campo => {
-        const input = agregarCampoFinanciamiento(fila, campo, 'number');
+        const input = agregarCampoFinanciamiento(fila, campo, 'text');
         input.className = 'form-control';
-        input.min = '0';
-        input.step = '1';
+        input.inputMode = 'numeric';
+        input.dataset.formatCurrency = 'true';
         input.placeholder = '0';
+        input.autocomplete = 'off';
+        input.addEventListener('input', () => formatPesosInput(input));
         agregarCeldaFinanciamiento(fila, input);
       });
 
@@ -747,7 +756,7 @@
           selectorClasificador.selectedOptions[0]?.dataset.descripcion || '';
         actualizarFichaImprimible();
       });
-      fila.querySelectorAll('input[type="number"]').forEach(input =>
+      fila.querySelectorAll('input[data-format-currency]').forEach(input =>
         input.addEventListener('input', actualizarFichaImprimible)
       );
       return fila;
@@ -779,8 +788,12 @@
       const cuerpoImpresion = document.getElementById('print_financiamiento_pert_body');
       cuerpoImpresion.replaceChildren();
       document.querySelectorAll('#financiamiento_pert_body tr[data-table-row]').forEach(fila => {
-        const actual = Number(fila.querySelector('[data-field="solicitado_ano_actual"]').value) || 0;
-        const siguiente = Number(fila.querySelector('[data-field="solicitado_ano_siguiente"]').value) || 0;
+        const actualInput = fila.querySelector('[data-field="solicitado_ano_actual"]');
+        const siguienteInput = fila.querySelector('[data-field="solicitado_ano_siguiente"]');
+        formatPesosInput(actualInput);
+        formatPesosInput(siguienteInput);
+        const actual = parseCurrencyValue(actualInput.value) || 0;
+        const siguiente = parseCurrencyValue(siguienteInput.value) || 0;
         const costo = actual + siguiente;
         fila.querySelector('[data-field="costo_total"]').value = String(costo);
         totalActual += actual;
@@ -972,6 +985,7 @@
     }
 
     function guardarFormularioPertinencia() {
+      if (!validarFechasDesdePostulacion('formPertinencia')) return;
       const data = serializarEvaluacion('formPertinencia', {
         modelo: 'EvaluacionPertinenciaRegional',
         linea: 'Evaluación de Pertinencia'
@@ -1075,6 +1089,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+      configurarFechasDesdePostulacion('formPertinencia', 'oficioPostulacionFecha');
       agregarFilaFinanciamientoPert();
       actualizarFichaImprimible();
     });

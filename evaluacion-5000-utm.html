@@ -583,46 +583,40 @@
           <div class="form-grid">
             <div class="col-4">
               <div class="form-group">
-                <label class="form-label" for="ut5000_reg_numero">N° de Registro Documental <span class="required">*</span></label>
-                <input type="text" id="ut5000_reg_numero" name="registro_documental.numeroRegistro" class="form-control" placeholder="Ej: REG-EJEMPLO-0001" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="ut5000_reg_fecha">Fecha de Registro Documental <span class="required">*</span></label>
-                <input type="date" id="ut5000_reg_fecha" name="registro_documental.fechaRegistro" class="form-control" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
                 <label class="form-label" for="ut5000_reg_registrado_por">Registrado por (Profesional) <span class="required">*</span></label>
-                <input type="text" id="ut5000_reg_registrado_por" name="registro_documental.registradoPor" class="form-control" placeholder="Nombre del profesional" required>
+                <input type="text" id="ut5000_reg_registrado_por" name="registro_documental_evaluacion.registrado_por" class="form-control" placeholder="Nombre del profesional" required>
               </div>
             </div>
 
             <div class="col-4">
               <div class="form-group">
-                <label class="form-label" for="ut5000_reg_oficio">Referencia de Oficio (Instancia de Oficios)</label>
-                <input type="text" id="ut5000_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0002">
+                <label class="form-label" for="ut5000_reg_oficio">N° de Oficio (Instancia de Oficios)</label>
+                <input type="text" id="ut5000_reg_oficio" name="registro_documental_evaluacion.referencia_oficio" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0002">
               </div>
             </div>
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="ut5000_reg_oficio_fecha">Fecha del Oficio</label>
-                <input type="date" id="ut5000_reg_oficio_fecha" name="registro_documental.fechaOficio" class="form-control">
+                <input type="date" id="ut5000_reg_oficio_fecha" name="registro_documental_evaluacion.fecha_oficio" class="form-control">
               </div>
             </div>
-            <div class="col-4">
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="ut5000_reg_oficio_destinatario">Destinatario del Oficio</label>
+                <input type="text" id="ut5000_reg_oficio_destinatario" name="registro_documental_evaluacion.destinatario_oficio" class="form-control" placeholder="Ej: Entidad pública destinataria">
+              </div>
+            </div>
+            <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="ut5000_reg_validador">Enlace Validador DocDigital (Ley N° 19.799)</label>
-                <input type="url" id="ut5000_reg_validador" name="registro_documental.urlValidadorDocDigital" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
+                <input type="url" id="ut5000_reg_validador" name="registro_documental_evaluacion.url_validador_docdigital" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
               </div>
             </div>
 
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="ut5000_reg_observaciones">Constancia y Observaciones del Registro</label>
-                <textarea id="ut5000_reg_observaciones" name="registro_documental.constanciaRegistro" rows="3" class="form-control" placeholder="Dónde se conserva el documento, a quién se remitió, observaciones de archivo..."></textarea>
+                <textarea id="ut5000_reg_observaciones" name="registro_documental_evaluacion.constancia_registro" rows="3" class="form-control" placeholder="Dónde se conserva el documento, a quién se remitió, observaciones de archivo..."></textarea>
               </div>
             </div>
           </div>
@@ -798,6 +792,7 @@
     }
 
     function guardarFormulario5000() {
+      if (!validarFechasDesdePostulacion('formEvaluacion5000')) return;
       const data = serializarEvaluacion('formEvaluacion5000', {
         modelo: 'FichaEvaluacion5000UTM',
         linea: 'Iniciativas Menores a 5.000 UTM'
@@ -871,12 +866,14 @@
       fila.appendChild(asignacionCelda);
 
       ['solicitado_ano_actual', 'solicitado_ano_siguiente'].forEach(campo => {
-        const input = crearCampoFinanciamiento5000(fila, campo, 'number');
+        const input = crearCampoFinanciamiento5000(fila, campo, 'text');
         input.className = 'form-control';
-        input.min = '0';
-        input.step = '1';
+        input.inputMode = 'numeric';
+        input.dataset.formatCurrency = 'true';
         input.placeholder = '0';
+        input.autocomplete = 'off';
         input.setAttribute('aria-label', campo === 'solicitado_ano_actual' ? 'Solicitado año actual en pesos' : 'Solicitado año siguiente en pesos');
+        input.addEventListener('input', () => formatPesosInput(input));
         agregarCeldaFinanciamiento5000(fila, input);
       });
 
@@ -907,7 +904,7 @@
           selectorAsignacion.selectedOptions[0]?.dataset.descripcion || '';
         actualizarFichaImprimible5000();
       });
-      fila.querySelectorAll('input[type="number"]').forEach(input =>
+      fila.querySelectorAll('input[data-format-currency]').forEach(input =>
         input.addEventListener('input', actualizarFichaImprimible5000)
       );
       return fila;
@@ -933,8 +930,12 @@
       cuerpoImpresion.replaceChildren();
 
       document.querySelectorAll('#financiamiento_5000_body tr[data-table-row]').forEach(fila => {
-        const actual = Number(fila.querySelector('[data-field="solicitado_ano_actual"]').value) || 0;
-        const siguiente = Number(fila.querySelector('[data-field="solicitado_ano_siguiente"]').value) || 0;
+        const actualInput = fila.querySelector('[data-field="solicitado_ano_actual"]');
+        const siguienteInput = fila.querySelector('[data-field="solicitado_ano_siguiente"]');
+        formatPesosInput(actualInput);
+        formatPesosInput(siguienteInput);
+        const actual = parseCurrencyValue(actualInput.value) || 0;
+        const siguiente = parseCurrencyValue(siguienteInput.value) || 0;
         const costo = actual + siguiente;
         fila.querySelector('[data-field="costo_total"]').value = String(costo);
         totalActual += actual;
@@ -1025,8 +1026,6 @@
       document.getElementById('evaluador_nombre').value = "Diego Castro";
       document.getElementById('fecha_evaluacion').value = "2026-08-05";
       // Registro documental de la ficha emitida
-      document.getElementById('ut5000_reg_numero').value = "REG-EJEMPLO-0003";
-      document.getElementById('ut5000_reg_fecha').value = "2026-08-05";
       document.getElementById('ut5000_reg_registrado_por').value = "Diego Castro";
       document.getElementById('ut5000_reg_oficio').value = "OFICIO DE EJEMPLO N° 0007";
       document.getElementById('ut5000_reg_oficio_fecha').value = "2026-08-05";
@@ -1051,8 +1050,6 @@
       AppIteracion.establecer('REEVALUACION', actualizarFichaImprimible5000);
 
       // Registro documental de la ficha emitida (cierre del proceso)
-      document.getElementById('ut5000_reg_numero').value = "REG-EJEMPLO-0004";
-      document.getElementById('ut5000_reg_fecha').value = "2026-08-28";
       document.getElementById('ut5000_reg_registrado_por').value = "Diego Castro";
       document.getElementById('ut5000_reg_oficio').value = "OFICIO DE EJEMPLO N° 0008";
       document.getElementById('ut5000_reg_oficio_fecha').value = "2026-08-28";
@@ -1072,6 +1069,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+      configurarFechasDesdePostulacion('formEvaluacion5000', 'ut5000_oficio_postulacion_fecha');
       agregarFilaFinanciamiento5000();
       document.getElementById('formEvaluacion5000').addEventListener('reset', () => {
         setTimeout(actualizarFichaImprimible5000, 0);

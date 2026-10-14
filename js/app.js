@@ -57,7 +57,9 @@ function serializeForm(formElement) {
         if (fieldName) {
           rowObj[fieldName] = fieldName === 'registro' && input.value
             ? JSON.parse(input.value)
-            : parseValue(input.value);
+            : input.hasAttribute('data-format-currency')
+              ? parseCurrencyValue(input.value)
+              : parseValue(input.value);
         }
       });
       // Solo agregar si tiene algún dato
@@ -109,6 +111,44 @@ function initCurrencyInputs() {
     input.addEventListener('input', () => formatPesosInput(input));
     input.addEventListener('blur', () => formatPesosInput(input));
   });
+}
+
+function configurarFechasDesdePostulacion(formId, fechaPostulacionId) {
+  const form = document.getElementById(formId);
+  const fechaPostulacion = document.getElementById(fechaPostulacionId);
+  if (!form || !fechaPostulacion) {
+    throw new Error(`No se pudo configurar la fecha mínima para ${formId}.`);
+  }
+
+  const actualizarRestricciones = () => {
+    const minimo = fechaPostulacion.value;
+    form.querySelectorAll('input[type="date"]').forEach(input => {
+      if (input === fechaPostulacion) return;
+      if (minimo) input.min = minimo;
+      else input.removeAttribute('min');
+      input.setCustomValidity(
+        minimo && input.value && input.value < minimo
+          ? 'La fecha no puede ser anterior a la fecha del oficio de postulación.'
+          : ''
+      );
+    });
+  };
+
+  form.addEventListener('input', actualizarRestricciones);
+  form.addEventListener('change', actualizarRestricciones);
+  form.addEventListener('reset', () => setTimeout(actualizarRestricciones, 0));
+  actualizarRestricciones();
+}
+
+function validarFechasDesdePostulacion(formId) {
+  const form = document.getElementById(formId);
+  if (!form) return false;
+  const fechaInvalida = form.querySelector('input[type="date"]:invalid');
+  if (fechaInvalida) {
+    fechaInvalida.reportValidity();
+    return false;
+  }
+  return true;
 }
 
 function parseValue(val) {

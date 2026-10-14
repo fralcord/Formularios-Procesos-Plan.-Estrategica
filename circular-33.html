@@ -488,46 +488,40 @@
           <div class="form-grid">
             <div class="col-4">
               <div class="form-group">
-                <label class="form-label" for="c33_reg_numero">N° de Registro Documental <span class="required">*</span></label>
-                <input type="text" id="c33_reg_numero" name="registro_documental.numeroRegistro" class="form-control" placeholder="Ej: REG-EJEMPLO-0001" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="c33_reg_fecha">Fecha de Registro Documental <span class="required">*</span></label>
-                <input type="date" id="c33_reg_fecha" name="registro_documental.fechaRegistro" class="form-control" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
                 <label class="form-label" for="c33_reg_registrado_por">Registrado por (Profesional) <span class="required">*</span></label>
-                <input type="text" id="c33_reg_registrado_por" name="registro_documental.registradoPor" class="form-control" placeholder="Nombre del profesional" required>
+                <input type="text" id="c33_reg_registrado_por" name="registro_documental_evaluacion.registrado_por" class="form-control" placeholder="Nombre del profesional" required>
               </div>
             </div>
 
             <div class="col-4">
               <div class="form-group">
-                <label class="form-label" for="c33_reg_oficio">Referencia de Oficio (Instancia de Oficios)</label>
-                <input type="text" id="c33_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0002">
+                <label class="form-label" for="c33_reg_oficio">N° de Oficio (Instancia de Oficios)</label>
+                <input type="text" id="c33_reg_oficio" name="registro_documental_evaluacion.referencia_oficio" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0002">
               </div>
             </div>
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="c33_reg_oficio_fecha">Fecha del Oficio</label>
-                <input type="date" id="c33_reg_oficio_fecha" name="registro_documental.fechaOficio" class="form-control">
+                <input type="date" id="c33_reg_oficio_fecha" name="registro_documental_evaluacion.fecha_oficio" class="form-control">
               </div>
             </div>
-            <div class="col-4">
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="c33_reg_oficio_destinatario">Destinatario del Oficio</label>
+                <input type="text" id="c33_reg_oficio_destinatario" name="registro_documental_evaluacion.destinatario_oficio" class="form-control" placeholder="Ej: Entidad pública destinataria">
+              </div>
+            </div>
+            <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="c33_reg_validador">Enlace Validador DocDigital (Ley N° 19.799)</label>
-                <input type="url" id="c33_reg_validador" name="registro_documental.urlValidadorDocDigital" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
+                <input type="url" id="c33_reg_validador" name="registro_documental_evaluacion.url_validador_docdigital" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
               </div>
             </div>
 
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="c33_reg_observaciones">Constancia y Observaciones del Registro</label>
-                <textarea id="c33_reg_observaciones" name="registro_documental.constanciaRegistro" rows="3" class="form-control" placeholder="Dónde se conserva el documento, a quién se remitió, observaciones de archivo..."></textarea>
+                <textarea id="c33_reg_observaciones" name="registro_documental_evaluacion.constancia_registro" rows="3" class="form-control" placeholder="Dónde se conserva el documento, a quién se remitió, observaciones de archivo..."></textarea>
               </div>
             </div>
           </div>
@@ -686,6 +680,7 @@
     }
 
     function guardarFormularioCircular33() {
+      if (!validarFechasDesdePostulacion('formCircular33')) return;
       const data = serializarEvaluacion('formCircular33', {
         modelo: 'Circular33Iniciativa',
         linea: 'Circular N° 33'
@@ -730,8 +725,6 @@
       document.getElementById('c33_fecha_eval').value = "2026-07-15";
 
       // Registro documental de la ficha emitida
-      document.getElementById('c33_reg_numero').value = "REG-EJEMPLO-0001";
-      document.getElementById('c33_reg_fecha').value = "2026-07-15";
       document.getElementById('c33_reg_registrado_por').value = "Fabian Rutte";
       document.getElementById('c33_reg_oficio').value = "OFICIO DE EJEMPLO N° 0005";
       document.getElementById('c33_reg_oficio_fecha').value = "2026-07-15";
@@ -761,8 +754,6 @@
       document.getElementById('c33_fecha_eval').value = "2026-06-22";
 
       // Registro documental de la ficha emitida (con resultado observado)
-      document.getElementById('c33_reg_numero').value = "REG-EJEMPLO-0002";
-      document.getElementById('c33_reg_fecha').value = "2026-06-22";
       document.getElementById('c33_reg_registrado_por').value = "Fabian Rutte";
       document.getElementById('c33_reg_oficio').value = "OFICIO DE EJEMPLO N° 0006";
       document.getElementById('c33_reg_oficio_fecha').value = "2026-06-22";
@@ -900,11 +891,13 @@
       fila.appendChild(celdaAsig);
 
       ['solicitado_ano_actual', 'solicitado_ano_siguiente'].forEach(campo => {
-        const input = campoFinanciamientoC33(campo, 'number');
+        const input = campoFinanciamientoC33(campo, 'text');
         input.className = 'form-control';
-        input.min = '0';
-        input.step = '1';
+        input.inputMode = 'numeric';
+        input.dataset.formatCurrency = 'true';
         input.placeholder = '0';
+        input.autocomplete = 'off';
+        input.addEventListener('input', () => formatPesosInput(input));
         input.addEventListener('input', actualizarFinanciamientoC33);
         const celda = document.createElement('td');
         celda.appendChild(input);
@@ -969,8 +962,12 @@
       const formatoM = n => (n / 1000).toLocaleString('es-CL', { maximumFractionDigits: 3 });
       const subtituloSel = document.getElementById('subtitulo').value;
       document.querySelectorAll('#c33_fin_body tr[data-table-row]').forEach(fila => {
-        const actual = Number(fila.querySelector('[data-field="solicitado_ano_actual"]').value) || 0;
-        const siguiente = Number(fila.querySelector('[data-field="solicitado_ano_siguiente"]').value) || 0;
+        const actualInput = fila.querySelector('[data-field="solicitado_ano_actual"]');
+        const siguienteInput = fila.querySelector('[data-field="solicitado_ano_siguiente"]');
+        formatPesosInput(actualInput);
+        formatPesosInput(siguienteInput);
+        const actual = parseCurrencyValue(actualInput.value) || 0;
+        const siguiente = parseCurrencyValue(siguienteInput.value) || 0;
         fila.querySelector('[data-field="costo_total"]').value = String(actual + siguiente);
         totalActual += actual;
         totalSiguiente += siguiente;
@@ -1006,6 +1003,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+      configurarFechasDesdePostulacion('formCircular33', 'c33_oficio_postulacion_fecha');
       document.getElementById('subtitulo').addEventListener('change', sincronizarSubtituloFinanciamientoC33);
       document.getElementById('c33_proceso_ano').addEventListener('input', actualizarFinanciamientoC33);
       sincronizarSubtituloFinanciamientoC33();

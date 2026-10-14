@@ -74,8 +74,8 @@ const HISTORIAL_ITERACIONES = [
  * lo que aquí sólo se referencia el registro y su identificador.
  */
 const BLOQUE_REGISTRO_DOCUMENTAL = {
-  numero_registro: { tipo: "string", descripcion: "N° de registro documental interno de la DIPLADER" },
-  fecha_registro: { tipo: "string", formato: "date" },
+  numero_registro: { tipo: "string", opcional: true, descripcion: "N° de registro documental interno de la DIPLADER" },
+  fecha_registro: { tipo: "string", formato: "date", opcional: true },
   registrado_por: { tipo: "string", descripcion: "Profesional que realiza el registro documental" },
   referencia_oficio: {
     tipo: "string",
@@ -357,6 +357,13 @@ trazabilidad: {
       evaluacion: {
         estado: { tipo: "string", enum: ["RECOMENDADO", "OBSERVADO", "RECHAZADO"] },
         fecha: { tipo: "string", formato: "date" },
+        erd_lineamiento: { tipo: "string", descripcion: "Lineamiento Estratégico ERD Los Lagos" },
+        erd_item: { tipo: "string", opcional: true, descripcion: "Ítem ERD asociado al programa" },
+        erd_objetivo: { tipo: "text", opcional: true, descripcion: "Objetivo Estratégico ERD" },
+        erd_actividad: { tipo: "text", opcional: true, descripcion: "Actividad o Programa ERD" },
+        gob_pilar: { tipo: "string", descripcion: "Pilar del Programa del Gobernador Regional" },
+        gob_letra: { tipo: "string", opcional: true, descripcion: "Eje o letra específica del Programa del Gobernador Regional" },
+        gob_fundamento: { tipo: "text", opcional: true, descripcion: "Fundamento de articulación con el Programa Regional del Gobernador" },
         texto_evaluacion: { tipo: "text" },
         evaluador_nombre: { tipo: "string" }
       },

@@ -328,6 +328,48 @@
                 <span id="ayudaInstanciaProg">Se registra la primera evaluación técnica del programa.</span>
               </div>
             </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="prog_erd_lineamiento">Lineamiento Estratégico ERD Los Lagos <span class="required">*</span></label>
+                <input type="text" id="prog_erd_lineamiento" name="evaluacion.erd_lineamiento" class="form-control" placeholder="Ej: Bienestar Socio Territorial" required>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="prog_erd_item">Ítem ERD</label>
+                <input type="text" id="prog_erd_item" name="evaluacion.erd_item" class="form-control" placeholder="Ej: Servicios Básicos / Agua Potable Rural">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="prog_erd_objetivo">Objetivo Estratégico ERD</label>
+                <textarea id="prog_erd_objetivo" name="evaluacion.erd_objetivo" rows="2" class="form-control" placeholder="Objetivo de la ERD con el que se relaciona la iniciativa..."></textarea>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="prog_erd_actividad">Actividad / Programa ERD</label>
+                <textarea id="prog_erd_actividad" name="evaluacion.erd_actividad" rows="2" class="form-control" placeholder="Actividad o programa contemplado en la ERD..."></textarea>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="prog_gob_pilar">Pilar Programa del Gobernador Regional <span class="required">*</span></label>
+                <input type="text" id="prog_gob_pilar" name="evaluacion.gob_pilar" class="form-control" placeholder="Ej: Pilar 3. Inclusión Social y Calidad de Vida" required>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label" for="prog_gob_letra">Eje / Letra Específica del Programa</label>
+                <input type="text" id="prog_gob_letra" name="evaluacion.gob_letra" class="form-control" placeholder="Ej: Letra c) Infraestructura de Servicios Básicos">
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="prog_gob_justificacion">Articulación con el Programa Regional del Gobernador</label>
+                <textarea id="prog_gob_justificacion" name="evaluacion.gob_fundamento" rows="2" class="form-control" placeholder="Fundamento de articulación con el programa de gobierno regional..."></textarea>
+              </div>
+            </div>
             <div class="col-12">
               <h4 class="form-subsection-title">Evaluación técnica de la iniciativa</h4>
             </div>
@@ -486,46 +528,40 @@
           <div class="form-grid">
             <div class="col-4">
               <div class="form-group">
-                <label class="form-label" for="prog_reg_numero">N° de Registro Documental <span class="required">*</span></label>
-                <input type="text" id="prog_reg_numero" name="registro_documental.numeroRegistro" class="form-control" placeholder="Ej: REG-EJEMPLO-0001" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label class="form-label" for="prog_reg_fecha">Fecha de Registro Documental <span class="required">*</span></label>
-                <input type="date" id="prog_reg_fecha" name="registro_documental.fechaRegistro" class="form-control" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
                 <label class="form-label" for="prog_reg_registrado_por">Registrado por (Profesional) <span class="required">*</span></label>
-                <input type="text" id="prog_reg_registrado_por" name="registro_documental.registradoPor" class="form-control" placeholder="Nombre del profesional" required>
+                <input type="text" id="prog_reg_registrado_por" name="registro_documental_evaluacion.registrado_por" class="form-control" placeholder="Nombre del profesional" required>
               </div>
             </div>
 
             <div class="col-4">
               <div class="form-group">
-                <label class="form-label" for="prog_reg_oficio">Referencia de Oficio (Instancia de Oficios)</label>
-                <input type="text" id="prog_reg_oficio" name="registro_documental.referenciaOficio" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0002">
+                <label class="form-label" for="prog_reg_oficio">N° de Oficio (Instancia de Oficios)</label>
+                <input type="text" id="prog_reg_oficio" name="registro_documental_evaluacion.referencia_oficio" class="form-control" placeholder="Ej: OFICIO DE EJEMPLO N° 0002">
               </div>
             </div>
             <div class="col-4">
               <div class="form-group">
                 <label class="form-label" for="prog_reg_oficio_fecha">Fecha del Oficio</label>
-                <input type="date" id="prog_reg_oficio_fecha" name="registro_documental.fechaOficio" class="form-control">
+                <input type="date" id="prog_reg_oficio_fecha" name="registro_documental_evaluacion.fecha_oficio" class="form-control">
               </div>
             </div>
-            <div class="col-4">
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label" for="prog_reg_oficio_destinatario">Destinatario del Oficio</label>
+                <input type="text" id="prog_reg_oficio_destinatario" name="registro_documental_evaluacion.destinatario_oficio" class="form-control" placeholder="Ej: Entidad pública destinataria">
+              </div>
+            </div>
+            <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="prog_reg_validador">Enlace Validador DocDigital (Ley N° 19.799)</label>
-                <input type="url" id="prog_reg_validador" name="registro_documental.urlValidadorDocDigital" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
+                <input type="url" id="prog_reg_validador" name="registro_documental_evaluacion.url_validador_docdigital" class="form-control" placeholder="https://doc.digital.gob.cl/validador/...">
               </div>
             </div>
 
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="prog_reg_observaciones">Constancia y Observaciones del Registro</label>
-                <textarea id="prog_reg_observaciones" name="registro_documental.constanciaRegistro" rows="3" class="form-control" placeholder="Dónde se conserva el documento, a quién se remitió, observaciones de archivo..."></textarea>
+                <textarea id="prog_reg_observaciones" name="registro_documental_evaluacion.constancia_registro" rows="3" class="form-control" placeholder="Dónde se conserva el documento, a quién se remitió, observaciones de archivo..."></textarea>
               </div>
             </div>
           </div>
@@ -635,8 +671,23 @@
       actualizarFinanciamientoProg();
 
       // Evaluación bloque
-      const evalText = getVal('prog_analisis');
-      document.getElementById('print_prog_evaluacion_bloque').textContent = evalText || 'Sin evaluación registrada.';
+      const detallesEvaluacion = [
+        ['Lineamiento Estratégico ERD Los Lagos', 'prog_erd_lineamiento'],
+        ['Ítem ERD', 'prog_erd_item'],
+        ['Objetivo Estratégico ERD', 'prog_erd_objetivo'],
+        ['Actividad / Programa ERD', 'prog_erd_actividad'],
+        ['Pilar Programa del Gobernador Regional', 'prog_gob_pilar'],
+        ['Eje / Letra Específica del Programa', 'prog_gob_letra'],
+        ['Articulación con el Programa Regional del Gobernador', 'prog_gob_justificacion'],
+        ['Detalle de la evaluación', 'prog_analisis']
+      ]
+        .map(([etiqueta, id]) => {
+          const valor = getVal(id).trim();
+          return valor ? `${etiqueta}:\n${valor}` : '';
+        })
+        .filter(Boolean);
+      document.getElementById('print_prog_evaluacion_bloque').textContent =
+        detallesEvaluacion.join('\n\n') || 'Sin evaluación registrada.';
 
       // Badge Estado
       const estado = getVal('prog_estado_evaluacion');
@@ -681,6 +732,7 @@
     }
 
     function guardarFormularioProgramas() {
+      if (!validarFechasDesdePostulacion('formProgramas')) return;
       const data = serializarEvaluacion('formProgramas', {
         modelo: 'EvaluacionProgramasRegional',
         linea: 'Evaluación de Programas'
@@ -708,8 +760,6 @@
       document.getElementById('prog_reg_validador').value = "";
 
       // Registro documental de la ficha emitida
-      document.getElementById('prog_reg_numero').value = "REG-EJEMPLO-0005";
-      document.getElementById('prog_reg_fecha').value = "2026-04-30";
       document.getElementById('prog_reg_registrado_por').value = "Vanessa Diaz";
       document.getElementById('prog_reg_oficio').value = "OFICIO DE EJEMPLO N° 0009";
       document.getElementById('prog_reg_oficio_fecha').value = "2026-04-30";
@@ -738,8 +788,6 @@
       document.getElementById('prog_reg_validador').value = "";
 
       // Registro documental de la ficha emitida
-      document.getElementById('prog_reg_numero').value = "REG-EJEMPLO-0006";
-      document.getElementById('prog_reg_fecha').value = "2026-08-15";
       document.getElementById('prog_reg_registrado_por').value = "Vanessa Diaz";
       document.getElementById('prog_reg_oficio').value = "OFICIO DE EJEMPLO N° 0010";
       document.getElementById('prog_reg_oficio_fecha').value = "2026-08-15";
@@ -822,11 +870,13 @@
       fila.appendChild(celdaAsig);
 
       ['solicitado_ano_actual', 'solicitado_ano_siguiente'].forEach(campo => {
-        const input = campoFinanciamientoProg(campo, 'number');
+        const input = campoFinanciamientoProg(campo, 'text');
         input.className = 'form-control';
-        input.min = '0';
-        input.step = '1';
+        input.inputMode = 'numeric';
+        input.dataset.formatCurrency = 'true';
         input.placeholder = '0';
+        input.autocomplete = 'off';
+        input.addEventListener('input', () => formatPesosInput(input));
         input.addEventListener('input', actualizarFinanciamientoProg);
         const celda = document.createElement('td');
         celda.appendChild(input);
@@ -898,8 +948,12 @@
       let totalActual = 0;
       let totalSiguiente = 0;
       document.querySelectorAll('#prog_fin_body tr[data-table-row]').forEach(fila => {
-        const actual = Number(fila.querySelector('[data-field="solicitado_ano_actual"]').value) || 0;
-        const siguiente = Number(fila.querySelector('[data-field="solicitado_ano_siguiente"]').value) || 0;
+        const actualInput = fila.querySelector('[data-field="solicitado_ano_actual"]');
+        const siguienteInput = fila.querySelector('[data-field="solicitado_ano_siguiente"]');
+        formatPesosInput(actualInput);
+        formatPesosInput(siguienteInput);
+        const actual = parseCurrencyValue(actualInput.value) || 0;
+        const siguiente = parseCurrencyValue(siguienteInput.value) || 0;
         fila.querySelector('[data-field="costo_total"]').value = String(actual + siguiente);
         totalActual += actual;
         totalSiguiente += siguiente;
@@ -932,6 +986,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+      configurarFechasDesdePostulacion('formProgramas', 'prog_fecha_oficio');
       document.getElementById('subtitulo').addEventListener('change', sincronizarSubtituloFinanciamientoProg);
       actualizarFichaImprimibleProg();
     });
