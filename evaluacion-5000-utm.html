@@ -330,10 +330,14 @@
                 <span id="ayudaInstancia5000">Se registra la primera revisión técnica de la iniciativa.</span>
               </div>
             </div>
+            <div class="col-12">
+             <details id="detalleArticulacion5000" style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:0.6rem 0.9rem;">
+              <summary style="cursor:pointer; font-weight:600;">Articulación con ERD y Programa del Gobernador Regional <span style="font-weight:400; color:var(--text-muted, #64748b);">(opcional)</span></summary>
+              <div class="form-grid" style="margin-top:0.8rem;">
             <div class="col-6">
               <div class="form-group">
-                <label class="form-label" for="lineamiento_estrategico_erd_5000">Lineamiento Estratégico ERD Los Lagos <span class="required">*</span></label>
-                <input type="text" id="lineamiento_estrategico_erd_5000" name="evaluacion_tecnica.lineamiento_estrategico_erd" class="form-control" placeholder="Ej: Bienestar Socio Territorial" required>
+                <label class="form-label" for="lineamiento_estrategico_erd_5000">Lineamiento Estratégico ERD Los Lagos</label>
+                <input type="text" id="lineamiento_estrategico_erd_5000" name="evaluacion_tecnica.lineamiento_estrategico_erd" class="form-control" placeholder="Ej: Bienestar Socio Territorial">
               </div>
             </div>
             <div class="col-6">
@@ -356,8 +360,8 @@
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label class="form-label" for="pilar_programa_gobernador_5000">Pilar Programa del Gobernador Regional <span class="required">*</span></label>
-                <input type="text" id="pilar_programa_gobernador_5000" name="evaluacion_tecnica.pilar_programa_gobernador_regional" class="form-control" placeholder="Ej: Pilar 3. Inclusión Social y Calidad de Vida" required>
+                <label class="form-label" for="pilar_programa_gobernador_5000">Pilar Programa del Gobernador Regional</label>
+                <input type="text" id="pilar_programa_gobernador_5000" name="evaluacion_tecnica.pilar_programa_gobernador_regional" class="form-control" placeholder="Ej: Pilar 3. Inclusión Social y Calidad de Vida">
               </div>
             </div>
             <div class="col-6">
@@ -371,6 +375,9 @@
                 <label class="form-label" for="articulacion_programa_gobernador_5000">Articulación con el Programa Regional del Gobernador</label>
                 <textarea id="articulacion_programa_gobernador_5000" name="evaluacion_tecnica.articulacion_programa_regional_gobernador" rows="3" class="form-control" placeholder="Fundamento de articulación con el programa de gobierno regional..."></textarea>
               </div>
+            </div>
+              </div>
+             </details>
             </div>
             <div class="col-12">
               <h4 class="form-subsection-title">Evaluación técnica de la iniciativa</h4>
@@ -1003,6 +1010,7 @@
       document.getElementById('provincia_5000').value = "PALENA";
       document.getElementById('comuna_5000').value = "Palena";
       document.getElementById('localidad_5000').value = "Localidad de ejemplo";
+      document.getElementById('detalleArticulacion5000').open = true;
       document.getElementById('lineamiento_estrategico_erd_5000').value = "Bienestar Socio Territorial";
       document.getElementById('item_erd_5000').value = "Servicios Básicos / Agua Potable Rural";
       document.getElementById('objetivo_estrategico_erd_5000').value = "Mejorar el acceso equitativo a servicios básicos y espacios comunitarios.";
