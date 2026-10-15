@@ -958,6 +958,45 @@ textarea.form-control {
   min-height: 80px;
 }
 
+.desglose-pegado {
+  min-height: 120px;
+  overflow: auto;
+  cursor: text;
+}
+
+.desglose-pegado:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-subtle);
+  pointer-events: none;
+}
+
+.desglose-pegado[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.desglose-error {
+  color: var(--danger);
+}
+
+.c33-rich-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.c33-rich-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+}
+
+.c33-rich-content th,
+.c33-rich-content td {
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+
 select.form-control {
   cursor: pointer;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");

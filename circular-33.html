@@ -344,6 +344,22 @@
             <div class="col-12">
               <h4 class="form-subsection-title">Evaluación técnica de la iniciativa</h4>
             </div>
+            <div class="col-12" id="bloqueDesgloseC33" hidden>
+              <div class="form-group">
+                <label class="form-label" for="c33_desglose_editor">
+                  <span>Desglose según clasificador presupuestario <span class="required">*</span></span>
+                  <button type="button" class="btn btn-secondary btn-sm" id="c33_desglose_limpiar">Limpiar desglose</button>
+                </label>
+                <div id="c33_desglose_editor" class="form-control desglose-pegado c33-rich-content" tabindex="0"
+                     role="textbox" aria-multiline="true" aria-required="true"
+                     aria-describedby="c33_desglose_ayuda c33_desglose_error"
+                     data-placeholder="Haga clic aquí y pegue (Ctrl+V) la tabla copiada desde la hoja de cálculo."></div>
+                <textarea id="c33_desglose_valor" name="evaluacion_c33.desglose_clasificador" hidden disabled></textarea>
+                <span id="c33_desglose_ayuda" class="form-hint">Se detecta el formato de la tabla copiada (celdas, combinaciones, alineación y negrita). Cada pegado se agrega a continuación del anterior; también se acepta una captura de pantalla de la tabla.</span>
+                <span id="c33_desglose_error" class="form-hint desglose-error" role="alert" hidden>Pegue el desglose según clasificador presupuestario para una iniciativa recomendada del subtítulo 29.</span>
+              </div>
+            </div>
+
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label" for="c33_observaciones_eval">
@@ -451,6 +467,11 @@
             </tfoot>
           </table>
 
+          <div id="print_c33_desglose_seccion" hidden>
+            <div class="sheet-section-title pert-print-section-title">DESGLOSE SEGÚN CLASIFICADOR PRESUPUESTARIO:</div>
+            <div class="c33-rich-content c33-desglose-print" id="print_c33_desglose"></div>
+          </div>
+
           <div class="sheet-section-title pert-print-section-title">EVALUACIÓN:</div>
           <div class="pert-print-description" id="print_c33_evaluacion_bloque"></div>
 
@@ -550,6 +571,241 @@
   <script src="js/app.js"></script>
   <script src="js/localizacion.js"></script>
   <script>
+    let desgloseC33ValidacionMostrada = false;
+    const IMAGENES_PERMITIDAS_C33 = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+
+    /** Lee las propiedades de formato seguras de una declaración CSS. */
+    function estiloSeguroC33(declaraciones) {
+      const estilo = {};
+      String(declaraciones || '').split(';').forEach(declaracion => {
+        const indice = declaracion.indexOf(':');
+        if (indice < 0) return;
+        const propiedad = declaracion.slice(0, indice).trim().toLowerCase();
+        const valor = declaracion.slice(indice + 1).trim().toLowerCase();
+        if (propiedad === 'text-align' && ['left', 'center', 'right', 'justify'].includes(valor)) {
+          estilo.textAlign = valor;
+        } else if (propiedad === 'font-weight') {
+          estilo.fontWeight = (valor === 'bold' || Number(valor) >= 600) ? 'bold' : 'normal';
+        } else if (propiedad === 'font-style' && ['italic', 'normal'].includes(valor)) {
+          estilo.fontStyle = valor;
+        }
+      });
+      return estilo;
+    }
+
+    /** Reúne el formato definido por clases en los bloques <style> (HTML del portapapeles de Excel). */
+    function estilosPorClaseC33(documento) {
+      const mapa = {};
+      documento.querySelectorAll('style').forEach(bloque => {
+        const reglas = (bloque.textContent || '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--|-->/g, '');
+        const patron = /([^{}]+)\{([^{}]*)\}/g;
+        let coincidencia;
+        while ((coincidencia = patron.exec(reglas))) {
+          const estilo = estiloSeguroC33(coincidencia[2]);
+          if (!Object.keys(estilo).length) continue;
+          coincidencia[1].split(',').forEach(selector => {
+            const clase = selector.trim().match(/^(?:td|th|tr|table)?\.([\w-]+)$/i);
+            if (clase) mapa[clase[1]] = { ...(mapa[clase[1]] || {}), ...estilo };
+          });
+        }
+      });
+      return mapa;
+    }
+
+    /**
+     * Conserva únicamente las tablas del HTML copiado (estructura, celdas combinadas,
+     * alineación, negrita y cursiva) y descarta cualquier otro elemento o atributo.
+     */
+    function sanitizarTablasC33(html) {
+      const etiquetasTabla = new Set(['TABLE', 'THEAD', 'TBODY', 'TFOOT', 'TR', 'TH', 'TD', 'CAPTION']);
+      const etiquetasTexto = new Set(['BR', 'STRONG', 'B', 'EM', 'I', 'U']);
+      const documento = new DOMParser().parseFromString(String(html), 'text/html');
+      const clases = estilosPorClaseC33(documento);
+      const resultado = document.createElement('div');
+
+      function aplicarEstilo(elemento, nodo) {
+        const estilo = { ...(clases[nodo.getAttribute('class')] || {}), ...estiloSeguroC33(nodo.getAttribute('style')) };
+        const css = [];
+        if (estilo.textAlign) css.push(`text-align:${estilo.textAlign}`);
+        if (estilo.fontWeight === 'bold') css.push('font-weight:bold');
+        if (estilo.fontStyle === 'italic') css.push('font-style:italic');
+        if (css.length) elemento.setAttribute('style', css.join(';'));
+      }
+
+      function copiarContenido(nodo, destino, tabla) {
+        if (nodo.nodeType === Node.TEXT_NODE) {
+          destino.appendChild(document.createTextNode(nodo.nodeValue || ''));
+          return;
+        }
+        if (nodo.nodeType !== Node.ELEMENT_NODE) return;
+        if (['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'SVG', 'MATH', 'IMG'].includes(nodo.tagName)) return;
+        const permitido = etiquetasTexto.has(nodo.tagName) || (tabla && etiquetasTabla.has(nodo.tagName));
+        if (!permitido) {
+          Array.from(nodo.childNodes).forEach(hijo => copiarContenido(hijo, destino, tabla));
+          return;
+        }
+        const elemento = document.createElement(nodo.tagName.toLowerCase());
+        if (etiquetasTabla.has(nodo.tagName)) {
+          aplicarEstilo(elemento, nodo);
+          if (nodo.tagName === 'TD' || nodo.tagName === 'TH') {
+            ['colspan', 'rowspan'].forEach(atributo => {
+              const valor = Number(nodo.getAttribute(atributo));
+              if (Number.isInteger(valor) && valor >= 2 && valor <= 50) {
+                elemento.setAttribute(atributo, String(valor));
+              }
+            });
+          }
+        }
+        Array.from(nodo.childNodes).forEach(hijo => copiarContenido(hijo, elemento, tabla));
+        destino.appendChild(elemento);
+      }
+
+      documento.body.querySelectorAll('table').forEach(tabla => {
+        if (tabla.parentElement?.closest('table')) return;
+        copiarContenido(tabla, resultado, true);
+      });
+      return resultado.innerHTML;
+    }
+
+    /** Convierte texto separado por tabulaciones (celdas de una hoja de cálculo) en una tabla. */
+    function tablaDesdeTextoC33(texto) {
+      const filas = String(texto).replace(/\r/g, '').split('\n');
+      while (filas.length && !filas[filas.length - 1].trim()) filas.pop();
+      if (!filas.some(fila => fila.includes('\t'))) return '';
+      const tabla = document.createElement('table');
+      const cuerpo = document.createElement('tbody');
+      filas.forEach(fila => {
+        const tr = document.createElement('tr');
+        fila.split('\t').forEach(celda => {
+          const td = document.createElement('td');
+          td.textContent = celda.replace(/^"([\s\S]*)"$/, '$1');
+          tr.appendChild(td);
+        });
+        cuerpo.appendChild(tr);
+      });
+      tabla.appendChild(cuerpo);
+      return tabla.outerHTML;
+    }
+
+    /** Detecta el formato del portapapeles: tabla HTML, texto tabulado o imagen. */
+    function leerPortapapelesDesgloseC33(datos) {
+      const html = sanitizarTablasC33(datos.getData('text/html'));
+      if (html) return { tipo: 'html', html };
+      const tablaTexto = tablaDesdeTextoC33(datos.getData('text/plain'));
+      if (tablaTexto) return { tipo: 'texto', html: tablaTexto };
+      const imagen = Array.from(datos.files || []).find(archivo => IMAGENES_PERMITIDAS_C33.includes(archivo.type));
+      return imagen ? { tipo: 'imagen', imagen } : null;
+    }
+
+    function actualizarVisibilidadDesgloseC33() {
+      const aplica = document.getElementById('subtitulo').value === '29' &&
+        document.getElementById('c33_estado').value === 'RECOMENDADO';
+      const bloque = document.getElementById('bloqueDesgloseC33');
+      const valor = document.getElementById('c33_desglose_valor');
+      const contenido = valor.value;
+      bloque.hidden = !aplica;
+      valor.disabled = !aplica;
+      document.getElementById('print_c33_desglose_seccion').hidden = !(aplica && contenido);
+      document.getElementById('print_c33_desglose').innerHTML = aplica ? contenido : '';
+      return aplica;
+    }
+
+    function sincronizarDesgloseC33() {
+      const editor = document.getElementById('c33_desglose_editor');
+      document.getElementById('c33_desglose_valor').value = editor.innerHTML;
+      const aplica = actualizarVisibilidadDesgloseC33();
+      const faltante = aplica && !editor.innerHTML;
+      document.getElementById('c33_desglose_error').hidden = !(faltante && desgloseC33ValidacionMostrada);
+      editor.setAttribute('aria-invalid', String(faltante && desgloseC33ValidacionMostrada));
+    }
+
+    function cargarDesgloseC33(html) {
+      desgloseC33ValidacionMostrada = false;
+      document.getElementById('c33_desglose_editor').innerHTML = sanitizarDesgloseGuardadoC33(html);
+      sincronizarDesgloseC33();
+    }
+
+    /** Restaura contenido ya guardado: tablas sanitizadas más imágenes incrustadas. */
+    function sanitizarDesgloseGuardadoC33(html) {
+      const documento = new DOMParser().parseFromString(String(html || ''), 'text/html');
+      const salida = document.createElement('div');
+      Array.from(documento.body.children).forEach(nodo => {
+        if (nodo.tagName === 'TABLE') {
+          salida.insertAdjacentHTML('beforeend', sanitizarTablasC33(nodo.outerHTML));
+        } else if (nodo.tagName === 'IMG') {
+          const origen = nodo.getAttribute('src') || '';
+          if (/^data:image\/(?:png|jpeg|gif|webp);base64,/i.test(origen)) {
+            const img = document.createElement('img');
+            img.src = origen;
+            img.alt = 'Desglose según clasificador presupuestario';
+            salida.appendChild(img);
+          }
+        }
+      });
+      return salida.innerHTML;
+    }
+
+    function agregarDesgloseC33(html) {
+      const editor = document.getElementById('c33_desglose_editor');
+      editor.insertAdjacentHTML('beforeend', sanitizarDesgloseGuardadoC33(html));
+      sincronizarDesgloseC33();
+    }
+
+    function agregarImagenDesgloseC33(imagen) {
+      const lector = new FileReader();
+      lector.addEventListener('load', () => {
+        if (typeof lector.result !== 'string') {
+          alert('No fue posible leer la imagen pegada.');
+          return;
+        }
+        agregarDesgloseC33(`<img src="${lector.result}">`);
+      });
+      lector.addEventListener('error', () => alert('No fue posible leer la imagen pegada.'));
+      lector.readAsDataURL(imagen);
+    }
+
+    function pegarEnDesgloseC33(datos) {
+      const contenido = leerPortapapelesDesgloseC33(datos);
+      if (!contenido) {
+        alert('El portapapeles no contiene una tabla. Copie las celdas desde la hoja de cálculo y vuelva a pegar.');
+        return;
+      }
+      if (contenido.tipo === 'imagen') agregarImagenDesgloseC33(contenido.imagen);
+      else agregarDesgloseC33(contenido.html);
+    }
+
+    function validarDesgloseC33() {
+      desgloseC33ValidacionMostrada = true;
+      sincronizarDesgloseC33();
+      const editor = document.getElementById('c33_desglose_editor');
+      if (editor.getAttribute('aria-invalid') === 'true') {
+        editor.focus();
+        return false;
+      }
+      return true;
+    }
+
+    function inicializarDesgloseC33() {
+      const editor = document.getElementById('c33_desglose_editor');
+      editor.addEventListener('paste', evento => {
+        evento.preventDefault();
+        pegarEnDesgloseC33(evento.clipboardData);
+      });
+      editor.addEventListener('dragover', evento => evento.preventDefault());
+      editor.addEventListener('drop', evento => {
+        evento.preventDefault();
+        pegarEnDesgloseC33(evento.dataTransfer);
+      });
+      editor.addEventListener('keydown', evento => {
+        if (!(evento.ctrlKey || evento.metaKey) && evento.key.length === 1) evento.preventDefault();
+      });
+      document.getElementById('c33_desglose_limpiar').addEventListener('click', () => cargarDesgloseC33(''));
+      document.getElementById('formCircular33').addEventListener('reset', () => {
+        setTimeout(() => cargarDesgloseC33(''), 0);
+      });
+      sincronizarDesgloseC33();
+    }
+
     function cambiarPasoC33(paso) {
       ['tabBtn1', 'tabBtn2', 'tabBtn3', 'tabBtn4'].forEach(id => {
         document.getElementById(id).classList.remove('active');
@@ -635,6 +891,7 @@
       // Evaluación bloque
       const obs = getVal('c33_observaciones_eval');
       document.getElementById('print_c33_evaluacion_bloque').textContent = obs || 'Sin observaciones registradas.';
+      actualizarVisibilidadDesgloseC33();
 
       // Badge Estado
       const estado = getVal('c33_estado');
@@ -667,6 +924,7 @@
         actualizar: actualizarFichaImprimibleC33,
         irAlPaso: cambiarPasoC33
       });
+      cargarDesgloseC33(document.getElementById('c33_desglose_valor').value);
     }
 
     function imprimirFichaOficialC33() {
@@ -679,6 +937,7 @@
     }
 
     function guardarFormularioCircular33() {
+      if (!validarDesgloseC33()) return;
       if (!validarFechasDesdePostulacion('formCircular33')) return;
       const data = serializarEvaluacion('formCircular33', {
         modelo: 'Circular33Iniciativa',
@@ -720,6 +979,14 @@
       document.getElementById('c33_estado').value = "RECOMENDADO";
       actualizarBadgeC33("RECOMENDADO");
       document.getElementById('c33_observaciones_eval').value = "La iniciativa demostrativa cumple los requisitos de ejemplo y se recomienda favorablemente.";
+      cargarDesgloseC33(
+        '<table><tbody>' +
+        '<tr><th colspan="5" style="text-align:center;font-weight:bold">DESGLOSE DE MÁQUINAS Y EQUIPOS</th></tr>' +
+        '<tr><td style="text-align:center">ITEM</td><td style="text-align:center">DESCRIPCIÓN</td><td style="text-align:center">CANTIDAD</td><td style="text-align:center">PRECIO UNITARIO</td><td style="text-align:center">TOTAL $</td></tr>' +
+        '<tr><td>[29-05]</td><td>Equipo de ejemplo</td><td style="text-align:center">1</td><td style="text-align:right">230.000.000</td><td style="text-align:right">230.000.000</td></tr>' +
+        '<tr><td colspan="4" style="text-align:right;font-weight:bold">TOTAL $</td><td style="text-align:right;font-weight:bold">230.000.000</td></tr>' +
+        '</tbody></table>'
+      );
       document.getElementById('c33_evaluador').value = "Fabian Rutte";
       document.getElementById('c33_fecha_eval').value = "2026-07-15";
 
@@ -1002,6 +1269,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+      inicializarDesgloseC33();
       configurarFechasDesdePostulacion('formCircular33', 'c33_oficio_postulacion_fecha');
       document.getElementById('subtitulo').addEventListener('change', sincronizarSubtituloFinanciamientoC33);
       document.getElementById('c33_proceso_ano').addEventListener('input', actualizarFinanciamientoC33);

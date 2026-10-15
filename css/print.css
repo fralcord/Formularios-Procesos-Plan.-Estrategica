@@ -159,6 +159,25 @@
     width: 28% !important;
   }
 
+  .c33-rich-content table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid;
+  }
+
+  .c33-rich-content th,
+  .c33-rich-content td {
+    border: 1pt solid #111111 !important;
+    padding: 3pt 5pt !important;
+    color: #000000 !important;
+  }
+
+  .c33-rich-content img {
+    max-width: 100% !important;
+    max-height: 20cm !important;
+    object-fit: contain;
+  }
+
   .pert-print-financing-table {
     width: 100% !important;
     table-layout: fixed !important;
