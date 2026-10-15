@@ -844,6 +844,8 @@
       } else if (val === 'RECOMENDADO') {
         badge.classList.add('recomendado');
         badge.textContent = 'ESTADO: RECOMENDADO';
+        const detalle = document.getElementById('c33_observaciones_eval');
+        if (detalle && !detalle.value.trim()) detalle.value = 'Cumple los requerimientos técnicos.';
       } else {
         badge.classList.add('rechazado');
         badge.textContent = 'ESTADO: ' + val;
