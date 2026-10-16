@@ -1235,3 +1235,159 @@ select.form-control {
   font-weight: 600;
   color: var(--primary);
 }
+
+.erd-articulacion-content {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.erd-control-panel {
+  padding: 1rem;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--secondary);
+  border-radius: var(--radius-md);
+}
+
+.erd-control-panel .form-hint {
+  margin-top: 0.45rem;
+}
+
+.erd-esquema[hidden],
+.erd-selection[hidden] {
+  display: none;
+}
+
+.erd-esquema {
+  padding: 1.25rem;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.erd-section-title {
+  margin: 0 0 0.65rem;
+  color: var(--primary);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.erd-objective {
+  margin: 0 0 1.5rem;
+  padding: 0 0 1rem;
+  border-bottom: 2px dashed var(--border-color);
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.erd-objectives-title {
+  margin-bottom: 1rem;
+}
+
+.erd-sector-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.erd-sector-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 230px) 2rem minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.erd-sector-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border: 1px solid #7dd3fc;
+  border-radius: var(--radius-md);
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 700;
+  text-align: center;
+}
+
+.erd-sector-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary);
+  font-size: 1.4rem;
+}
+
+.erd-activity-list {
+  max-height: 260px;
+  overflow: auto;
+  margin: 0;
+  padding: 0.5rem;
+  list-style: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+}
+
+.erd-activity-list li + li {
+  margin-top: 0.25rem;
+}
+
+.erd-activity-button {
+  position: relative;
+  width: 100%;
+  padding: 0.55rem 0.65rem 0.55rem 1.65rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-main);
+  font: inherit;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.erd-activity-button::before {
+  position: absolute;
+  left: 0.55rem;
+  color: var(--secondary);
+  content: "»";
+  font-weight: 700;
+}
+
+.erd-activity-button:hover,
+.erd-activity-button:focus-visible {
+  outline: none;
+  background: var(--primary-light);
+}
+
+.erd-activity-button.is-selected {
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.erd-activity-button.is-selected::before {
+  color: #ffffff;
+}
+
+.erd-selection {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--success-light);
+  color: var(--success);
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .erd-sector-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .erd-sector-connector {
+    transform: rotate(90deg);
+  }
+}

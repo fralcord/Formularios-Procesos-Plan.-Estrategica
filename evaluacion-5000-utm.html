@@ -333,49 +333,30 @@
             <div class="col-12">
              <details id="detalleArticulacion5000" style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:0.6rem 0.9rem;">
               <summary style="cursor:pointer; font-weight:600;">Articulación con ERD y Programa del Gobernador Regional <span style="font-weight:400; color:var(--text-muted, #64748b);">(opcional)</span></summary>
-              <div class="form-grid" style="margin-top:0.8rem;">
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="lineamiento_estrategico_erd_5000">Lineamiento Estratégico ERD Los Lagos</label>
-                <input type="text" id="lineamiento_estrategico_erd_5000" name="evaluacion_tecnica.lineamiento_estrategico_erd" class="form-control" placeholder="Ej: Bienestar Socio Territorial">
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="item_erd_5000">Ítem ERD</label>
-                <input type="text" id="item_erd_5000" name="evaluacion_tecnica.item_erd" class="form-control" placeholder="Ej: Servicios Básicos / Agua Potable Rural">
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="objetivo_estrategico_erd_5000">Objetivo Estratégico ERD</label>
-                <textarea id="objetivo_estrategico_erd_5000" name="evaluacion_tecnica.objetivo_estrategico_erd" rows="3" class="form-control" placeholder="Objetivo de la ERD con el que se relaciona la iniciativa..."></textarea>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="actividad_programa_erd_5000">Actividad / Programa ERD</label>
-                <textarea id="actividad_programa_erd_5000" name="evaluacion_tecnica.actividad_programa_erd" rows="3" class="form-control" placeholder="Actividad o programa contemplado en la ERD..."></textarea>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="pilar_programa_gobernador_5000">Pilar Programa del Gobernador Regional</label>
-                <input type="text" id="pilar_programa_gobernador_5000" name="evaluacion_tecnica.pilar_programa_gobernador_regional" class="form-control" placeholder="Ej: Pilar 3. Inclusión Social y Calidad de Vida">
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="eje_letra_programa_gobernador_5000">Eje / Letra Específica del Programa</label>
-                <input type="text" id="eje_letra_programa_gobernador_5000" name="evaluacion_tecnica.eje_letra_programa_gobernador" class="form-control" placeholder="Ej: Letra c) Infraestructura de Servicios Básicos">
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label" for="articulacion_programa_gobernador_5000">Articulación con el Programa Regional del Gobernador</label>
-                <textarea id="articulacion_programa_gobernador_5000" name="evaluacion_tecnica.articulacion_programa_regional_gobernador" rows="3" class="form-control" placeholder="Fundamento de articulación con el programa de gobierno regional..."></textarea>
-              </div>
-            </div>
+              <div class="erd-articulacion-content">
+                <div class="erd-control-panel">
+                  <label class="form-label" for="selectEjeERD5000">Eje Estratégico de Desarrollo</label>
+                  <select id="selectEjeERD5000" class="form-control">
+                    <option value="">-- Seleccione un eje para visualizar su estructura --</option>
+                  </select>
+                  <p class="form-hint">Seleccione un objetivo específico en el diagrama para completar los campos ERD.</p>
+                </div>
+
+                <div id="contenedorEsquemaERD5000" class="erd-esquema" hidden>
+                  <h4 class="erd-section-title">Objetivo General</h4>
+                  <p id="textoObjetivoERD5000" class="erd-objective"></p>
+                  <h4 class="erd-section-title erd-objectives-title">Objetivos Específicos / Actividades</h4>
+                  <div id="listaSectoresERD5000" class="erd-sector-list"></div>
+                  <div id="barraSeleccionERD5000" class="erd-selection" role="status" hidden>
+                    <strong>Selección activa:</strong>
+                    <span id="textoActividadERD5000"></span>
+                  </div>
+                </div>
+
+                <input type="hidden" id="lineamiento_estrategico_erd_5000" name="evaluacion_tecnica.lineamiento_estrategico_erd">
+                <input type="hidden" id="item_erd_5000" name="evaluacion_tecnica.item_erd">
+                <input type="hidden" id="objetivo_estrategico_erd_5000" name="evaluacion_tecnica.objetivo_estrategico_erd">
+                <input type="hidden" id="actividad_programa_erd_5000" name="evaluacion_tecnica.actividad_programa_erd">
               </div>
              </details>
             </div>
@@ -656,6 +637,7 @@
   <script src="js/schemas.js"></script>
   <script src="js/app.js"></script>
   <script src="js/localizacion.js"></script>
+  <script src="js/erd-regional-data.js"></script>
   <script>
     function cambiarPaso5000(paso) {
       ['tabBtn1', 'tabBtn2', 'tabBtn3', 'tabBtn4'].forEach(id => {
@@ -999,6 +981,113 @@
       actualizarFichaImprimible5000();
     }
 
+    function configurarArticulacionERD5000() {
+      const selectorEje = document.getElementById('selectEjeERD5000');
+      const contenedor = document.getElementById('contenedorEsquemaERD5000');
+      const textoObjetivo = document.getElementById('textoObjetivoERD5000');
+      const listaSectores = document.getElementById('listaSectoresERD5000');
+      const barraSeleccion = document.getElementById('barraSeleccionERD5000');
+      const datosRegionales = window.datosRegionalesERD5000;
+
+      if (!Array.isArray(datosRegionales)) {
+        throw new Error('No se pudo cargar la base de datos de la ERD.');
+      }
+
+      datosRegionales.forEach((dato, indice) => {
+        const opcion = document.createElement('option');
+        opcion.value = String(indice);
+        opcion.textContent = dato.eje;
+        selectorEje.appendChild(opcion);
+      });
+
+      const actualizarCampos = (eje = '', sector = '', objetivo = '', actividad = '') => {
+        document.getElementById('lineamiento_estrategico_erd_5000').value = eje;
+        document.getElementById('item_erd_5000').value = sector;
+        document.getElementById('objetivo_estrategico_erd_5000').value = objetivo;
+        document.getElementById('actividad_programa_erd_5000').value = actividad;
+      };
+
+      selectorEje.addEventListener('change', () => {
+        listaSectores.replaceChildren();
+        barraSeleccion.hidden = true;
+        contenedor.hidden = true;
+        actualizarCampos();
+
+        if (selectorEje.value === '') {
+          document.getElementById('actividad_programa_erd_5000')
+            .dispatchEvent(new Event('input', { bubbles: true }));
+          return;
+        }
+
+        const eje = datosRegionales[Number(selectorEje.value)];
+        if (!eje) {
+          throw new Error('El eje ERD seleccionado no existe.');
+        }
+
+        textoObjetivo.textContent = eje.objetivo_general;
+        eje.sectores.forEach((sector, indiceSector) => {
+          const fila = document.createElement('div');
+          fila.className = 'erd-sector-row';
+
+          const nombreSector = document.createElement('div');
+          nombreSector.className = 'erd-sector-name';
+          nombreSector.textContent = sector.nombre;
+
+          const conector = document.createElement('span');
+          conector.className = 'erd-sector-connector';
+          conector.setAttribute('aria-hidden', 'true');
+          conector.textContent = '➜';
+
+          const actividades = document.createElement('ul');
+          actividades.className = 'erd-activity-list';
+          sector.actividades.forEach((actividad, indiceActividad) => {
+            const item = document.createElement('li');
+            const boton = document.createElement('button');
+            boton.type = 'button';
+            boton.className = 'erd-activity-button';
+            boton.dataset.sectorIndex = String(indiceSector);
+            boton.dataset.activityIndex = String(indiceActividad);
+            boton.setAttribute('aria-pressed', 'false');
+            boton.textContent = actividad;
+            boton.addEventListener('click', () => {
+              listaSectores.querySelectorAll('.erd-activity-button').forEach(elemento => {
+                elemento.classList.remove('is-selected');
+                elemento.setAttribute('aria-pressed', 'false');
+              });
+              boton.classList.add('is-selected');
+              boton.setAttribute('aria-pressed', 'true');
+              actualizarCampos(eje.eje, sector.nombre, eje.objetivo_general, actividad);
+              document.getElementById('textoActividadERD5000').textContent =
+                `${eje.eje} · ${sector.nombre} · ${actividad}`;
+              barraSeleccion.hidden = false;
+              document.getElementById('actividad_programa_erd_5000')
+                .dispatchEvent(new Event('input', { bubbles: true }));
+            });
+            item.appendChild(boton);
+            actividades.appendChild(item);
+          });
+
+          fila.append(nombreSector, conector, actividades);
+          listaSectores.appendChild(fila);
+        });
+
+        contenedor.hidden = false;
+      });
+    }
+
+    function seleccionarActividadERD5000(indiceEje, indiceSector, indiceActividad) {
+      const selectorEje = document.getElementById('selectEjeERD5000');
+      selectorEje.value = String(indiceEje);
+      selectorEje.dispatchEvent(new Event('change'));
+      const boton = document.querySelector(
+        `#listaSectoresERD5000 [data-sector-index="${indiceSector}"][data-activity-index="${indiceActividad}"]`
+      );
+      if (!boton) {
+        throw new Error('No se pudo establecer la selección ERD solicitada.');
+      }
+      boton.click();
+    }
+
     function cargarEjemplo5000UtmConObs() {
       document.getElementById('ano_postulacion').value = 2026;
       document.getElementById('codigo_idi').value = "00000004-0";
@@ -1011,14 +1100,7 @@
       document.getElementById('comuna_5000').value = "Palena";
       document.getElementById('localidad_5000').value = "Localidad de ejemplo";
       document.getElementById('detalleArticulacion5000').open = true;
-      document.getElementById('lineamiento_estrategico_erd_5000').value = "Bienestar Socio Territorial";
-      document.getElementById('item_erd_5000').value = "Servicios Básicos / Agua Potable Rural";
-      document.getElementById('objetivo_estrategico_erd_5000').value = "Mejorar el acceso equitativo a servicios básicos y espacios comunitarios.";
-      document.getElementById('actividad_programa_erd_5000').value = "Habilitación de infraestructura recreativa y áreas verdes.";
-      document.getElementById('pilar_programa_gobernador_5000').value = "Pilar 3. Inclusión Social y Calidad de Vida";
-      document.getElementById('eje_letra_programa_gobernador_5000').value = "Letra c) Infraestructura de Servicios Básicos";
-      document.getElementById('articulacion_programa_gobernador_5000').value = "La iniciativa contribuye a mejorar la calidad de vida y el acceso comunitario a espacios públicos.";
-
+      seleccionarActividadERD5000(0, 4, 0);
       configurarEjemploFinanciamiento5000({
         clasificador: '004',
         actual: 193063000,
@@ -1082,9 +1164,15 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       configurarFechasDesdePostulacion('formEvaluacion5000', 'ut5000_oficio_postulacion_fecha');
+      configurarArticulacionERD5000();
       agregarFilaFinanciamiento5000();
       document.getElementById('formEvaluacion5000').addEventListener('reset', () => {
-        setTimeout(actualizarFichaImprimible5000, 0);
+        setTimeout(() => {
+          const selectorEje = document.getElementById('selectEjeERD5000');
+          selectorEje.value = '';
+          selectorEje.dispatchEvent(new Event('change'));
+          actualizarFichaImprimible5000();
+        }, 0);
       });
       actualizarFichaImprimible5000();
     });
