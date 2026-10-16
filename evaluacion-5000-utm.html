@@ -331,38 +331,14 @@
               </div>
             </div>
             <div class="col-12">
-             <details id="detalleArticulacion5000" style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:0.6rem 0.9rem;">
-              <summary style="cursor:pointer; font-weight:600;">
-                Articulación con ERD y Programa del Gobernador Regional
-                <span style="font-weight:400; color:var(--text-muted, #64748b);">(opcional)</span>
-                <span id="estadoArticulacionERD5000" class="erd-summary-check" aria-label="Articulación seleccionada" hidden>&#10003;</span>
-              </summary>
-              <div class="erd-articulacion-content">
-                <div class="erd-control-panel">
-                  <label class="form-label" for="selectEjeERD5000">Eje Estratégico de Desarrollo</label>
-                  <select id="selectEjeERD5000" class="form-control">
-                    <option value="">-- Seleccione un eje para visualizar su estructura --</option>
-                  </select>
-                  <p class="form-hint">Seleccione un objetivo específico en el diagrama para completar los campos ERD.</p>
-                </div>
-
-                <div id="contenedorEsquemaERD5000" class="erd-esquema" hidden>
-                  <h4 class="erd-section-title">Objetivo General</h4>
-                  <p id="textoObjetivoERD5000" class="erd-objective"></p>
-                  <h4 class="erd-section-title erd-objectives-title">Objetivos Específicos / Actividades</h4>
-                  <div id="listaSectoresERD5000" class="erd-sector-list"></div>
-                  <div id="barraSeleccionERD5000" class="erd-selection" role="status" hidden>
-                    <strong>Selección activa:</strong>
-                    <span id="textoActividadERD5000"></span>
-                  </div>
-                </div>
-
-                <input type="hidden" id="lineamiento_estrategico_erd_5000" name="evaluacion_tecnica.lineamiento_estrategico_erd">
-                <input type="hidden" id="item_erd_5000" name="evaluacion_tecnica.item_erd">
-                <input type="hidden" id="objetivo_estrategico_erd_5000" name="evaluacion_tecnica.objetivo_estrategico_erd">
-                <input type="hidden" id="actividad_programa_erd_5000" name="evaluacion_tecnica.actividad_programa_erd">
-              </div>
-             </details>
+             <div id="articulacion5000" class="erd-articulacion-root"></div>
+              <input type="hidden" id="lineamiento_estrategico_erd_5000" name="evaluacion_tecnica.lineamiento_estrategico_erd">
+              <input type="hidden" id="item_erd_5000" name="evaluacion_tecnica.item_erd">
+              <input type="hidden" id="objetivo_estrategico_erd_5000" name="evaluacion_tecnica.objetivo_estrategico_erd">
+              <input type="hidden" id="actividad_programa_erd_5000" name="evaluacion_tecnica.actividad_programa_erd">
+              <input type="hidden" id="pilar_gob_5000" name="evaluacion_tecnica.pilar_programa_gobernador_regional">
+              <input type="hidden" id="letra_gob_5000" name="evaluacion_tecnica.eje_letra_programa_gobernador">
+              <input type="hidden" id="fundamento_gob_5000" name="evaluacion_tecnica.articulacion_programa_regional_gobernador">
             </div>
             <div class="col-12">
               <h4 class="form-subsection-title">Evaluación técnica de la iniciativa</h4>
@@ -642,6 +618,7 @@
   <script src="js/app.js"></script>
   <script src="js/localizacion.js"></script>
   <script src="js/erd-regional-data.js"></script>
+  <script src="js/gobernador-data.js"></script>
   <script src="js/erd-selector.js"></script>
   <script>
     function cambiarPaso5000(paso) {
@@ -987,22 +964,11 @@
     }
 
     function configurarArticulacionERD5000() {
-      configurarSelectorERD({
+      configurarArticulacion({
+        rootId: 'articulacion5000',
         formId: 'formEvaluacion5000',
-        detailsId: 'detalleArticulacion5000',
-        selectorId: 'selectEjeERD5000',
-        diagramId: 'contenedorEsquemaERD5000',
-        objectiveId: 'textoObjetivoERD5000',
-        sectorsId: 'listaSectoresERD5000',
-        feedbackId: 'barraSeleccionERD5000',
-        selectionTextId: 'textoActividadERD5000',
-        checkId: 'estadoArticulacionERD5000',
-        fields: {
-          lineamiento: 'lineamiento_estrategico_erd_5000',
-          item: 'item_erd_5000',
-          objetivo: 'objetivo_estrategico_erd_5000',
-          actividad: 'actividad_programa_erd_5000'
-        }
+        erd: { lineamiento: 'lineamiento_estrategico_erd_5000', item: 'item_erd_5000', objetivo: 'objetivo_estrategico_erd_5000', actividad: 'actividad_programa_erd_5000' },
+        gob: { pilar: 'pilar_gob_5000', letra: 'letra_gob_5000', fundamento: 'fundamento_gob_5000' }
       });
     }
 
@@ -1017,8 +983,7 @@
       document.getElementById('provincia_5000').value = "PALENA";
       document.getElementById('comuna_5000').value = "Palena";
       document.getElementById('localidad_5000').value = "Localidad de ejemplo";
-      document.getElementById('detalleArticulacion5000').open = true;
-      seleccionarActividadERD('selectEjeERD5000', 0, 4, 0);
+      seleccionarArticulacionEjemplo('articulacion5000', { erd: [[0, 4, 0], [0, 4, 1]], gob: [[2, 0]] });
       configurarEjemploFinanciamiento5000({
         clasificador: '004',
         actual: 193063000,

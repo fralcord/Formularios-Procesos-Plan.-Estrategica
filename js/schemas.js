@@ -165,7 +165,7 @@ evaluacion_pertinencia: {
         erd_item: { tipo: "string", opcional: true },
         erd_objetivo: { tipo: "string", opcional: true },
         erd_actividad: { tipo: "string", opcional: true },
-        gob_pilar: { tipo: "string", opcional: true, descripcion: "Pilar 1 a 6 del Programa Regional del Gobernador (campo de texto libre)" },
+        gob_pilar: { tipo: "string", opcional: true, descripcion: "Pilares del Programa Regional del Gobernador seleccionados (múltiples, separados por ;)" },
         gob_letra: { tipo: "string", opcional: true, descripcion: "Letra/Eje específico del programa" },
         gob_fundamento: { tipo: "text", opcional: true, descripcion: "Justificación de la articulación con el plan del Gobernador" },
         analisis_tecnico: { tipo: "text", descripcion: "Dictamen de viabilidad territorial y priorización FNDR" }

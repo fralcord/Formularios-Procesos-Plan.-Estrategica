@@ -326,39 +326,14 @@
               </div>
             </div>
             <div class="col-12">
-              <details id="detalleArticulacionProg" style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:0.6rem 0.9rem;">
-                <summary style="cursor:pointer; font-weight:600;">
-                  Articulación con ERD y Programa del Gobernador Regional
-                  <span style="font-weight:400; color:var(--text-muted, #64748b);">(opcional)</span>
-                  <span id="estadoArticulacionERDProg" class="erd-summary-check" aria-label="Articulación seleccionada" hidden>&#10003;</span>
-                </summary>
-                <div class="erd-articulacion-content">
-                  <div class="erd-control-panel">
-                    <label class="form-label" for="selectEjeERDProg">Eje Estratégico de Desarrollo</label>
-                    <select id="selectEjeERDProg" class="form-control">
-                      <option value="">-- Seleccione un eje para visualizar su estructura --</option>
-                    </select>
-                    <p class="form-hint">Seleccione un objetivo específico en el diagrama para completar los campos ERD.</p>
-                  </div>
-                  <div id="contenedorEsquemaERDProg" class="erd-esquema" hidden>
-                    <h4 class="erd-section-title">Objetivo General</h4>
-                    <p id="textoObjetivoERDProg" class="erd-objective"></p>
-                    <h4 class="erd-section-title erd-objectives-title">Objetivos Específicos / Actividades</h4>
-                    <div id="listaSectoresERDProg" class="erd-sector-list"></div>
-                    <div id="barraSeleccionERDProg" class="erd-selection" role="status" hidden>
-                      <strong>Selección activa:</strong>
-                      <span id="textoActividadERDProg"></span>
-                    </div>
-                  </div>
-                  <input type="hidden" id="prog_erd_lineamiento" name="evaluacion.erd_lineamiento">
-                  <input type="hidden" id="prog_erd_item" name="evaluacion.erd_item">
-                  <input type="hidden" id="prog_erd_objetivo" name="evaluacion.erd_objetivo">
-                  <input type="hidden" id="prog_erd_actividad" name="evaluacion.erd_actividad">
-                  <input type="hidden" id="prog_gob_pilar" name="evaluacion.gob_pilar">
-                  <input type="hidden" id="prog_gob_letra" name="evaluacion.gob_letra">
-                  <input type="hidden" id="prog_gob_justificacion" name="evaluacion.gob_fundamento">
-                </div>
-              </details>
+              <div id="articulacionProg" class="erd-articulacion-root"></div>
+              <input type="hidden" id="prog_erd_lineamiento" name="evaluacion.erd_lineamiento">
+              <input type="hidden" id="prog_erd_item" name="evaluacion.erd_item">
+              <input type="hidden" id="prog_erd_objetivo" name="evaluacion.erd_objetivo">
+              <input type="hidden" id="prog_erd_actividad" name="evaluacion.erd_actividad">
+              <input type="hidden" id="prog_gob_pilar" name="evaluacion.gob_pilar">
+              <input type="hidden" id="prog_gob_letra" name="evaluacion.gob_letra">
+              <input type="hidden" id="prog_gob_justificacion" name="evaluacion.gob_fundamento">
             </div>
             <div class="col-12">
               <h4 class="form-subsection-title">Evaluación técnica de la iniciativa</h4>
@@ -583,6 +558,7 @@
   <script src="js/app.js"></script>
   <script src="js/localizacion.js"></script>
   <script src="js/erd-regional-data.js"></script>
+  <script src="js/gobernador-data.js"></script>
   <script src="js/erd-selector.js"></script>
   <script>
     function cambiarPasoProg(paso) {
@@ -745,7 +721,7 @@
 
       cargarFinanciamientoEjemploProg('24', '09', 247477057, 1057316513);
       document.getElementById('prog_descripcion').value = "Descripción ficticia para probar la captura de un programa.";
-      seleccionarActividadERD('selectEjeERDProg', 0, 1, 0);
+      seleccionarArticulacionEjemplo('articulacionProg', { erd: [[0, 1, 0]], gob: [[2, 0]] });
 
       document.getElementById('prog_estado_evaluacion').value = "RECOMENDADO";
       actualizarBadgeProg("RECOMENDADO");
@@ -774,7 +750,7 @@
 
       cargarFinanciamientoEjemploProg('33', '01', 400000000, 0);
       document.getElementById('prog_descripcion').value = "Descripción ficticia para probar la captura de un programa.";
-      seleccionarActividadERD('selectEjeERDProg', 0, 1, 1);
+      seleccionarArticulacionEjemplo('articulacionProg', { erd: [[0, 1, 1]] });
 
       document.getElementById('prog_estado_evaluacion').value = "RECOMENDADO";
       actualizarBadgeProg("RECOMENDADO");
@@ -983,22 +959,11 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       configurarFechasDesdePostulacion('formProgramas', 'prog_fecha_oficio');
-      configurarSelectorERD({
+      configurarArticulacion({
+        rootId: 'articulacionProg',
         formId: 'formProgramas',
-        detailsId: 'detalleArticulacionProg',
-        selectorId: 'selectEjeERDProg',
-        diagramId: 'contenedorEsquemaERDProg',
-        objectiveId: 'textoObjetivoERDProg',
-        sectorsId: 'listaSectoresERDProg',
-        feedbackId: 'barraSeleccionERDProg',
-        selectionTextId: 'textoActividadERDProg',
-        checkId: 'estadoArticulacionERDProg',
-        fields: {
-          lineamiento: 'prog_erd_lineamiento',
-          item: 'prog_erd_item',
-          objetivo: 'prog_erd_objetivo',
-          actividad: 'prog_erd_actividad'
-        }
+        erd: { lineamiento: 'prog_erd_lineamiento', item: 'prog_erd_item', objetivo: 'prog_erd_objetivo', actividad: 'prog_erd_actividad' },
+        gob: { pilar: 'prog_gob_pilar', letra: 'prog_gob_letra', fundamento: 'prog_gob_justificacion' }
       });
       document.getElementById('subtitulo').addEventListener('change', sincronizarSubtituloFinanciamientoProg);
       actualizarFichaImprimibleProg();
