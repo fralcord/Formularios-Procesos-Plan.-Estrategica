@@ -949,17 +949,6 @@
         listaEvaluacion.appendChild(item);
       };
 
-      agregarItemEvaluacion('Coherencia ERD:', valorCompuesto([
-        ['Lineamiento estratégico', 'pert_erd_lineamiento'],
-        ['Ítem', 'pert_erd_item'],
-        ['Objetivo estratégico', 'pert_erd_objetivo'],
-        ['Actividad / Programa', 'pert_erd_actividad']
-      ]));
-      agregarItemEvaluacion('Articulación con el Programa del Gobernador:', valorCompuesto([
-        ['Pilar', 'pert_gob_pilar'],
-        ['Eje / Letra', 'pert_gob_letra'],
-        ['Fundamento', 'pert_gob_justificacion']
-      ]));
       agregarItemEvaluacion(
         'Análisis de Pertinencia Técnica y Disponibilidad FNDR:',
         getVal('analisis_pertinencia_tecnica')
