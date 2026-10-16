@@ -332,7 +332,11 @@
             </div>
             <div class="col-12">
              <details id="detalleArticulacion5000" style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:0.6rem 0.9rem;">
-              <summary style="cursor:pointer; font-weight:600;">Articulación con ERD y Programa del Gobernador Regional <span style="font-weight:400; color:var(--text-muted, #64748b);">(opcional)</span></summary>
+              <summary style="cursor:pointer; font-weight:600;">
+                Articulación con ERD y Programa del Gobernador Regional
+                <span style="font-weight:400; color:var(--text-muted, #64748b);">(opcional)</span>
+                <span id="estadoArticulacionERD5000" class="erd-summary-check" aria-label="Articulación seleccionada" hidden>&#10003;</span>
+              </summary>
               <div class="erd-articulacion-content">
                 <div class="erd-control-panel">
                   <label class="form-label" for="selectEjeERD5000">Eje Estratégico de Desarrollo</label>
@@ -638,6 +642,7 @@
   <script src="js/app.js"></script>
   <script src="js/localizacion.js"></script>
   <script src="js/erd-regional-data.js"></script>
+  <script src="js/erd-selector.js"></script>
   <script>
     function cambiarPaso5000(paso) {
       ['tabBtn1', 'tabBtn2', 'tabBtn3', 'tabBtn4'].forEach(id => {
@@ -982,110 +987,23 @@
     }
 
     function configurarArticulacionERD5000() {
-      const selectorEje = document.getElementById('selectEjeERD5000');
-      const contenedor = document.getElementById('contenedorEsquemaERD5000');
-      const textoObjetivo = document.getElementById('textoObjetivoERD5000');
-      const listaSectores = document.getElementById('listaSectoresERD5000');
-      const barraSeleccion = document.getElementById('barraSeleccionERD5000');
-      const datosRegionales = window.datosRegionalesERD5000;
-
-      if (!Array.isArray(datosRegionales)) {
-        throw new Error('No se pudo cargar la base de datos de la ERD.');
-      }
-
-      datosRegionales.forEach((dato, indice) => {
-        const opcion = document.createElement('option');
-        opcion.value = String(indice);
-        opcion.textContent = dato.eje;
-        selectorEje.appendChild(opcion);
-      });
-
-      const actualizarCampos = (eje = '', sector = '', objetivo = '', actividad = '') => {
-        document.getElementById('lineamiento_estrategico_erd_5000').value = eje;
-        document.getElementById('item_erd_5000').value = sector;
-        document.getElementById('objetivo_estrategico_erd_5000').value = objetivo;
-        document.getElementById('actividad_programa_erd_5000').value = actividad;
-      };
-
-      selectorEje.addEventListener('change', () => {
-        listaSectores.replaceChildren();
-        barraSeleccion.hidden = true;
-        contenedor.hidden = true;
-        actualizarCampos();
-
-        if (selectorEje.value === '') {
-          document.getElementById('actividad_programa_erd_5000')
-            .dispatchEvent(new Event('input', { bubbles: true }));
-          return;
+      configurarSelectorERD({
+        formId: 'formEvaluacion5000',
+        detailsId: 'detalleArticulacion5000',
+        selectorId: 'selectEjeERD5000',
+        diagramId: 'contenedorEsquemaERD5000',
+        objectiveId: 'textoObjetivoERD5000',
+        sectorsId: 'listaSectoresERD5000',
+        feedbackId: 'barraSeleccionERD5000',
+        selectionTextId: 'textoActividadERD5000',
+        checkId: 'estadoArticulacionERD5000',
+        fields: {
+          lineamiento: 'lineamiento_estrategico_erd_5000',
+          item: 'item_erd_5000',
+          objetivo: 'objetivo_estrategico_erd_5000',
+          actividad: 'actividad_programa_erd_5000'
         }
-
-        const eje = datosRegionales[Number(selectorEje.value)];
-        if (!eje) {
-          throw new Error('El eje ERD seleccionado no existe.');
-        }
-
-        textoObjetivo.textContent = eje.objetivo_general;
-        eje.sectores.forEach((sector, indiceSector) => {
-          const fila = document.createElement('div');
-          fila.className = 'erd-sector-row';
-
-          const nombreSector = document.createElement('div');
-          nombreSector.className = 'erd-sector-name';
-          nombreSector.textContent = sector.nombre;
-
-          const conector = document.createElement('span');
-          conector.className = 'erd-sector-connector';
-          conector.setAttribute('aria-hidden', 'true');
-          conector.textContent = '➜';
-
-          const actividades = document.createElement('ul');
-          actividades.className = 'erd-activity-list';
-          sector.actividades.forEach((actividad, indiceActividad) => {
-            const item = document.createElement('li');
-            const boton = document.createElement('button');
-            boton.type = 'button';
-            boton.className = 'erd-activity-button';
-            boton.dataset.sectorIndex = String(indiceSector);
-            boton.dataset.activityIndex = String(indiceActividad);
-            boton.setAttribute('aria-pressed', 'false');
-            boton.textContent = actividad;
-            boton.addEventListener('click', () => {
-              listaSectores.querySelectorAll('.erd-activity-button').forEach(elemento => {
-                elemento.classList.remove('is-selected');
-                elemento.setAttribute('aria-pressed', 'false');
-              });
-              boton.classList.add('is-selected');
-              boton.setAttribute('aria-pressed', 'true');
-              actualizarCampos(eje.eje, sector.nombre, eje.objetivo_general, actividad);
-              document.getElementById('textoActividadERD5000').textContent =
-                `${eje.eje} · ${sector.nombre} · ${actividad}`;
-              barraSeleccion.hidden = false;
-              document.getElementById('actividad_programa_erd_5000')
-                .dispatchEvent(new Event('input', { bubbles: true }));
-            });
-            item.appendChild(boton);
-            actividades.appendChild(item);
-          });
-
-          fila.append(nombreSector, conector, actividades);
-          listaSectores.appendChild(fila);
-        });
-
-        contenedor.hidden = false;
       });
-    }
-
-    function seleccionarActividadERD5000(indiceEje, indiceSector, indiceActividad) {
-      const selectorEje = document.getElementById('selectEjeERD5000');
-      selectorEje.value = String(indiceEje);
-      selectorEje.dispatchEvent(new Event('change'));
-      const boton = document.querySelector(
-        `#listaSectoresERD5000 [data-sector-index="${indiceSector}"][data-activity-index="${indiceActividad}"]`
-      );
-      if (!boton) {
-        throw new Error('No se pudo establecer la selección ERD solicitada.');
-      }
-      boton.click();
     }
 
     function cargarEjemplo5000UtmConObs() {
@@ -1100,7 +1018,7 @@
       document.getElementById('comuna_5000').value = "Palena";
       document.getElementById('localidad_5000').value = "Localidad de ejemplo";
       document.getElementById('detalleArticulacion5000').open = true;
-      seleccionarActividadERD5000(0, 4, 0);
+      seleccionarActividadERD('selectEjeERD5000', 0, 4, 0);
       configurarEjemploFinanciamiento5000({
         clasificador: '004',
         actual: 193063000,
@@ -1167,12 +1085,7 @@
       configurarArticulacionERD5000();
       agregarFilaFinanciamiento5000();
       document.getElementById('formEvaluacion5000').addEventListener('reset', () => {
-        setTimeout(() => {
-          const selectorEje = document.getElementById('selectEjeERD5000');
-          selectorEje.value = '';
-          selectorEje.dispatchEvent(new Event('change'));
-          actualizarFichaImprimible5000();
-        }, 0);
+        setTimeout(actualizarFichaImprimible5000, 0);
       });
       actualizarFichaImprimible5000();
     });

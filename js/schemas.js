@@ -161,13 +161,13 @@ nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha ID
       costo_total: { tipo: "number", unidad: "pesos", descripcion: "Total derivado de sumar las partidas de fuentes_financiamiento; la ficha lo presenta convertido a M$" },
       // Evaluación Estratégica Regional GORE Los Lagos
 evaluacion_pertinencia: {
-        erd_lineamiento: { tipo: "string", descripcion: "Lineamiento estratégico ERD (campo de texto libre)" },
-        erd_item: { tipo: "string" },
-        erd_objetivo: { tipo: "string" },
-        erd_actividad: { tipo: "string" },
-        gob_pilar: { tipo: "string", descripcion: "Pilar 1 a 6 del Programa Regional del Gobernador (campo de texto libre)" },
-        gob_letra: { tipo: "string", descripcion: "Letra/Eje específico del programa" },
-        gob_fundamento: { tipo: "text", descripcion: "Justificación de la articulación con el plan del Gobernador" },
+        erd_lineamiento: { tipo: "string", opcional: true, descripcion: "Lineamiento estratégico ERD (campo de texto libre)" },
+        erd_item: { tipo: "string", opcional: true },
+        erd_objetivo: { tipo: "string", opcional: true },
+        erd_actividad: { tipo: "string", opcional: true },
+        gob_pilar: { tipo: "string", opcional: true, descripcion: "Pilar 1 a 6 del Programa Regional del Gobernador (campo de texto libre)" },
+        gob_letra: { tipo: "string", opcional: true, descripcion: "Letra/Eje específico del programa" },
+        gob_fundamento: { tipo: "text", opcional: true, descripcion: "Justificación de la articulación con el plan del Gobernador" },
         analisis_tecnico: { tipo: "text", descripcion: "Dictamen de viabilidad territorial y priorización FNDR" }
       },
       // Resolución y Acto Administrativo
@@ -298,11 +298,11 @@ trazabilidad: {
       },
       evaluacion_tecnica: {
         estado_resultado: { tipo: "string", enum: ["SIN OBSERVACIONES", "OBSERVADO", "RECOMENDADO", "RECHAZADO"] },
-        lineamiento_estrategico_erd: { tipo: "string", descripcion: "Lineamiento Estratégico de la ERD Los Lagos" },
+        lineamiento_estrategico_erd: { tipo: "string", opcional: true, descripcion: "Lineamiento Estratégico de la ERD Los Lagos" },
         item_erd: { tipo: "string", opcional: true, descripcion: "Ítem de la ERD asociado a la iniciativa" },
         objetivo_estrategico_erd: { tipo: "text", opcional: true },
         actividad_programa_erd: { tipo: "text", opcional: true },
-        pilar_programa_gobernador_regional: { tipo: "string", descripcion: "Pilar del Programa del Gobernador Regional" },
+        pilar_programa_gobernador_regional: { tipo: "string", opcional: true, descripcion: "Pilar del Programa del Gobernador Regional" },
         eje_letra_programa_gobernador: { tipo: "string", opcional: true, descripcion: "Eje o letra específica del Programa del Gobernador Regional" },
         articulacion_programa_regional_gobernador: { tipo: "text", opcional: true, descripcion: "Fundamento de articulación con el Programa Regional del Gobernador" },
         observaciones_generales: { tipo: "text" },
@@ -358,11 +358,11 @@ trazabilidad: {
       evaluacion: {
         estado: { tipo: "string", enum: ["RECOMENDADO", "OBSERVADO", "RECHAZADO"] },
         fecha: { tipo: "string", formato: "date" },
-        erd_lineamiento: { tipo: "string", descripcion: "Lineamiento Estratégico ERD Los Lagos" },
+        erd_lineamiento: { tipo: "string", opcional: true, descripcion: "Lineamiento Estratégico ERD Los Lagos" },
         erd_item: { tipo: "string", opcional: true, descripcion: "Ítem ERD asociado al programa" },
         erd_objetivo: { tipo: "text", opcional: true, descripcion: "Objetivo Estratégico ERD" },
         erd_actividad: { tipo: "text", opcional: true, descripcion: "Actividad o Programa ERD" },
-        gob_pilar: { tipo: "string", descripcion: "Pilar del Programa del Gobernador Regional" },
+        gob_pilar: { tipo: "string", opcional: true, descripcion: "Pilar del Programa del Gobernador Regional" },
         gob_letra: { tipo: "string", opcional: true, descripcion: "Eje o letra específica del Programa del Gobernador Regional" },
         gob_fundamento: { tipo: "text", opcional: true, descripcion: "Fundamento de articulación con el Programa Regional del Gobernador" },
         texto_evaluacion: { tipo: "text" },

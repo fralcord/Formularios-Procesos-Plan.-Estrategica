@@ -341,50 +341,40 @@
               </div>
             </div>
 
-            <!-- ERD -->
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="pert_erd_lineamiento">Lineamiento Estratégico ERD Los Lagos <span class="required">*</span></label>
-                <input type="text" id="pert_erd_lineamiento" name="evaluacion_pertinencia.erd_lineamiento" class="form-control" placeholder="Ej: Bienestar Socio Territorial" required>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="pert_erd_item">Ítem ERD</label>
-                <input type="text" id="pert_erd_item" name="evaluacion_pertinencia.erd_item" class="form-control" placeholder="Ej: Servicios Básicos / Agua Potable Rural">
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="pert_erd_objetivo">Objetivo Estratégico ERD</label>
-                <textarea id="pert_erd_objetivo" name="evaluacion_pertinencia.erd_objetivo" rows="2" class="form-control" placeholder="Objetivo de la ERD con el que se relaciona la iniciativa..."></textarea>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="pert_erd_actividad">Actividad / Programa ERD</label>
-                <textarea id="pert_erd_actividad" name="evaluacion_pertinencia.erd_actividad" rows="2" class="form-control" placeholder="Actividad o programa contemplado en la ERD..."></textarea>
-              </div>
-            </div>
-
-            <!-- Plan Gobernador -->
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="pert_gob_pilar">Pilar Programa del Gobernador Regional <span class="required">*</span></label>
-                <input type="text" id="pert_gob_pilar" name="evaluacion_pertinencia.gob_pilar" class="form-control" placeholder="Ej: Pilar 3. Inclusión Social y Calidad de Vida" required>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label" for="pert_gob_letra">Eje / Letra Específica del Programa</label>
-                <input type="text" id="pert_gob_letra" name="evaluacion_pertinencia.gob_letra" class="form-control" placeholder="Ej: Letra c) Infraestructura de Servicios Básicos">
-              </div>
-            </div>
             <div class="col-12">
-              <div class="form-group">
-                <label class="form-label" for="pert_gob_justificacion">Articulación con el Programa Regional del Gobernador</label>
-                <textarea id="pert_gob_justificacion" name="evaluacion_pertinencia.gob_fundamento" rows="2" class="form-control" placeholder="Fundamento de articulación con el programa de gobierno regional..."></textarea>
-              </div>
+              <details id="detalleArticulacionPert" style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:0.6rem 0.9rem;">
+                <summary style="cursor:pointer; font-weight:600;">
+                  Articulación con ERD y Programa del Gobernador Regional
+                  <span style="font-weight:400; color:var(--text-muted, #64748b);">(opcional)</span>
+                  <span id="estadoArticulacionERDPert" class="erd-summary-check" aria-label="Articulación seleccionada" hidden>&#10003;</span>
+                </summary>
+                <div class="erd-articulacion-content">
+                  <div class="erd-control-panel">
+                    <label class="form-label" for="selectEjeERDPert">Eje Estratégico de Desarrollo</label>
+                    <select id="selectEjeERDPert" class="form-control">
+                      <option value="">-- Seleccione un eje para visualizar su estructura --</option>
+                    </select>
+                    <p class="form-hint">Seleccione un objetivo específico en el diagrama para completar los campos ERD.</p>
+                  </div>
+                  <div id="contenedorEsquemaERDPert" class="erd-esquema" hidden>
+                    <h4 class="erd-section-title">Objetivo General</h4>
+                    <p id="textoObjetivoERDPert" class="erd-objective"></p>
+                    <h4 class="erd-section-title erd-objectives-title">Objetivos Específicos / Actividades</h4>
+                    <div id="listaSectoresERDPert" class="erd-sector-list"></div>
+                    <div id="barraSeleccionERDPert" class="erd-selection" role="status" hidden>
+                      <strong>Selección activa:</strong>
+                      <span id="textoActividadERDPert"></span>
+                    </div>
+                  </div>
+                  <input type="hidden" id="pert_erd_lineamiento" name="evaluacion_pertinencia.erd_lineamiento">
+                  <input type="hidden" id="pert_erd_item" name="evaluacion_pertinencia.erd_item">
+                  <input type="hidden" id="pert_erd_objetivo" name="evaluacion_pertinencia.erd_objetivo">
+                  <input type="hidden" id="pert_erd_actividad" name="evaluacion_pertinencia.erd_actividad">
+                  <input type="hidden" id="pert_gob_pilar" name="evaluacion_pertinencia.gob_pilar">
+                  <input type="hidden" id="pert_gob_letra" name="evaluacion_pertinencia.gob_letra">
+                  <input type="hidden" id="pert_gob_justificacion" name="evaluacion_pertinencia.gob_fundamento">
+                </div>
+              </details>
             </div>
 
             <div class="col-12">
@@ -597,6 +587,8 @@
   <script src="js/schemas.js"></script>
   <script src="js/app.js"></script>
   <script src="js/localizacion.js"></script>
+  <script src="js/erd-regional-data.js"></script>
+  <script src="js/erd-selector.js"></script>
   <script>
     function cambiarPaso(paso) {
       ['tabBtn1', 'tabBtn2', 'tabBtn3', 'tabBtn4'].forEach(id => {
@@ -1106,12 +1098,7 @@
         siguiente: 0
       });
 
-      document.getElementById('pert_erd_lineamiento').value = "Bienestar Socio Territorial";
-      document.getElementById('pert_erd_item').value = "Infraestructura y servicios comunitarios";
-      document.getElementById('pert_erd_objetivo').value = "Mejorar el acceso a servicios básicos para la comunidad beneficiaria.";
-      document.getElementById('pert_gob_pilar').value = "Pilar 3. Inclusión Social y Mejoramiento de la Calidad de Vida";
-      document.getElementById('pert_gob_letra').value = "c) Infraestructura de Servicios Básicos";
-      document.getElementById('pert_gob_justificacion').value = "La iniciativa contribuye al mejoramiento de los servicios para la comunidad.";
+      seleccionarActividadERD('selectEjeERDPert', 0, 3, 4);
       document.getElementById('analisis_pertinencia_tecnica').value = "Ejemplo de análisis técnico favorable para demostración del formulario.";
 
       document.getElementById('estado_pertinencia').value = "PERTINENTE_A_MDSF";
@@ -1154,10 +1141,7 @@
         siguiente: 0
       });
 
-      document.getElementById('pert_erd_lineamiento').value = "Desarrollo territorial sostenible";
-      document.getElementById('pert_erd_item').value = "Servicios comunitarios";
-      document.getElementById('pert_gob_pilar').value = "Pilar 3. Inclusión Social y Mejoramiento de la Calidad de Vida";
-      document.getElementById('pert_gob_letra').value = "e) Acceso a Servicios de Salud";
+      seleccionarActividadERD('selectEjeERDPert', 0, 1, 0);
       document.getElementById('analisis_pertinencia_tecnica').value = "Ejemplo de análisis técnico con observaciones para demostración del formulario.";
 
       document.getElementById('estado_pertinencia').value = "CON_OBSERVACIONES";
@@ -1178,6 +1162,23 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       configurarFechasDesdePostulacion('formPertinencia', 'oficioPostulacionFecha');
+      configurarSelectorERD({
+        formId: 'formPertinencia',
+        detailsId: 'detalleArticulacionPert',
+        selectorId: 'selectEjeERDPert',
+        diagramId: 'contenedorEsquemaERDPert',
+        objectiveId: 'textoObjetivoERDPert',
+        sectorsId: 'listaSectoresERDPert',
+        feedbackId: 'barraSeleccionERDPert',
+        selectionTextId: 'textoActividadERDPert',
+        checkId: 'estadoArticulacionERDPert',
+        fields: {
+          lineamiento: 'pert_erd_lineamiento',
+          item: 'pert_erd_item',
+          objetivo: 'pert_erd_objetivo',
+          actividad: 'pert_erd_actividad'
+        }
+      });
       document.getElementById('tipologia_pert').addEventListener('change', actualizarEtapasTipologiaPert);
       document.getElementById('etapa_postula').addEventListener('change', actualizarOpcionesFinanciamientoPert);
       agregarFilaFinanciamientoPert();
