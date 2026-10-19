@@ -209,7 +209,8 @@
     page-break-inside: avoid;
   }
 
-  .ut5000-reference-sheet #print_5000_descripcion {
+  .ut5000-reference-sheet #print_5000_descripcion,
+  .ut5000-reference-sheet #print_prog_descripcion {
     padding-left: 25pt !important;
   }
 

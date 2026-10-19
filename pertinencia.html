@@ -425,12 +425,11 @@
             <tbody>
               <tr><th>PROVINCIA</th><td id="print_provincia">-</td></tr>
               <tr><th>COMUNA</th><td id="print_comuna">-</td></tr>
-              <tr><th>LOCALIDAD</th><td id="print_localidad">-</td></tr>
               <tr><th>PROCESO PRESUPUESTARIO</th><td id="print_proceso_presupuestario">-</td></tr>
               <tr><th>AÑO DE POSTULACIÓN</th><td id="print_ano_post">-</td></tr>
               <tr><th>CÓDIGO IDI</th><td id="print_bip">-</td></tr>
               <tr><th>NOMBRE</th><td id="print_nombre">-</td></tr>
-              <tr><th>PROPONENTE</th><td id="print_proponente">-</td></tr>
+              <tr><th>UNIDAD FORMULADORA</th><td id="print_proponente">-</td></tr>
               <tr><th>UNIDAD TÉCNICA</th><td id="print_unidad_tecnica">-</td></tr>
               <tr><th>TIPOLOGÍA</th><td id="print_tipologia">-</td></tr>
               <tr><th>ETAPA</th><td id="print_etapa">-</td></tr>
@@ -611,21 +610,24 @@
       ] },
       { codigo: '02', grupo: '02 PROYECTOS', etapas: {
         'Prefactibilidad': ['001', '002'],
-        'Factibilidad': ['001', '002', '003'],
-        'Diseño': ['001', '002', '003', '004', '005'],
+        'Factibilidad': ['001', '002'],
+        'Diseño': ['001', '002', '003', '999'],
         'Ejecución': ['001', '002', '003', '004', '005', '006', '007', '999']
       }, opciones: [
         ['001', 'G. ADMINISTRATIVOS'],
         ['002', 'CONSULTORÍA'],
-        ['003', 'TERRENO'],
+        ['003', 'TERRENOS'],
         ['004', 'OBRAS CIVILES'],
         ['005', 'EQUIPAMIENTO'],
         ['006', 'EQUIPOS'],
         ['007', 'VEHÍCULOS'],
         ['999', 'OTROS GASTOS']
       ] },
-      { codigo: '03', grupo: '03 PROGRAMAS DE INVERSIÓN', etapas: { 'Ejecución': ['001', '002', '003'] }, opciones: [
-        ['001', 'G. ADMINISTRATIVOS CONSULTORÍA'],
+      { codigo: '03', grupo: '03 PROGRAMAS DE INVERSIÓN', etapas: {
+        'Diseño': ['001', '002'],
+        'Ejecución': ['001', '002', '003']
+      }, opciones: [
+        ['001', 'G. ADMINISTRATIVOS'],
         ['002', 'CONSULTORÍA'],
         ['003', 'CONTRATACIÓN DEL PROGRAMA']
       ] }
@@ -919,7 +921,6 @@
       };
       asignarTexto('print_provincia', getVal('provincia_pert'));
       asignarTexto('print_comuna', getVal('comuna_pert'));
-      asignarTexto('print_localidad', getVal('localidad_pert'));
       asignarTexto('print_proceso_presupuestario', getVal('proceso_presupuestario'));
       const fechaOficioPostulacion = getVal('oficioPostulacionFecha');
       asignarTexto('registro_ano_post', fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '');

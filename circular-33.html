@@ -429,12 +429,11 @@
             <tbody>
               <tr><th>PROVINCIA</th><td id="print_c33_provincia">-</td></tr>
               <tr><th>COMUNA</th><td id="print_c33_comuna">-</td></tr>
-              <tr><th>LOCALIDAD O SECTOR</th><td id="print_c33_localidad">-</td></tr>
               <tr><th>PROCESO PRESUPUESTARIO</th><td id="print_c33_proceso_presupuestario">-</td></tr>
               <tr><th>AÑO DE POSTULACIÓN</th><td id="print_c33_ano_post">-</td></tr>
               <tr><th>CÓDIGO IDI</th><td id="print_c33_bip">-</td></tr>
               <tr><th>NOMBRE</th><td id="print_c33_nombre">-</td></tr>
-              <tr><th>PROPONENTE</th><td id="print_c33_unidad_formuladora">-</td></tr>
+              <tr><th>UNIDAD FORMULADORA</th><td id="print_c33_unidad_formuladora">-</td></tr>
               <tr><th>UNIDAD TÉCNICA</th><td id="print_c33_unidad_tecnica">-</td></tr>
               <tr><th>SECTOR</th><td id="print_c33_sector">-</td></tr>
               <tr><th>SUBTÍTULO</th><td id="print_c33_subtitulo">-</td></tr>
@@ -876,7 +875,6 @@
 
       document.getElementById('print_c33_provincia').textContent = getVal('provincia') || '-';
       document.getElementById('print_c33_comuna').textContent = getVal('comuna') || '-';
-      document.getElementById('print_c33_localidad').textContent = getVal('c33_localidad') || '-';
       document.getElementById('print_c33_sector').textContent = getVal('c33_sector') || '-';
       document.getElementById('print_c33_proceso_presupuestario').textContent = getVal('c33_proceso_ano') || '-';
       const fechaOficioPostulacion = getVal('c33_oficio_postulacion_fecha');

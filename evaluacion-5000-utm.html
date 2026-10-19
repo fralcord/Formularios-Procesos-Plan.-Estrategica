@@ -487,7 +487,8 @@
               <tr><th>AÑO DE POSTULACIÓN</th><td id="print_5000_ano_post">-</td></tr>
               <tr><th>CÓDIGO IDI</th><td id="print_5000_bip">-</td></tr>
               <tr><th>NOMBRE</th><td id="print_5000_nombre">-</td></tr>
-              <tr><th>PROPONENTE</th><td id="print_5000_proponente">-</td></tr>
+              <tr><th>UNIDAD FORMULADORA</th><td id="print_5000_proponente">-</td></tr>
+              <tr><th>UNIDAD TÉCNICA</th><td id="print_5000_unidad_tecnica">-</td></tr>
             </tbody>
           </table>
 
@@ -520,6 +521,11 @@
           <div class="sheet-section-title pert-print-section-title">EVALUACIÓN:</div>
           <div class="pert-print-description" id="print_5000_evaluacion_bloque"></div>
 
+          <div class="ut5000-evaluador-line">
+            <span>Estado</span>
+            <span>:</span>
+            <span id="print_5000_estado">-</span>
+          </div>
           <div class="ut5000-evaluador-line">
             <span>Evaluado por</span>
             <span>:</span>
@@ -695,6 +701,7 @@
       document.getElementById('print_5000_bip').textContent = getVal('codigo_idi') || '-';
       document.getElementById('print_5000_nombre').textContent = getVal('nombre_iniciativa') || '-';
       document.getElementById('print_5000_proponente').textContent = getVal('unidad_formuladora_5000') || '-';
+      document.getElementById('print_5000_unidad_tecnica').textContent = getVal('unidad_tecnica_5000') || '-';
       document.getElementById('print_5000_descripcion').textContent = getVal('descripcion_proyecto_5000') || '-';
       const anoPresupuestario = Number(getVal('ano_postulacion')) || new Date().getFullYear();
       document.getElementById('print_5000_financing_year_label').textContent =
@@ -731,6 +738,7 @@
 
       document.getElementById('print_5000_evaluacion_bloque').textContent = evalText;
 
+      document.getElementById('print_5000_estado').textContent = estado || '-';
       document.getElementById('print_5000_evaluador_texto').textContent =
         getVal('evaluador_nombre') || 'Profesional Evaluador';
       const fechaEvaluacion = getVal('fecha_evaluacion');
@@ -785,13 +793,41 @@
     const asignacionesPresupuestarias31_5000 = [
       ['001', 'G. ADMINISTRATIVOS'],
       ['002', 'CONSULTORÍA'],
-      ['003', 'TERRENO'],
+      ['003', 'TERRENOS'],
       ['004', 'OBRAS CIVILES'],
       ['005', 'EQUIPAMIENTO'],
       ['006', 'EQUIPOS'],
       ['007', 'VEHÍCULOS'],
       ['999', 'OTROS GASTOS']
     ];
+
+    const asignacionesPorEtapa5000 = {
+      'Diseño': ['001', '002', '003', '999'],
+      'Ejecución': ['001', '002', '003', '004', '005', '006', '007', '999']
+    };
+
+    function llenarAsignaciones5000(selector) {
+      const etapa = document.getElementById('etapa_postula_5000').value;
+      const codigosDisponibles = asignacionesPorEtapa5000[etapa] || [];
+      const valorActual = selector.value;
+      selector.innerHTML = '<option value="">Seleccione asignación...</option>';
+      asignacionesPresupuestarias31_5000
+        .filter(([codigo]) => codigosDisponibles.includes(codigo))
+        .forEach(([codigo, nombre]) => {
+          const opcion = document.createElement('option');
+          opcion.value = codigo;
+          opcion.textContent = `${codigo} - ${nombre}`;
+          opcion.dataset.descripcion = nombre;
+          selector.appendChild(opcion);
+        });
+      selector.value = codigosDisponibles.includes(valorActual) ? valorActual : '';
+      selector.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function actualizarAsignacionesPorEtapa5000() {
+      document.querySelectorAll('#financiamiento_5000_body [data-field="clasificador"]')
+        .forEach(llenarAsignaciones5000);
+    }
 
     function crearCampoFinanciamiento5000(fila, campo, tipo, valorInicial = '') {
       const input = document.createElement('input');
@@ -828,17 +864,10 @@
       const selectorAsignacion = document.createElement('select');
       selectorAsignacion.className = 'form-control';
       selectorAsignacion.dataset.field = 'clasificador';
-      selectorAsignacion.innerHTML = '<option value="">Seleccione asignación...</option>';
-      asignacionesPresupuestarias31_5000.forEach(([codigo, nombre]) => {
-        const opcion = document.createElement('option');
-        opcion.value = codigo;
-        opcion.textContent = `${codigo} - ${nombre}`;
-        opcion.dataset.descripcion = nombre;
-        selectorAsignacion.appendChild(opcion);
-      });
       asignacionCelda.appendChild(selectorAsignacion);
       asignacionCelda.appendChild(crearCampoFinanciamiento5000(fila, 'clasificador_descripcion', 'hidden'));
       fila.appendChild(asignacionCelda);
+      llenarAsignaciones5000(selectorAsignacion);
 
       ['solicitado_ano_actual', 'solicitado_ano_siguiente'].forEach(campo => {
         const input = crearCampoFinanciamiento5000(fila, campo, 'text');
@@ -1049,8 +1078,15 @@
       configurarFechasDesdePostulacion('formEvaluacion5000', 'ut5000_oficio_postulacion_fecha');
       configurarArticulacionERD5000();
       agregarFilaFinanciamiento5000();
+      document.getElementById('etapa_postula_5000').addEventListener('change', () => {
+        actualizarAsignacionesPorEtapa5000();
+        actualizarFichaImprimible5000();
+      });
       document.getElementById('formEvaluacion5000').addEventListener('reset', () => {
-        setTimeout(actualizarFichaImprimible5000, 0);
+        setTimeout(() => {
+          actualizarAsignacionesPorEtapa5000();
+          actualizarFichaImprimible5000();
+        }, 0);
       });
       actualizarFichaImprimible5000();
     });
