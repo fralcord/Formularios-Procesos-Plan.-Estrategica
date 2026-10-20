@@ -115,7 +115,6 @@
         <section class="form-section-card">
           <div class="section-header">
             <h3>1. Registro de la Iniciativa (grabar datos)</h3>
-            <span class="section-badge">Proceso Presupuestario</span>
           </div>
 
           <div class="form-grid">
@@ -328,16 +327,7 @@
             <span class="section-badge">Análisis Sectorial</span>
           </div>
 
-          <div class="callout callout-info">
-            <span>Instancia en registro: <strong id="instanciaDescripcionEvalProg">Primer Ingreso</strong>. Al registrar observaciones, active <strong>&laquo;Continuar a la siguiente instancia&raquo;</strong> para incorporar la respuesta del postulante y su reevaluación.</span>
-          </div>
-
           <div class="form-grid">
-            <div class="col-12">
-              <div class="callout callout-warning" style="margin-bottom:0;">
-                <span id="ayudaInstanciaProg">Se registra la primera evaluación técnica del programa.</span>
-              </div>
-            </div>
             <div class="col-12">
               <div id="articulacionProg" class="erd-articulacion-root"></div>
               <input type="hidden" id="prog_erd_lineamiento" name="evaluacion.erd_lineamiento">
@@ -614,18 +604,10 @@
       const claveInstancia = AppIteracion.actual();
 
       const etiquetaInstancia = AppIteracion.ETIQUETAS[claveInstancia];
-      ['instanciaDescripcionProg', 'instanciaDescripcionEvalProg'].forEach(id => {
+      ['instanciaDescripcionProg'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = etiquetaInstancia;
       });
-      const ayuda = document.getElementById('ayudaInstanciaProg');
-      if (ayuda) {
-        ayuda.textContent = claveInstancia === 'PRIMER_INGRESO'
-          ? 'Se registra la primera evaluación técnica del programa.'
-          : (claveInstancia === 'REEVALUACION'
-            ? 'Reevaluación: se verifica la subsanación y se emite un nuevo resultado técnico.'
-            : 'El postulante respondió las observaciones; corresponde verificar la respuesta.');
-      }
 
       document.getElementById('print_prog_provincia').textContent = getVal('prog_provincia') || '-';
       document.getElementById('print_prog_comuna').textContent = getVal('prog_comuna') || '-';

@@ -115,7 +115,6 @@
         <section class="form-section-card">
           <div class="section-header">
             <h3>1. Registro de la Iniciativa (grabar datos)</h3>
-            <span class="section-badge">Proceso Presupuestario</span>
           </div>
 
           <div class="callout callout-info">
@@ -338,16 +337,7 @@
             <span class="section-badge">Revisión GORE</span>
           </div>
 
-          <div class="callout callout-info">
-            <span>Instancia en registro: <strong id="instanciaDescripcionEvalC33">Primer Ingreso</strong>. Al registrar un resultado con observaciones, active <strong>&laquo;Continuar a la siguiente instancia&raquo;</strong> para abrir el siguiente registro evaluativo.</span>
-          </div>
-
           <div class="form-grid">
-            <div class="col-12">
-              <div class="callout callout-warning" style="margin-bottom:0;">
-                <span id="ayudaInstanciaC33">Se registra la primera evaluación técnica de la iniciativa.</span>
-              </div>
-            </div>
             <div class="col-12">
               <h4 class="form-subsection-title">Evaluación técnica de la iniciativa</h4>
             </div>
@@ -867,18 +857,10 @@
       const claveInstancia = AppIteracion.actual();
 
       const etiquetaInstancia = AppIteracion.ETIQUETAS[claveInstancia];
-      ['instanciaDescripcionC33', 'instanciaDescripcionEvalC33'].forEach(id => {
+      ['instanciaDescripcionC33'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = etiquetaInstancia;
       });
-      const ayuda = document.getElementById('ayudaInstanciaC33');
-      if (ayuda) {
-        ayuda.textContent = claveInstancia === 'PRIMER_INGRESO'
-          ? 'Se registra la primera evaluación técnica de la iniciativa.'
-          : (claveInstancia === 'REEVALUACION'
-            ? 'Reevaluación: se verifica la subsanación y se emite un nuevo resultado técnico.'
-            : 'El postulante respondió las observaciones; corresponde verificar la respuesta.');
-      }
 
       document.getElementById('print_c33_provincia').textContent = getVal('provincia') || '-';
       document.getElementById('print_c33_comuna').textContent = getVal('comuna') || '-';

@@ -115,7 +115,6 @@
         <section class="form-section-card">
           <div class="section-header">
             <h3>1. Registro de la Iniciativa (grabar datos)</h3>
-            <span class="section-badge">Proceso Presupuestario</span>
           </div>
 
           <div class="form-grid">
@@ -327,16 +326,7 @@
             <span class="section-badge">Criterios de Revisión</span>
           </div>
 
-          <div class="callout callout-info">
-            <span>Instancia en registro: <strong id="instanciaDescripcionEval5000">Primer Ingreso</strong>. Al registrar observaciones, active <strong>&laquo;Continuar a la siguiente instancia&raquo;</strong> para incorporar la respuesta del postulante y su reevaluación.</span>
-          </div>
-
           <div class="form-grid">
-            <div class="col-12">
-              <div class="callout callout-warning" style="margin-bottom:0;">
-                <span id="ayudaInstancia5000">Se registra la primera revisión técnica de la iniciativa.</span>
-              </div>
-            </div>
             <div class="col-12">
              <div id="articulacion5000" class="erd-articulacion-root"></div>
               <input type="hidden" id="lineamiento_estrategico_erd_5000" name="evaluacion_tecnica.lineamiento_estrategico_erd">
@@ -687,19 +677,10 @@
       const claveInstancia = AppIteracion.actual();
 
       const etiquetaInstancia = AppIteracion.ETIQUETAS[claveInstancia];
-      ['instanciaDescripcion5000', 'instanciaDescripcionEval5000'].forEach(id => {
+      ['instanciaDescripcion5000'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = etiquetaInstancia;
       });
-      const ayuda = document.getElementById('ayudaInstancia5000');
-      if (ayuda) {
-        ayuda.textContent = claveInstancia === 'PRIMER_INGRESO'
-          ? 'Se registra la primera revisión técnica de la iniciativa.'
-          : (claveInstancia === 'REEVALUACION'
-            ? 'Reevaluación: se verifica la subsanación y se emite un nuevo resultado de revisión.'
-            : 'La unidad formuladora respondió las observaciones; corresponde verificar la subsanación.');
-      }
-
       document.getElementById('print_5000_provincia').textContent = getVal('provincia_5000') || '-';
       document.getElementById('print_5000_comuna').textContent = getVal('comuna_5000') || '-';
       const fechaOficioPostulacion = getVal('ut5000_oficio_postulacion_fecha');

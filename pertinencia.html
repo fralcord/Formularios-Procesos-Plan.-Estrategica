@@ -112,8 +112,7 @@
       <div id="pasoIdentificacion" class="paso-contenedor">
         <section class="form-section-card">
           <div class="section-header">
-            <h3>1. Registro de la Iniciativa (grabar datos)</h3>
-            <span class="section-badge">Proceso Presupuestario</span>
+            <h3>1. Registro de la Iniciativa</h3>
           </div>
           <div class="form-grid">
             <div class="col-4 pert-registro-field pert-orden-1">
@@ -337,17 +336,7 @@
             <span class="section-badge">Dictamen GORE</span>
           </div>
 
-          <div class="callout callout-info">
-            <span>Instancia en registro: <strong id="instanciaDescripcionEvalPert">Primer Ingreso</strong>. Si el dictamen queda con observaciones, avance para abrir un nuevo registro de evaluación de la iniciativa con la instancia <strong>Responde Observaciones</strong>.</span>
-          </div>
-
           <div class="form-grid">
-            <div class="col-12">
-              <div class="callout callout-warning" style="margin-bottom:0;">
-                <span id="ayudaInstanciaPert">Se registra la primera evaluación técnica de la iniciativa.</span>
-              </div>
-            </div>
-
             <div class="col-12">
               <div id="articulacionPert" class="erd-articulacion-root"></div>
               <input type="hidden" id="pert_erd_lineamiento" name="evaluacion_pertinencia.erd_lineamiento">
@@ -911,16 +900,10 @@
 
       // Descripción de la instancia activa en la interfaz
       const etiquetaInstancia = AppIteracion.ETIQUETAS[claveInstancia];
-      ['instanciaDescripcionPert', 'instanciaDescripcionEvalPert'].forEach(id => {
+      ['instanciaDescripcionPert'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = etiquetaInstancia;
       });
-      const ayuda = document.getElementById('ayudaInstanciaPert');
-      if (ayuda) {
-        ayuda.textContent = claveInstancia === 'PRIMER_INGRESO'
-          ? 'Se registra la primera evaluación técnica de la iniciativa.'
-          : 'El postulante respondió las observaciones; corresponde verificar la respuesta y emitir el nuevo dictamen.';
-      }
 
       const asignarTexto = (id, valor) => {
         const elemento = document.getElementById(id);
