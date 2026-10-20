@@ -127,9 +127,9 @@
                 <label class="form-label" for="tipologia_pert">Tipología <span class="required">*</span></label>
                 <select id="tipologia_pert" name="tipologia" class="form-control" required>
                   <option value="">Seleccione tipología...</option>
-                  <option value="01">01 ESTUDIOS BÁSICOS</option>
-                  <option value="02">02 PROYECTOS</option>
-                  <option value="03">03 PROGRAMAS DE INVERSIÓN</option>
+                  <option value="01">ESTUDIOS BÁSICOS</option>
+                  <option value="02">PROYECTOS</option>
+                  <option value="03">PROGRAMAS DE INVERSIÓN</option>
                 </select>
               </div>
             </div>
@@ -171,16 +171,23 @@
                 <label class="form-label" for="sector_iniciativa">Sector <span class="required">*</span></label>
                 <select id="sector_iniciativa" name="sector" class="form-control" required>
                   <option value="">Seleccione sector...</option>
-                  <option value="Salud">Salud</option>
-                  <option value="Agua Potable Rural (SSR)">Agua Potable Rural (SSR)</option>
+                  <option value="Comunicaciones">Comunicaciones</option>
+                  <option value="Cultura y Patrimonio">Cultura y Patrimonio</option>
                   <option value="Deporte">Deporte</option>
-                  <option value="Seguridad">Seguridad</option>
                   <option value="Educación">Educación</option>
-                  <option value="Recursos Naturales y Medio Ambiente">Recursos Naturales y Medio Ambiente</option>
+                  <option value="Energía">Energía</option>
+                  <option value="Justicia">Justicia</option>
+                  <option value="Minería">Minería</option>
                   <option value="Multisectorial">Multisectorial</option>
-                  <option value="Fomento Productivo">Fomento Productivo</option>
-                  <option value="Desarrollo Social">Desarrollo Social</option>
-                  <option value="Otros">Otros</option>
+                  <option value="Pesca">Pesca</option>
+                  <option value="Recursos hídricos">Recursos hídricos</option>
+                  <option value="Recursos naturales y Medio ambiente">Recursos naturales y Medio ambiente</option>
+                  <option value="Salud">Salud</option>
+                  <option value="Seguridad Pública">Seguridad Pública</option>
+                  <option value="Transporte">Transporte</option>
+                  <option value="Turismo y Comercio">Turismo y Comercio</option>
+                  <option value="Vivienda y Desarrollo Urbano">Vivienda y Desarrollo Urbano</option>
+                  <option value="Otro">Otro</option>
                 </select>
               </div>
             </div>
@@ -1048,7 +1055,7 @@
       actualizarEtapasTipologiaPert();
       document.getElementById('etapa_postula').value = "Ejecución";
       actualizarOpcionesFinanciamientoPert();
-      document.getElementById('sector_iniciativa').value = "Agua Potable Rural (SSR)";
+      document.getElementById('sector_iniciativa').value = "Recursos hídricos";
       document.getElementById('unidad_formuladora').value = "Entidad formuladora de ejemplo";
       document.getElementById('unidad_tecnica_pert').value = "Unidad técnica de ejemplo";
       document.getElementById('provincia_pert').value = "PALENA";

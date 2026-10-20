@@ -16,6 +16,12 @@
     font-family: 'Segoe UI', Arial, sans-serif !important;
   }
 
+  .official-sheet,
+  .official-sheet * {
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+  }
+
   /* Ocultar elementos interactivos de pantalla */
   .top-nav,
   .form-header-card,
@@ -95,6 +101,8 @@
     padding: 2.5pt 5pt !important;
     font-size: 8.5pt !important;
     margin: 8pt 0 4pt !important;
+    page-break-after: avoid;
+    break-after: avoid-page;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -125,7 +133,10 @@
     background: #ffffff !important;
     padding: 4pt 6pt !important;
     font-size: 8.5pt !important;
-    page-break-inside: avoid;
+    page-break-inside: auto;
+    break-inside: auto;
+    white-space: pre-wrap;
+    line-height: 1.35;
   }
 
   .pert-print-title {
@@ -146,6 +157,17 @@
     border-collapse: collapse !important;
     margin-bottom: 6pt !important;
     font-size: 8pt !important;
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
+  .pert-print-table thead {
+    display: table-header-group;
+  }
+
+  .pert-print-table tr {
+    page-break-inside: avoid;
+    break-inside: avoid-page;
   }
 
   .pert-print-table th,
@@ -162,7 +184,8 @@
   .c33-rich-content table {
     width: 100% !important;
     border-collapse: collapse !important;
-    page-break-inside: avoid;
+    page-break-inside: auto;
+    break-inside: auto;
   }
 
   .c33-rich-content th,
@@ -206,7 +229,12 @@
     margin-bottom: 6pt !important;
     color: #000000 !important;
     font-size: 8pt !important;
-    page-break-inside: avoid;
+    line-height: 1.35;
+    white-space: pre-wrap !important;
+    page-break-inside: auto;
+    break-inside: auto;
+    orphans: 3;
+    widows: 3;
   }
 
   .ut5000-reference-sheet #print_5000_descripcion,
@@ -219,12 +247,20 @@
     margin: 0 0 4pt !important;
     padding: 3pt 6pt 3pt 25pt !important;
     font-size: 8pt !important;
-    page-break-inside: avoid;
+    line-height: 1.35;
+    page-break-inside: auto;
+    break-inside: auto;
+    orphans: 3;
+    widows: 3;
   }
 
   .pert-print-evaluation li {
     padding: 1pt 0 !important;
-    white-space: pre-line !important;
+    white-space: pre-wrap !important;
+    page-break-inside: auto;
+    break-inside: auto;
+    orphans: 3;
+    widows: 3;
   }
 
   .pert-print-status,

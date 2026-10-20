@@ -17,7 +17,7 @@ Cada formulario cuenta con una barra de pestañas superior que refleja el orden 
 | `[3] Ficha de Evaluación (PDF)` | Vista de la ficha oficial de la evaluación; no incluye etiquetas de instancia ni bloques de respuesta/reevaluación. |
 | `[4] Registro Documental Evaluación` | Constancia documental (N° registro, oficio, validador). |
 
-Los controles del formulario (`no-print`) se ocultan al generar el PDF; únicamente la ficha oficial se muestra.
+Los controles del formulario (`no-print`) se ocultan al generar el PDF; únicamente la ficha oficial se muestra. Los bloques extensos de evaluación y observaciones pueden continuar en páginas siguientes, con ajuste de texto dentro de sus cuadros.
 La aplicación actual es una interfaz cliente: el botón de generación produce un payload JSON, pero no guarda registros de forma persistente en una base de datos ni cambia por sí mismo el estado de una iniciativa en un sistema central.
 
 ## Publicación en línea

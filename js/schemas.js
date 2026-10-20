@@ -118,7 +118,7 @@ window.AppSchemas = {
 nombre_iniciativa: { tipo: "string", descripcion: "Nombre oficial en la Ficha IDI" },
       tipologia: { tipo: "string", enum: ["01", "02", "03"] },
       etapa_postulacion: { tipo: "string", enum: ["Ejecución", "Diseño", "Factibilidad", "Prefactibilidad"] },
-      sector: { tipo: "string", enum: ["Salud", "Agua Potable Rural (SSR)", "Deporte", "Seguridad", "Educación", "Recursos Naturales y Medio Ambiente", "Multisectorial", "Fomento Productivo", "Desarrollo Social", "Otros"] },
+      sector: { tipo: "string", enum: ["Comunicaciones", "Cultura y Patrimonio", "Deporte", "Educación", "Energía", "Justicia", "Minería", "Multisectorial", "Pesca", "Recursos hídricos", "Recursos naturales y Medio ambiente", "Salud", "Seguridad Pública", "Transporte", "Turismo y Comercio", "Vivienda y Desarrollo Urbano", "Otro"] },
       unidad_formuladora: { tipo: "string", descripcion: "Nombre de la unidad formuladora" },
       unidad_tecnica: { tipo: "string", descripcion: "Unidad técnica responsable de la revisión (ej: DOH MOP, DIPLADER)" },
       localizacion: {
@@ -211,7 +211,7 @@ trazabilidad: {
       codigo_bip: { tipo: "string" },
       nombre_accion: { tipo: "string" },
       region: { tipo: "string", default: "Región de Los Lagos" },
-      sector: { tipo: "string", enum: ["Salud", "Agua Potable Rural (SSR)", "Deporte", "Seguridad", "Educación", "Recursos Naturales y Medio Ambiente", "Multisectorial", "Fomento Productivo", "Desarrollo Social", "Otros"] },
+      sector: { tipo: "string", enum: ["Comunicaciones", "Cultura y Patrimonio", "Deporte", "Educación", "Energía", "Justicia", "Minería", "Multisectorial", "Pesca", "Recursos hídricos", "Recursos naturales y Medio ambiente", "Salud", "Seguridad Pública", "Transporte", "Turismo y Comercio", "Vivienda y Desarrollo Urbano", "Otro"] },
       provincia: { tipo: "string" },
       comuna: { tipo: "string" },
       localizacion: {
@@ -266,7 +266,7 @@ trazabilidad: {
       codigo_idi: { tipo: "string" },
       nombre_iniciativa: { tipo: "string" },
       descripcion_proyecto: { tipo: "text", opcional: true, descripcion: "Descripción de la iniciativa incluida en la ficha de evaluación" },
-      sector: { tipo: "string", enum: ["Salud", "Agua Potable Rural (SSR)", "Deporte", "Seguridad", "Educación", "Recursos Naturales y Medio Ambiente", "Multisectorial", "Fomento Productivo", "Desarrollo Social", "Otros"] },
+      sector: { tipo: "string", enum: ["Comunicaciones", "Cultura y Patrimonio", "Deporte", "Educación", "Energía", "Justicia", "Minería", "Multisectorial", "Pesca", "Recursos hídricos", "Recursos naturales y Medio ambiente", "Salud", "Seguridad Pública", "Transporte", "Turismo y Comercio", "Vivienda y Desarrollo Urbano", "Otro"] },
       provincia: { tipo: "string" },
       comuna: { tipo: "string" },
       localizacion: {
