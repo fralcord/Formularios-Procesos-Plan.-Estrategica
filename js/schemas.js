@@ -92,10 +92,10 @@ const BLOQUE_REGISTRO_DOCUMENTAL = {
 const BLOQUE_CIERRE_CICLO = {
   resultado_ciclo: {
     tipo: "string",
-    enum: ["RECOMENDADO", "CON_OBSERVACIONES"],
-    descripcion: "RECOMENDADO cierra el proceso; CON_OBSERVACIONES abre una nueva iteración"
+    enum: ["PERTINENTE", "RECOMENDADO TÉCNICAMENTE", "RECOMENDADO", "OBSERVADO", "DADO DE BAJA"],
+    descripcion: "OBSERVADO abre una nueva iteración; los demás resultados cierran el proceso"
   },
-  fin_de_proceso: { tipo: "boolean", descripcion: "true cuando el resultado es RECOMENDADO" },
+  fin_de_proceso: { tipo: "boolean", descripcion: "true cuando el resultado no es OBSERVADO" },
   detalle_cierre: { tipo: "text", opcional: true }
 };
 
@@ -172,7 +172,7 @@ evaluacion_pertinencia: {
       },
       // Resolución y Acto Administrativo
       resolucion: {
-        estado_pertinencia: { tipo: "string", enum: ["PERTINENTE_A_MDSF", "CON_OBSERVACIONES"] },
+        estado_pertinencia: { tipo: "string", enum: ["PERTINENTE", "OBSERVADO"] },
         oficio_materia: { tipo: "string" },
         observaciones_devolucion: { tipo: "text", opcional: true, descripcion: "Requerimientos para subsanación del municipio" }
       },
@@ -206,7 +206,8 @@ trazabilidad: {
     flujo: ["Registro de la iniciativa (Anexo 1)", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
     instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"],
     campos: {
-      proceso_presupuestario_ano: { tipo: "integer", descripcion: "Año del proceso presupuestario; la ficha deriva el año de postulación de la fecha del oficio" },
+      proceso_presupuestario_ano: { tipo: "integer", default: 2026, descripcion: "Año del proceso presupuestario; la ficha deriva el año de postulación de la fecha del oficio" },
+      etapa_postulacion: { tipo: "string", default: "Ejecución", descripcion: "Etapa predeterminada para iniciativas Circular 33" },
       subtitulo: { tipo: "integer", enum: [22, 29, 31] },
       codigo_bip: { tipo: "string" },
       nombre_accion: { tipo: "string" },
@@ -238,7 +239,7 @@ trazabilidad: {
       },
       evaluacion_c33: {
         item: { tipo: "string" },
-        estado: { tipo: "string", enum: ["OBSERVADO", "RECOMENDADO", "RECHAZADO"] },
+        estado: { tipo: "string", enum: ["OBSERVADO", "RECOMENDADO TÉCNICAMENTE"] },
         texto_observaciones: { tipo: "text" },
         evaluador_nombre: { tipo: "string" },
         fecha_evaluacion: { tipo: "string", formato: "date" }
@@ -297,7 +298,7 @@ trazabilidad: {
         fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
       },
       evaluacion_tecnica: {
-        estado_resultado: { tipo: "string", enum: ["SIN OBSERVACIONES", "OBSERVADO", "RECOMENDADO", "RECHAZADO"] },
+        estado_resultado: { tipo: "string", enum: ["RECOMENDADO TÉCNICAMENTE", "OBSERVADO", "DADO DE BAJA"] },
         lineamiento_estrategico_erd: { tipo: "string", opcional: true, descripcion: "Lineamiento Estratégico de la ERD Los Lagos" },
         item_erd: { tipo: "string", opcional: true, descripcion: "Ítem de la ERD asociado a la iniciativa" },
         objetivo_estrategico_erd: { tipo: "text", opcional: true },
@@ -337,7 +338,8 @@ trazabilidad: {
     flujo: ["Registro de la iniciativa", "Evaluación y sus resultados", "Ficha de evaluación (PDF)"],
     instancias_admitidas: ["PRIMER_INGRESO", "RESPONDE_OBSERVACIONES", "REEVALUACION"],
     campos: {
-      proceso_presupuestario_ano: { tipo: "integer", descripcion: "Año del proceso presupuestario; el año de postulación se deriva de la fecha del oficio" },
+      proceso_presupuestario_ano: { tipo: "integer", default: 2026, descripcion: "Año del proceso presupuestario; el año de postulación se deriva de la fecha del oficio" },
+      etapa_postulacion: { tipo: "string", default: "Ejecución", descripcion: "Etapa predeterminada para programas" },
       codigo_idi: { tipo: "string" },
       localizacion: {
         provincia: { tipo: "string" },
@@ -356,7 +358,7 @@ trazabilidad: {
         fechaIngresoEvaluacion: { tipo: "string", formato: "date", opcional: true }
       },
       evaluacion: {
-        estado: { tipo: "string", enum: ["RECOMENDADO", "OBSERVADO", "RECHAZADO"] },
+        estado: { tipo: "string", enum: ["RECOMENDADO", "OBSERVADO"] },
         fecha: { tipo: "string", formato: "date" },
         erd_lineamiento: { tipo: "string", opcional: true, descripcion: "Lineamiento Estratégico ERD Los Lagos" },
         erd_item: { tipo: "string", opcional: true, descripcion: "Ítem ERD asociado al programa" },
@@ -431,7 +433,7 @@ trazabilidad: {
           fecha_ord_gore: { tipo: "string", formato: "date" },
           ord_respuesta_observaciones: { tipo: "string" },
           fecha_ord_respuesta: { tipo: "string", formato: "date" },
-          estado_iteracion: { tipo: "string", enum: ["OBSERVADO", "SIN OBSERVACIONES"] }
+          estado_iteracion: { tipo: "string", descripcion: "Estado registrado para la iteración según la línea de evaluación" }
         }
       ]
     }

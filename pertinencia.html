@@ -363,13 +363,13 @@
               <div class="form-group">
                 <label class="form-label" for="estado_pertinencia">Dictamen de Pertinencia <span class="required">*</span></label>
                 <select id="estado_pertinencia" name="resolucion.estado_pertinencia" class="form-control" required onchange="actualizarEstadoPertinencia(this.value)">
-                  <option value="PERTINENTE_A_MDSF">RECOMENDADO</option>
-                  <option value="CON_OBSERVACIONES">OBSERVADO</option>
+                  <option value="PERTINENTE">PERTINENTE</option>
+                  <option value="OBSERVADO">OBSERVADO</option>
                 </select>
               </div>
             </div>
             <div class="col-6" style="display: flex; align-items: flex-end; padding-bottom: 0.5rem;">
-              <span class="status-badge recomendado" id="badgePertinencia">ESTADO: PERTINENTE (ENVÍA A MDSF)</span>
+              <span class="status-badge recomendado" id="badgePertinencia">ESTADO: PERTINENTE</span>
             </div>
 
             <div class="col-12" id="contenedorObservaciones" style="display: none;">
@@ -945,18 +945,18 @@
         getVal('analisis_pertinencia_tecnica')
       );
       const obs = getVal('observaciones_devolucion');
-      if (getVal('estado_pertinencia') === 'CON_OBSERVACIONES') {
+      if (getVal('estado_pertinencia') === 'OBSERVADO') {
         agregarItemEvaluacion('Observaciones a Subsanar:', obs);
       }
 
       const estadoVal = getVal('estado_pertinencia');
       const badge = document.getElementById('print_estado_badge');
-      if (estadoVal === 'PERTINENTE_A_MDSF') {
+      if (estadoVal === 'PERTINENTE') {
         badge.className = 'status-badge recomendado';
-        badge.textContent = 'PERTINENTE (ENVÍA A MDSF)';
-      } else if (estadoVal === 'CON_OBSERVACIONES') {
+        badge.textContent = 'PERTINENTE';
+      } else if (estadoVal === 'OBSERVADO') {
         badge.className = 'status-badge observado';
-        badge.textContent = 'CON OBSERVACIONES';
+        badge.textContent = 'OBSERVADO';
       } else {
         badge.className = 'status-badge rechazado';
         badge.textContent = estadoVal;
@@ -975,7 +975,7 @@
         const estado = getVal('estado_pertinencia');
         cierre.textContent = AppIteracion.exigeIteracion(estado)
           ? 'Resultado con OBSERVACIONES: el postulante responde y se abre una nueva iteración de evaluación.'
-          : 'Resultado RECOMENDADO / PERTINENTE: fin del proceso.';
+          : 'Resultado PERTINENTE: fin del proceso.';
       }
 
     }
@@ -998,13 +998,13 @@
         badge.classList.add('revision');
         badge.textContent = 'ESTADO: PENDIENTE DE REGISTRO';
         obsContainer.style.display = 'none';
-      } else if (val === 'PERTINENTE_A_MDSF') {
+      } else if (val === 'PERTINENTE') {
         badge.classList.add('recomendado');
-        badge.textContent = 'ESTADO: PERTINENTE (ENVÍA A MDSF)';
+        badge.textContent = 'ESTADO: PERTINENTE';
         obsContainer.style.display = 'none';
-      } else if (val === 'CON_OBSERVACIONES') {
+      } else if (val === 'OBSERVADO') {
         badge.classList.add('observado');
-        badge.textContent = 'ESTADO: CON OBSERVACIONES (A SUBSANAR)';
+        badge.textContent = 'ESTADO: OBSERVADO';
         obsContainer.style.display = 'block';
       } else {
         badge.classList.add('rechazado');
@@ -1057,8 +1057,8 @@
       seleccionarArticulacionEjemplo('articulacionPert', { erd: [[0, 3, 4]], gob: [[1, 0]] });
       document.getElementById('analisis_pertinencia_tecnica').value = "Ejemplo de análisis técnico favorable para demostración del formulario.";
 
-      document.getElementById('estado_pertinencia').value = "PERTINENTE_A_MDSF";
-      actualizarEstadoPertinencia("PERTINENTE_A_MDSF");
+      document.getElementById('estado_pertinencia').value = "PERTINENTE";
+      actualizarEstadoPertinencia("PERTINENTE");
       document.getElementById('evaluador_pert').value = "Haroldt Solervicens";
       document.getElementById('fecha_evaluacion_fin').value = "2026-06-26";
 
@@ -1100,8 +1100,8 @@
       seleccionarArticulacionEjemplo('articulacionPert', { erd: [[0, 1, 0]] });
       document.getElementById('analisis_pertinencia_tecnica').value = "Ejemplo de análisis técnico con observaciones para demostración del formulario.";
 
-      document.getElementById('estado_pertinencia').value = "CON_OBSERVACIONES";
-      actualizarEstadoPertinencia("CON_OBSERVACIONES");
+      document.getElementById('estado_pertinencia').value = "OBSERVADO";
+      actualizarEstadoPertinencia("OBSERVADO");
       document.getElementById('observaciones_devolucion').value = "1. Completar los antecedentes técnicos de ejemplo.\n2. Adjuntar la documentación demostrativa correspondiente.";
       document.getElementById('evaluador_pert').value = "Haroldt Solervicens";
       document.getElementById('fecha_evaluacion_fin').value = "2026-06-30";

@@ -422,10 +422,9 @@
               <div class="form-group">
                 <label class="form-label" for="estado_resultado_evaluacion">Estado o Resultado de la Evaluación <span class="required">*</span></label>
                 <select id="estado_resultado_evaluacion" name="evaluacion_tecnica.estado_resultado" class="form-control" required onchange="actualizarBadgeResultado5000(this.value)">
-                  <option value="OBSERVADO">OBSERVADO (Con Observaciones pendientes)</option>
-                  <option value="SIN OBSERVACIONES">SIN OBSERVACIONES (Recomendado)</option>
-                  <option value="RECOMENDADO">RECOMENDADO TÉCNICAMENTE</option>
-                  <option value="RECHAZADO">RECHAZADO</option>
+                  <option value="RECOMENDADO TÉCNICAMENTE">RECOMENDADO TÉCNICAMENTE</option>
+                  <option value="OBSERVADO">OBSERVADO</option>
+                  <option value="DADO DE BAJA">DADO DE BAJA</option>
                 </select>
               </div>
             </div>
@@ -481,11 +480,14 @@
             <tbody>
               <tr><th>PROVINCIA</th><td id="print_5000_provincia">-</td></tr>
               <tr><th>COMUNA</th><td id="print_5000_comuna">-</td></tr>
+              <tr><th>PROCESO PRESUPUESTARIO</th><td id="print_5000_proceso_presupuestario">-</td></tr>
               <tr><th>AÑO DE POSTULACIÓN</th><td id="print_5000_ano_post">-</td></tr>
               <tr><th>CÓDIGO IDI</th><td id="print_5000_bip">-</td></tr>
               <tr><th>NOMBRE</th><td id="print_5000_nombre">-</td></tr>
               <tr><th>UNIDAD FORMULADORA</th><td id="print_5000_proponente">-</td></tr>
               <tr><th>UNIDAD TÉCNICA</th><td id="print_5000_unidad_tecnica">-</td></tr>
+              <tr><th>ETAPA</th><td id="print_5000_etapa">-</td></tr>
+              <tr><th>SECTOR</th><td id="print_5000_sector">-</td></tr>
             </tbody>
           </table>
 
@@ -521,7 +523,7 @@
           <div class="ut5000-evaluador-line">
             <span>Estado</span>
             <span>:</span>
-            <span id="print_5000_estado">-</span>
+            <span class="status-badge revision" id="print_5000_estado">-</span>
           </div>
           <div class="ut5000-evaluador-line">
             <span>Evaluado por</span>
@@ -659,9 +661,12 @@
       } else if (val === 'OBSERVADO') {
         badge.classList.add('observado');
         badge.textContent = 'ESTADO: OBSERVADO';
-      } else if (val === 'SIN OBSERVACIONES' || val === 'RECOMENDADO') {
+      } else if (val === 'RECOMENDADO TÉCNICAMENTE') {
         badge.classList.add('recomendado');
-        badge.textContent = 'ESTADO: ' + val;
+        badge.textContent = 'ESTADO: RECOMENDADO TÉCNICAMENTE';
+      } else if (val === 'DADO DE BAJA') {
+        badge.classList.add('dado-baja');
+        badge.textContent = 'ESTADO: DADO DE BAJA';
       } else {
         badge.classList.add('rechazado');
         badge.textContent = 'ESTADO: ' + val;
@@ -683,6 +688,9 @@
       });
       document.getElementById('print_5000_provincia').textContent = getVal('provincia_5000') || '-';
       document.getElementById('print_5000_comuna').textContent = getVal('comuna_5000') || '-';
+      document.getElementById('print_5000_proceso_presupuestario').textContent = getVal('ano_postulacion') || '-';
+      document.getElementById('print_5000_etapa').textContent = getVal('etapa_postula_5000') || '-';
+      document.getElementById('print_5000_sector').textContent = getVal('sector_5000') || '-';
       const fechaOficioPostulacion = getVal('ut5000_oficio_postulacion_fecha');
       document.getElementById('ut5000_registro_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_5000_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
@@ -701,8 +709,8 @@
       const estado = getVal('estado_resultado_evaluacion');
       let evalText = '';
 
-      if (estado === 'SIN OBSERVACIONES') {
-        evalText = 'Sin Observaciones.\n\n' + (getVal('sintesis_evaluacion') || 'Iniciativa recomendada satisfactoriamente.');
+      if (estado === 'RECOMENDADO TÉCNICAMENTE') {
+        evalText = 'Recomendado técnicamente.\n\n' + (getVal('sintesis_evaluacion') || 'Iniciativa recomendada satisfactoriamente.');
       } else {
         const generales = getVal('obs_generales');
         const preinversional = getVal('obs_estudio_preinversional');
@@ -726,7 +734,21 @@
 
       document.getElementById('print_5000_evaluacion_bloque').textContent = evalText;
 
-      document.getElementById('print_5000_estado').textContent = estado || '-';
+      const estadoBadge = document.getElementById('print_5000_estado');
+      estadoBadge.className = 'status-badge';
+      if (estado === 'RECOMENDADO TÉCNICAMENTE') {
+        estadoBadge.classList.add('recomendado');
+        estadoBadge.textContent = estado;
+      } else if (estado === 'OBSERVADO') {
+        estadoBadge.classList.add('observado');
+        estadoBadge.textContent = estado;
+      } else if (estado === 'DADO DE BAJA') {
+        estadoBadge.classList.add('dado-baja');
+        estadoBadge.textContent = estado;
+      } else {
+        estadoBadge.classList.add('revision');
+        estadoBadge.textContent = estado || '-';
+      }
       document.getElementById('print_5000_evaluador_texto').textContent =
         getVal('evaluador_nombre') || 'Profesional Evaluador';
       const fechaEvaluacion = getVal('fecha_evaluacion');
@@ -739,7 +761,7 @@
       if (cierre) {
         cierre.textContent = AppIteracion.exigeIteracion(getVal('estado_resultado_evaluacion'))
           ? 'Resultado con OBSERVACIONES: el postulante responde y se abre una nueva iteración de evaluación.'
-          : 'Resultado RECOMENDADO / SIN OBSERVACIONES: fin del proceso.';
+          : 'Resultado RECOMENDADO TÉCNICAMENTE / DADO DE BAJA: fin del proceso.';
       }
 
     }
@@ -1030,8 +1052,8 @@
 
     function cargarEjemplo5000UtmSinObs() {
       cargarEjemplo5000UtmConObs();
-      document.getElementById('estado_resultado_evaluacion').value = "SIN OBSERVACIONES";
-      actualizarBadgeResultado5000("SIN OBSERVACIONES");
+      document.getElementById('estado_resultado_evaluacion').value = "RECOMENDADO TÉCNICAMENTE";
+      actualizarBadgeResultado5000("RECOMENDADO TÉCNICAMENTE");
       document.getElementById('obs_presupuesto').value = "";
       document.getElementById('obs_ttr_eett').value = "";
       document.getElementById('obs_planos').value = "";

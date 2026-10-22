@@ -1087,13 +1087,18 @@ select.form-control {
 }
 
 .status-badge.observado, .status-badge.ot {
-  background-color: var(--warning-light);
-  color: var(--warning);
+  background-color: #fef08a;
+  color: #713f12;
 }
 
 .status-badge.rechazado, .status-badge.fi {
   background-color: var(--danger-light);
   color: var(--danger);
+}
+
+.status-badge.dado-baja {
+  background-color: #800020;
+  color: #ffffff;
 }
 
 .status-badge.revision {

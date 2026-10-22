@@ -112,6 +112,7 @@
 
       <!-- ================= PASO 1: REGISTRO DE LA INICIATIVA ================= -->
       <div id="pasoIdentificacionC33" class="paso-contenedor">
+        <input type="hidden" id="c33_etapa_postulacion" name="etapa_postulacion" value="Ejecución">
         <section class="form-section-card">
           <div class="section-header">
             <h3>1. Registro de la Iniciativa (grabar datos)</h3>
@@ -370,9 +371,8 @@
               <div class="form-group">
                 <label class="form-label" for="c33_estado">Estado de la Evaluación <span class="required">*</span></label>
                 <select id="c33_estado" name="evaluacion_c33.estado" class="form-control" required onchange="actualizarBadgeC33(this.value)">
-                  <option value="OBSERVADO">OBSERVADO (Con Observaciones)</option>
-                  <option value="RECOMENDADO">RECOMENDADO (Aprobado)</option>
-                  <option value="RECHAZADO">RECHAZADO</option>
+                  <option value="OBSERVADO">OBSERVADO</option>
+                  <option value="RECOMENDADO TÉCNICAMENTE">RECOMENDADO TÉCNICAMENTE</option>
                 </select>
               </div>
             </div>
@@ -432,6 +432,7 @@
               <tr><th>NOMBRE</th><td id="print_c33_nombre">-</td></tr>
               <tr><th>UNIDAD FORMULADORA</th><td id="print_c33_unidad_formuladora">-</td></tr>
               <tr><th>UNIDAD TÉCNICA</th><td id="print_c33_unidad_tecnica">-</td></tr>
+              <tr><th>ETAPA</th><td id="print_c33_etapa">-</td></tr>
               <tr><th>SECTOR</th><td id="print_c33_sector">-</td></tr>
               <tr><th>SUBTÍTULO</th><td id="print_c33_subtitulo">-</td></tr>
             </tbody>
@@ -695,7 +696,7 @@
 
     function actualizarVisibilidadDesgloseC33() {
       const aplica = document.getElementById('subtitulo').value === '29' &&
-        document.getElementById('c33_estado').value === 'RECOMENDADO';
+        document.getElementById('c33_estado').value === 'RECOMENDADO TÉCNICAMENTE';
       const bloque = document.getElementById('bloqueDesgloseC33');
       const valor = document.getElementById('c33_desglose_valor');
       const contenido = valor.value;
@@ -837,9 +838,9 @@
       } else if (val === 'OBSERVADO') {
         badge.classList.add('observado');
         badge.textContent = 'ESTADO: OBSERVADO';
-      } else if (val === 'RECOMENDADO') {
+      } else if (val === 'RECOMENDADO TÉCNICAMENTE') {
         badge.classList.add('recomendado');
-        badge.textContent = 'ESTADO: RECOMENDADO';
+        badge.textContent = 'ESTADO: RECOMENDADO TÉCNICAMENTE';
         const detalle = document.getElementById('c33_observaciones_eval');
         if (detalle && !detalle.value.trim()) detalle.value = 'Cumple los requerimientos técnicos.';
       } else {
@@ -866,6 +867,7 @@
       document.getElementById('print_c33_comuna').textContent = getVal('comuna') || '-';
       document.getElementById('print_c33_sector').textContent = getVal('c33_sector') || '-';
       document.getElementById('print_c33_proceso_presupuestario').textContent = getVal('c33_proceso_ano') || '-';
+      document.getElementById('print_c33_etapa').textContent = getVal('c33_etapa_postulacion') || '-';
       const fechaOficioPostulacion = getVal('c33_oficio_postulacion_fecha');
       document.getElementById('c33_registro_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_c33_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
@@ -885,9 +887,9 @@
       // Badge Estado
       const estado = getVal('c33_estado');
       const badge = document.getElementById('print_c33_estado_badge');
-      if (estado === 'RECOMENDADO') {
+      if (estado === 'RECOMENDADO TÉCNICAMENTE') {
         badge.className = 'status-badge recomendado';
-        badge.textContent = 'RECOMENDADO';
+        badge.textContent = 'RECOMENDADO TÉCNICAMENTE';
       } else {
         badge.className = 'status-badge observado';
         badge.textContent = estado;
@@ -901,7 +903,7 @@
       if (cierre) {
         cierre.textContent = AppIteracion.exigeIteracion(getVal('c33_estado'))
           ? 'Resultado con OBSERVACIONES: el postulante responde y se abre una nueva iteración de evaluación.'
-          : 'Resultado RECOMENDADO: fin del proceso.';
+          : 'Resultado RECOMENDADO TÉCNICAMENTE: fin del proceso.';
       }
 
     }
@@ -965,8 +967,8 @@
       document.getElementById('c33_descripcion_proyecto').value = "Descripción ficticia para probar la captura de una iniciativa.";
       cargarFinanciamientoEjemploC33('05', '001', 230000000, 0);
 
-      document.getElementById('c33_estado').value = "RECOMENDADO";
-      actualizarBadgeC33("RECOMENDADO");
+      document.getElementById('c33_estado').value = "RECOMENDADO TÉCNICAMENTE";
+      actualizarBadgeC33("RECOMENDADO TÉCNICAMENTE");
       document.getElementById('c33_observaciones_eval').value = "La iniciativa demostrativa cumple los requisitos de ejemplo y se recomienda favorablemente.";
       cargarDesgloseC33(
         '<table><tbody>' +

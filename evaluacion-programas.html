@@ -112,6 +112,7 @@
 
       <!-- ================= PASO 1: REGISTRO DE LA INICIATIVA ================= -->
       <div id="pasoIdentificacionProg" class="paso-contenedor">
+        <input type="hidden" id="prog_etapa_postulacion" name="etapa_postulacion" value="Ejecución">
         <section class="form-section-card">
           <div class="section-header">
             <h3>1. Registro de la Iniciativa (grabar datos)</h3>
@@ -352,9 +353,8 @@
               <div class="form-group">
                 <label class="form-label" for="prog_estado_evaluacion">Estado de la Evaluación <span class="required">*</span></label>
                 <select id="prog_estado_evaluacion" name="evaluacion.estado" class="form-control" required onchange="actualizarBadgeProg(this.value)">
-                  <option value="RECOMENDADO">RECOMENDADO (Aprobado)</option>
-                  <option value="OBSERVADO">OBSERVADO (Con Observaciones)</option>
-                  <option value="RECHAZADO">RECHAZADO</option>
+                  <option value="RECOMENDADO">RECOMENDADO</option>
+                  <option value="OBSERVADO">OBSERVADO</option>
                 </select>
               </div>
             </div>
@@ -408,11 +408,14 @@
             <tbody>
               <tr><th>PROVINCIA</th><td id="print_prog_provincia">-</td></tr>
               <tr><th>COMUNA</th><td id="print_prog_comuna">-</td></tr>
+              <tr><th>PROCESO PRESUPUESTARIO</th><td id="print_prog_proceso_presupuestario">-</td></tr>
               <tr><th>AÑO DE POSTULACIÓN</th><td id="print_prog_ano_post">-</td></tr>
               <tr><th>CÓDIGO IDI</th><td id="print_prog_bip">-</td></tr>
               <tr><th>NOMBRE</th><td id="print_prog_nombre">-</td></tr>
               <tr><th>UNIDAD FORMULADORA</th><td id="print_prog_unidad_formuladora">-</td></tr>
               <tr><th>UNIDAD TÉCNICA</th><td id="print_prog_unidad_tecnica">-</td></tr>
+              <tr><th>ETAPA</th><td id="print_prog_etapa">-</td></tr>
+              <tr><th>SECTOR</th><td id="print_prog_sector">-</td></tr>
             </tbody>
           </table>
 
@@ -448,7 +451,7 @@
           <div class="ut5000-evaluador-line">
             <span>Estado</span>
             <span>:</span>
-            <span id="print_prog_estado">-</span>
+            <span class="status-badge revision" id="print_prog_estado">-</span>
           </div>
           <div class="ut5000-evaluador-line">
             <span>Evaluado por</span>
@@ -611,6 +614,9 @@
 
       document.getElementById('print_prog_provincia').textContent = getVal('prog_provincia') || '-';
       document.getElementById('print_prog_comuna').textContent = getVal('prog_comuna') || '-';
+      document.getElementById('print_prog_proceso_presupuestario').textContent = getVal('prog_ano_postulacion') || '-';
+      document.getElementById('print_prog_etapa').textContent = getVal('prog_etapa_postulacion') || '-';
+      document.getElementById('print_prog_sector').textContent = getVal('prog_sector') || '-';
       const fechaOficioPostulacion = getVal('prog_fecha_oficio');
       document.getElementById('prog_registro_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
       document.getElementById('print_prog_ano_post').textContent = fechaOficioPostulacion ? fechaOficioPostulacion.slice(0, 4) : '-';
@@ -633,7 +639,19 @@
       document.getElementById('print_prog_evaluacion_bloque').textContent =
         detallesEvaluacion.join('\n\n') || 'Sin evaluación registrada.';
 
-      document.getElementById('print_prog_estado').textContent = getVal('prog_estado_evaluacion') || '-';
+      const estadoBadge = document.getElementById('print_prog_estado');
+      const estado = getVal('prog_estado_evaluacion');
+      estadoBadge.className = 'status-badge';
+      if (estado === 'RECOMENDADO') {
+        estadoBadge.classList.add('recomendado');
+      } else if (estado === 'OBSERVADO') {
+        estadoBadge.classList.add('observado');
+      } else if (estado) {
+        estadoBadge.classList.add('rechazado');
+      } else {
+        estadoBadge.classList.add('revision');
+      }
+      estadoBadge.textContent = estado || '-';
       document.getElementById('print_prog_evaluador_texto').textContent = getVal('prog_evaluador') || 'Profesional Evaluador';
       const fechaEvaluacion = getVal('prog_fecha_evaluacion');
       document.getElementById('print_prog_fecha_eval').textContent = fechaEvaluacion

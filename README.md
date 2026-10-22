@@ -53,8 +53,16 @@ El estado registrado en **Evaluación y sus Resultados** determina si correspond
 
 | Resultado | Consecuencia |
 |---|---|
-| **RECOMENDADO** | **Fin del proceso.** La iniciativa queda con recomendación técnica favorable. |
-| **Resultado con OBSERVACIONES** | El postulante responde las observaciones y la iniciativa vuelve a evaluación, dando origen a una nueva iteración. |
+| **Pertinencia** | PERTINENTE o OBSERVADO. |
+| **Circular 33** | RECOMENDADO TÉCNICAMENTE u OBSERVADO. |
+| **Iniciativas menores a 5.000 UTM** | RECOMENDADO TÉCNICAMENTE, OBSERVADO o DADO DE BAJA. |
+| **Evaluación de Programas** | RECOMENDADO u OBSERVADO. |
+
+Los resultados recomendados y pertinentes cierran el proceso; un resultado OBSERVADO abre una nueva iteración. DADO DE BAJA cierra el proceso.
+
+En las fichas, los resultados favorables se identifican en verde, los observados en amarillo y, para iniciativas menores a 5.000 UTM, el estado **DADO DE BAJA** en borgoña.
+
+Las fichas de Menores a 5.000 UTM, Circular 33 y Programas incluyen proceso presupuestario, etapa y sector. Para Circular 33 y Programas, la etapa se registra como atributo predeterminado **Ejecución** en el formulario y en el esquema de datos.
 
 > El detalle de las firmas electrónicas y de la emisión de oficios se realiza en otra instancia; la ficha oficial en PDF no incluye pie de firma.
 
@@ -101,7 +109,7 @@ La arquitectura restante del flujo es:
 1. **Paso 1: Registro de la Iniciativa**, con la estructura propia indicada arriba.
 2. **Paso 2: Evaluación y sus Resultados**
    - Selector de instancia para registrar el atributo correspondiente e indicador calculado del N° de iteración en curso.
-   - Dictamen técnico, desglose de observaciones sectoriales específicas, estado de la evaluación (OBSERVADO / RECOMENDADO / SIN OBSERVACIONES / PERTINENTE), profesional evaluador y fecha.
+   - Dictamen técnico, desglose de observaciones sectoriales específicas, estado de la evaluación según el formulario (OBSERVADO, PERTINENTE, RECOMENDADO TÉCNICAMENTE, RECOMENDADO o DADO DE BAJA), profesional evaluador y fecha.
    - **Primer Ingreso**, **Responde Observaciones** y **Reevaluación** se almacenan como atributos de cada entrada; no se habilitan bloques de captura dedicados para respuesta o reevaluación.
    - Las iteraciones se archivan en el payload y se consultarán desde la base de datos para el dashboard; ninguna línea presenta una tabla de historial en el formulario o PDF.
    - **Salida del paso: Ficha de Evaluación (PDF)**, documento oficial de la DIPLADER, que se previsualiza en la tercera pestaña del formulario.
