@@ -1292,7 +1292,9 @@
           clave: claveFilaFinanciamiento(fila),
           fuente: `FNDR / ${subtituloSel || '-'}`,
           item: selItem.selectedOptions[0]?.textContent || '-',
-          clasificador: selAsig.value ? selAsig.selectedOptions[0].textContent : '-',
+          clasificador: selItem.value
+            ? [subtituloSel, selItem.value, selAsig.value].filter(Boolean).join('-')
+            : '-',
           actual,
           siguiente
         });
