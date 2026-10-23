@@ -506,10 +506,6 @@
               </tr>
             </tfoot>
           </table>
-          <div class="pert-print-description">
-            <strong>COSTO TOTAL PRESENTADO (M$):</strong> <span id="print_c33_costo_presentado">0</span>
-            &nbsp; <strong>COSTO TOTAL RECOMENDADO (M$):</strong> <span id="print_c33_costo_recomendado">0</span>
-          </div>
 
           <div id="print_c33_desglose_seccion" hidden>
             <div class="sheet-section-title pert-print-section-title">DESGLOSE SEGÚN CLASIFICADOR PRESUPUESTARIO:</div>
@@ -1310,8 +1306,6 @@
       document.getElementById('print_c33_total_ano_actual').textContent = formatoM(recomendadoActual);
       document.getElementById('print_c33_total_ano_siguiente').textContent = formatoM(recomendadoSiguiente);
       document.getElementById('print_c33_costo_total').textContent = formatoM(evaluacion.recomendado);
-      document.getElementById('print_c33_costo_presentado').textContent = formatoM(evaluacion.presentado);
-      document.getElementById('print_c33_costo_recomendado').textContent = formatoM(evaluacion.recomendado);
     }
 
     document.addEventListener('DOMContentLoaded', function () {

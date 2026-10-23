@@ -487,10 +487,6 @@
               </tr>
             </tfoot>
           </table>
-          <div class="pert-print-description">
-            <strong>COSTO TOTAL PRESENTADO (M$):</strong> <span id="print_prog_costo_presentado">0</span>
-            &nbsp; <strong>COSTO TOTAL RECOMENDADO (M$):</strong> <span id="print_prog_costo_recomendado">0</span>
-          </div>
 
           <div class="sheet-section-title pert-print-section-title">EVALUACIÓN:</div>
           <div class="pert-print-description" id="print_prog_evaluacion_bloque"></div>
@@ -993,8 +989,6 @@
       document.getElementById('print_prog_total_ano_siguiente').textContent =
         formatoM(evaluacion.lineas.reduce((suma, l) => suma + l.siguiente, 0));
       document.getElementById('print_prog_costo_total').textContent = formatoM(evaluacion.recomendado);
-      document.getElementById('print_prog_costo_presentado').textContent = formatoM(evaluacion.presentado);
-      document.getElementById('print_prog_costo_recomendado').textContent = formatoM(evaluacion.recomendado);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
