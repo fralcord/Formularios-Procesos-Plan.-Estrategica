@@ -133,6 +133,7 @@ function sincronizarEvaluacionFinanciamiento({ cuerpoId, lineas, presentadoId, r
       if (editable) {
         input.type = 'text';
         input.className = 'form-control';
+        input.style.minWidth = '120px';
         input.inputMode = 'numeric';
         input.autocomplete = 'off';
         input.setAttribute('aria-label', nombre === 'recomendado_ano_actual'
@@ -194,7 +195,10 @@ function sincronizarEvaluacionFinanciamiento({ cuerpoId, lineas, presentadoId, r
     recomendadas.push({ ...linea, actual: ra, siguiente: rs });
     return fila;
   });
-  cuerpo.replaceChildren(...filas);
+  // Reinsertar filas existentes haría perder el foco del campo que se está editando
+  const sinCambios = filas.length === cuerpo.children.length &&
+    filas.every((fila, i) => cuerpo.children[i] === fila);
+  if (!sinCambios) cuerpo.replaceChildren(...filas);
 
   const pie = { presentado_ano_actual: totales.pa, presentado_ano_siguiente: totales.ps,
     costo_total_presentado: totales.pa + totales.ps, recomendado_ano_actual: totales.ra,
