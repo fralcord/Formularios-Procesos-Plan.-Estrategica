@@ -490,8 +490,8 @@
                 <th>FUENTE / SUBTÍTULO</th>
                 <th>ÍTEM</th>
                 <th>CLASIFICADOR PRESUPUESTARIO</th>
-                <th id="print_c33_fin_ano_actual_label">RECOMENDADO AÑO M$</th>
-                <th>RECOMENDADO AÑO SIGUIENTE M$</th>
+                <th id="print_c33_fin_ano_actual_label"                >SOLICITADO AÑO M$</th>
+                                <th>SOLICITADO AÑO SIGUIENTE M$</th>
                 <th>COSTO TOTAL M$</th>
               </tr>
             </thead>
@@ -1280,7 +1280,7 @@
       tabla.querySelector('[data-total-for="solicitado_ano_siguiente"]').textContent = formato(totalSiguiente);
       tabla.querySelector('[data-total-for="costo_total"]').textContent = formato(totalActual + totalSiguiente);
       document.getElementById('c33_fin_total_calculado').textContent = `$${formato(totalActual + totalSiguiente)}`;
-      document.getElementById('print_c33_fin_ano_actual_label').textContent = `RECOMENDADO AÑO ${ano} M$`;
+      document.getElementById('print_c33_fin_ano_actual_label').textContent = `SOLICITADO AÑO ${ano} M$`;
       const evaluacion = sincronizarEvaluacionFinanciamiento({
         cuerpoId: 'c33_eval_fin_body',
         lineas,

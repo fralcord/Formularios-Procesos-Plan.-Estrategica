@@ -472,8 +472,8 @@
                 <th>FUENTE / SUBTÍTULO</th>
                 <th>ÍTEM</th>
                 <th>ASIGNACIÓN</th>
-                <th id="print_prog_fin_ano_actual_label">RECOMENDADO AÑO M$</th>
-                <th>RECOMENDADO AÑO SIGUIENTE M$</th>
+                <th id="print_prog_fin_ano_actual_label"                >SOLICITADO AÑO M$</th>
+                                <th>SOLICITADO AÑO SIGUIENTE M$</th>
                 <th>COSTO TOTAL M$</th>
               </tr>
             </thead>
@@ -941,7 +941,7 @@
     function actualizarFinanciamientoProg() {
       const ano = Number(document.getElementById('prog_ano_postulacion').value) || new Date().getFullYear();
       document.getElementById('prog_fin_ano_actual_label').textContent = `Solicitado Año ${ano} ($)`;
-      document.getElementById('print_prog_fin_ano_actual_label').textContent = `RECOMENDADO AÑO ${ano} M$`;
+      document.getElementById('print_prog_fin_ano_actual_label').textContent = `SOLICITADO AÑO ${ano} M$`;
       const formato = n => n.toLocaleString('es-CL');
       const formatoM = n => (n / 1000).toLocaleString('es-CL', { maximumFractionDigits: 3 });
       const subtitulo = document.getElementById('subtitulo').value;

@@ -162,7 +162,7 @@ Replica el cuadro del paso 1 **como referencia y a la vez editable**: el evaluad
 - Estos dos reemplazan a `costo_total` en Circular 33, 5.000 UTM y Programas. **Pertinencia mantiene `costo_total`** (no tiene paso de financiamiento de evaluación).
 
 ### Ficha de evaluación
-Muestra la tabla con encabezados "RECOMENDADO AÑO …" (valores recomendados, en M$). No muestra línea de costo total.
+Muestra la tabla con encabezados "SOLICITADO AÑO …" (los valores son los recomendados, en M$; por ser la ficha de evaluación se habla de una situación final y se rotula como "solicitado"). No muestra línea de costo total.
 
 ---
 

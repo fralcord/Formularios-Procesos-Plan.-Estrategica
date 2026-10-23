@@ -544,8 +544,8 @@
                 <th>FUENTE</th>
                 <th>ÍTEM</th>
                 <th>CLASIFICADOR PRESUPUESTARIO</th>
-                <th id="print_5000_financing_year_label">RECOMENDADO AÑO M$</th>
-                <th id="print_5000_financing_next_year_label">RECOMENDADO AÑO SIGUIENTE M$</th>
+                <th id="print_5000_financing_year_label"                >SOLICITADO AÑO M$</th>
+                                <th id="print_5000_financing_next_year_label">SOLICITADO AÑO SIGUIENTE M$</th>
                 <th>COSTO TOTAL M$</th>
               </tr>
             </thead>
@@ -744,9 +744,9 @@
       document.getElementById('print_5000_descripcion').textContent = getVal('descripcion_proyecto_5000') || '-';
       const anoPresupuestario = Number(getVal('ano_postulacion')) || new Date().getFullYear();
       document.getElementById('print_5000_financing_year_label').textContent =
-        `RECOMENDADO AÑO ${anoPresupuestario} M$`;
+        `SOLICITADO AÑO ${anoPresupuestario} M$`;
       document.getElementById('print_5000_financing_next_year_label').textContent =
-        `RECOMENDADO AÑO SIGUIENTE ${anoPresupuestario + 1} M$`;
+        `SOLICITADO AÑO SIGUIENTE ${anoPresupuestario + 1} M$`;
 
       // Desglose de Evaluación
       const estado = getVal('estado_resultado_evaluacion');
