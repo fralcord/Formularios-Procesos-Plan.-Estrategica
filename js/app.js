@@ -85,6 +85,154 @@ function formatCurrencyInThousands(value) {
   return (pesos / 1000).toLocaleString('es-CL', { maximumFractionDigits: 3 });
 }
 
+let contadorClavesFinanciamiento = 0;
+
+function claveFilaFinanciamiento(fila) {
+  if (!fila.dataset.evalKey) fila.dataset.evalKey = `fin_${++contadorClavesFinanciamiento}`;
+  return fila.dataset.evalKey;
+}
+
+/**
+ * Mantiene el cuadro editable de Evaluación y sus Resultados a partir de las
+ * partidas del Registro de la Iniciativa. Cada partida conserva lo presentado
+ * (solo lectura) y permite confirmar o modificar lo recomendado. Si la partida
+ * aún no fue editada, lo recomendado sigue a lo presentado.
+ * Retorna las partidas recomendadas y los totales presentado/recomendado.
+ */
+function sincronizarEvaluacionFinanciamiento({ cuerpoId, lineas, presentadoId, recomendadoId, alCambiar }) {
+  const cuerpo = document.getElementById(cuerpoId);
+  const tabla = cuerpo?.closest('table');
+  const presentadoEl = document.getElementById(presentadoId);
+  const recomendadoEl = document.getElementById(recomendadoId);
+  if (!cuerpo || !tabla || !presentadoEl || !recomendadoEl) {
+    throw new Error('No se pudo sincronizar el cuadro de financiamiento de la evaluación.');
+  }
+  const formato = n => Number(n || 0).toLocaleString('es-CL');
+  const existentes = new Map(Array.from(cuerpo.children, fila => [fila.dataset.evalKey, fila]));
+  const campo = (fila, nombre) => fila.querySelector(`[data-field="${nombre}"]`);
+
+  const crearFila = clave => {
+    const fila = document.createElement('tr');
+    fila.setAttribute('data-table-row', '');
+    fila.dataset.evalKey = clave;
+    const celdaTexto = nombre => {
+      const td = document.createElement('td');
+      const hidden = document.createElement('input');
+      hidden.type = 'hidden';
+      hidden.dataset.field = nombre;
+      const span = document.createElement('span');
+      span.dataset.texto = nombre;
+      td.append(span, hidden);
+      return td;
+    };
+    const celdaMonto = (nombre, editable) => {
+      const td = document.createElement('td');
+      const input = document.createElement('input');
+      input.dataset.field = nombre;
+      input.dataset.formatCurrency = 'true';
+      if (editable) {
+        input.type = 'text';
+        input.className = 'form-control';
+        input.inputMode = 'numeric';
+        input.autocomplete = 'off';
+        input.setAttribute('aria-label', nombre === 'recomendado_ano_actual'
+          ? 'Monto recomendado año actual en pesos'
+          : 'Monto recomendado año siguiente en pesos');
+        input.addEventListener('input', () => {
+          formatPesosInput(input);
+          input.dataset.editado = 'true';
+          if (alCambiar) alCambiar();
+        });
+        td.appendChild(input);
+      } else {
+        input.type = 'hidden';
+        const span = document.createElement('span');
+        span.dataset.texto = nombre;
+        td.append(span, input);
+      }
+      return td;
+    };
+    fila.append(
+      celdaTexto('fuente'), celdaTexto('item'), celdaTexto('clasificador'),
+      celdaMonto('presentado_ano_actual', false), celdaMonto('presentado_ano_siguiente', false),
+      celdaMonto('recomendado_ano_actual', true), celdaMonto('recomendado_ano_siguiente', true),
+      celdaMonto('costo_total_presentado', false), celdaMonto('costo_total_recomendado', false)
+    );
+    return fila;
+  };
+
+  const totales = { pa: 0, ps: 0, ra: 0, rs: 0 };
+  const recomendadas = [];
+  const filas = lineas.map(linea => {
+    const fila = existentes.get(linea.clave) || crearFila(linea.clave);
+    ['fuente', 'item', 'clasificador'].forEach(nombre => {
+      campo(fila, nombre).value = linea[nombre];
+      fila.querySelector(`[data-texto="${nombre}"]`).textContent = linea[nombre];
+    });
+    const fijar = (nombre, valor) => {
+      campo(fila, nombre).value = String(valor);
+      const span = fila.querySelector(`[data-texto="${nombre}"]`);
+      if (span) span.textContent = formato(valor);
+    };
+    fijar('presentado_ano_actual', linea.actual);
+    fijar('presentado_ano_siguiente', linea.siguiente);
+    fijar('costo_total_presentado', linea.actual + linea.siguiente);
+    const resolver = (nombre, presentado) => {
+      const input = campo(fila, nombre);
+      if (!input.dataset.editado) input.value = String(presentado);
+      formatPesosInput(input);
+      return parseCurrencyValue(input.value) || 0;
+    };
+    const ra = resolver('recomendado_ano_actual', linea.actual);
+    const rs = resolver('recomendado_ano_siguiente', linea.siguiente);
+    campo(fila, 'costo_total_recomendado').value = String(ra + rs);
+    fila.querySelector('[data-texto="costo_total_recomendado"]').textContent = formato(ra + rs);
+    totales.pa += linea.actual;
+    totales.ps += linea.siguiente;
+    totales.ra += ra;
+    totales.rs += rs;
+    recomendadas.push({ ...linea, actual: ra, siguiente: rs });
+    return fila;
+  });
+  cuerpo.replaceChildren(...filas);
+
+  const pie = { presentado_ano_actual: totales.pa, presentado_ano_siguiente: totales.ps,
+    costo_total_presentado: totales.pa + totales.ps, recomendado_ano_actual: totales.ra,
+    recomendado_ano_siguiente: totales.rs, costo_total_recomendado: totales.ra + totales.rs };
+  Object.entries(pie).forEach(([nombre, valor]) => {
+    const celda = tabla.querySelector(`[data-eval-total="${nombre}"]`);
+    if (celda) celda.textContent = formato(valor);
+  });
+  presentadoEl.textContent = `$${formato(totales.pa + totales.ps)}`;
+  recomendadoEl.textContent = `$${formato(totales.ra + totales.rs)}`;
+  return { lineas: recomendadas, presentado: totales.pa + totales.ps, recomendado: totales.ra + totales.rs };
+}
+
+function renderizarFilasFichaFinanciamiento(cuerpo, lineas, formatoM) {
+  cuerpo.replaceChildren(...lineas.map(linea => {
+    const fila = document.createElement('tr');
+    [linea.fuente, linea.item, linea.clasificador, formatoM(linea.actual),
+      formatoM(linea.siguiente), formatoM(linea.actual + linea.siguiente)].forEach(texto => {
+      const celda = document.createElement('td');
+      celda.textContent = texto;
+      fila.appendChild(celda);
+    });
+    return fila;
+  }));
+}
+
+function calcularCostoTotalRecomendado(data) {
+  return Math.round((data.fuentes_financiamiento_evaluacion || []).reduce((total, fuente) =>
+    total + Number(fuente.costo_total_recomendado || 0), 0
+  ));
+}
+function calcularCostoTotalPresentado(data) {
+  return Math.round((data.fuentes_financiamiento || []).reduce((total, fuente) =>
+    total + Number(fuente.solicitado_ano_actual || 0) +
+      Number(fuente.solicitado_ano_siguiente || 0), 0
+  ));
+}
+
 function formatPesosInput(input) {
   const rawValue = String(input.value);
   const digitsBeforeCursor = rawValue.slice(0, input.selectionStart ?? rawValue.length).replace(/\D/g, '').length;

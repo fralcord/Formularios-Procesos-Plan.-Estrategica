@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ============================================================================
  * ESQUEMAS DE DATOS Y CONTRATOS DE API (PARA DESARROLLO DE BACKEND Y BASE DE DATOS)
  * GOBIERNO REGIONAL DE LOS LAGOS - DIVISIÓN DE PLANIFICACIÓN (DIPLADER)
@@ -225,7 +225,38 @@ trazabilidad: {
       },
       unidad_formuladora: { tipo: "string" },
       unidad_tecnica: { tipo: "string" },
-      costo_total: { tipo: "number", descripcion: "Costo total expresado en pesos; las fichas lo muestran convertido a M$" },
+      fuentes_financiamiento: {
+        tipo: "array",
+        descripcion: "Partidas de financiamiento presentadas para la iniciativa; los montos se capturan y almacenan en pesos",
+        elementos: {
+          fuente: { tipo: "string", valor_predeterminado: "FNDR" },
+          subtitulo: { tipo: "string" },
+          item: { tipo: "string" },
+          item_descripcion: { tipo: "string" },
+          clasificador: { tipo: "string" },
+          clasificador_descripcion: { tipo: "string" },
+          solicitado_ano_actual: { tipo: "number", unidad: "pesos" },
+          solicitado_ano_siguiente: { tipo: "number", unidad: "pesos" },
+          costo_total: { tipo: "number", unidad: "pesos" }
+        }
+      },
+      costo_total_presentado: { tipo: "number", unidad: "pesos", descripcion: "Total derivado de las partidas presentadas; la ficha lo muestra convertido a M$" },
+      costo_total_recomendado: { tipo: "number", unidad: "pesos", descripcion: "Total derivado de las partidas de fuentes_financiamiento_evaluacion" },
+      fuentes_financiamiento_evaluacion: {
+        tipo: "array",
+        descripcion: "Cuadro editable de Evaluación y sus Resultados: por partida, lo presentado (solo lectura, tomado del Registro de la Iniciativa) y lo recomendado (confirmado o modificado por el evaluador); montos en pesos",
+        elementos: {
+          fuente: { tipo: "string" },
+          item: { tipo: "string" },
+          clasificador: { tipo: "string" },
+          presentado_ano_actual: { tipo: "number", unidad: "pesos" },
+          presentado_ano_siguiente: { tipo: "number", unidad: "pesos" },
+          recomendado_ano_actual: { tipo: "number", unidad: "pesos" },
+          recomendado_ano_siguiente: { tipo: "number", unidad: "pesos" },
+          costo_total_presentado: { tipo: "number", unidad: "pesos" },
+          costo_total_recomendado: { tipo: "number", unidad: "pesos" }
+        }
+      },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true },
         fecha: { tipo: "string", formato: "date", opcional: true, descripcion: "La ficha deriva de esta fecha el año de postulación" },
@@ -290,7 +321,23 @@ trazabilidad: {
           costo_total: { tipo: "number", unidad: "pesos", descripcion: "Suma de los montos solicitados de ambos años para la partida" }
         }
       },
-      costo_total: { tipo: "number", unidad: "pesos", descripcion: "Total derivado de sumar las partidas de fuentes_financiamiento; la ficha lo presenta convertido a M$" },
+      costo_total_presentado: { tipo: "number", unidad: "pesos", descripcion: "Total derivado de sumar las partidas presentadas; la ficha lo presenta convertido a M$" },
+      costo_total_recomendado: { tipo: "number", unidad: "pesos", descripcion: "Total derivado de las partidas de fuentes_financiamiento_evaluacion" },
+      fuentes_financiamiento_evaluacion: {
+        tipo: "array",
+        descripcion: "Cuadro editable de Evaluación y sus Resultados: por partida, lo presentado (solo lectura, tomado del Registro de la Iniciativa) y lo recomendado (confirmado o modificado por el evaluador); montos en pesos",
+        elementos: {
+          fuente: { tipo: "string" },
+          item: { tipo: "string" },
+          clasificador: { tipo: "string" },
+          presentado_ano_actual: { tipo: "number", unidad: "pesos" },
+          presentado_ano_siguiente: { tipo: "number", unidad: "pesos" },
+          recomendado_ano_actual: { tipo: "number", unidad: "pesos" },
+          recomendado_ano_siguiente: { tipo: "number", unidad: "pesos" },
+          costo_total_presentado: { tipo: "number", unidad: "pesos" },
+          costo_total_recomendado: { tipo: "number", unidad: "pesos" }
+        }
+      },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true },
         fecha: { tipo: "string", formato: "date", opcional: true, descripcion: "La ficha deriva de esta fecha el año de postulación" },
@@ -350,7 +397,35 @@ trazabilidad: {
       nombre_programa: { tipo: "string" },
       unidad_formuladora: { tipo: "string" },
       unidad_tecnica: { tipo: "string" },
-      costo_total: { tipo: "number", descripcion: "Costo total expresado en pesos; las fichas lo muestran convertido a M$" },
+      fuentes_financiamiento: {
+        tipo: "array",
+        descripcion: "Partidas de financiamiento presentadas para la iniciativa; los montos se capturan y almacenan en pesos",
+        elementos: {
+          fuente: { tipo: "string", valor_predeterminado: "FNDR" },
+          subtitulo: { tipo: "string" },
+          item: { tipo: "string" },
+          solicitado_ano_actual: { tipo: "number", unidad: "pesos" },
+          solicitado_ano_siguiente: { tipo: "number", unidad: "pesos" },
+          costo_total: { tipo: "number", unidad: "pesos" }
+        }
+      },
+      costo_total_presentado: { tipo: "number", unidad: "pesos", descripcion: "Total derivado de las partidas presentadas; la ficha lo muestra convertido a M$" },
+      costo_total_recomendado: { tipo: "number", unidad: "pesos", descripcion: "Total derivado de las partidas de fuentes_financiamiento_evaluacion" },
+      fuentes_financiamiento_evaluacion: {
+        tipo: "array",
+        descripcion: "Cuadro editable de Evaluación y sus Resultados: por partida, lo presentado (solo lectura, tomado del Registro de la Iniciativa) y lo recomendado (confirmado o modificado por el evaluador); montos en pesos",
+        elementos: {
+          fuente: { tipo: "string" },
+          item: { tipo: "string" },
+          clasificador: { tipo: "string" },
+          presentado_ano_actual: { tipo: "number", unidad: "pesos" },
+          presentado_ano_siguiente: { tipo: "number", unidad: "pesos" },
+          recomendado_ano_actual: { tipo: "number", unidad: "pesos" },
+          recomendado_ano_siguiente: { tipo: "number", unidad: "pesos" },
+          costo_total_presentado: { tipo: "number", unidad: "pesos" },
+          costo_total_recomendado: { tipo: "number", unidad: "pesos" }
+        }
+      },
       oficio_postulacion: {
         numero: { tipo: "string", opcional: true },
         fecha: { tipo: "string", formato: "date", opcional: true, descripcion: "La ficha deriva de esta fecha el año de postulación" },

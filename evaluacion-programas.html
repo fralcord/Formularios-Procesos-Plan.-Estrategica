@@ -349,6 +349,49 @@
               </div>
             </div>
 
+            <div class="col-12">
+              <section class="form-section-card pert-financing-capture">
+                <div class="section-header">
+                  <h4>Fuentes de Financiamiento (Evaluación)</h4>
+                  <span class="section-badge">Montos en pesos</span>
+                </div>
+                <p class="form-hint">Cuadro de referencia del Registro de la Iniciativa. Lo presentado es de solo lectura; confirme o modifique los montos recomendados de cada partida según los resultados de la evaluación. Esta es la tabla que se referencia en la ficha.</p>
+                <div class="table-responsive">
+                  <table class="data-table pert-financing-table" data-table-id="fuentes_financiamiento_evaluacion">
+                    <thead>
+                      <tr>
+                        <th rowspan="2">Fuente / Subtítulo</th>
+                        <th rowspan="2">Ítem</th>
+                        <th rowspan="2">Asignación</th>
+                        <th colspan="2">Presentado ($)</th>
+                        <th colspan="2">Recomendado ($)</th>
+                        <th rowspan="2">Total Presentado ($)</th>
+                        <th rowspan="2">Total Recomendado ($)</th>
+                      </tr>
+                      <tr>
+                        <th>Año actual</th>
+                        <th>Año siguiente</th>
+                        <th>Año actual</th>
+                        <th>Año siguiente</th>
+                      </tr>
+                    </thead>
+                    <tbody id="prog_eval_fin_body"></tbody>
+                    <tfoot>
+                      <tr>
+                        <th colspan="3" style="text-align:right;">TOTAL</th>
+                        <td data-eval-total="presentado_ano_actual">0</td>
+                        <td data-eval-total="presentado_ano_siguiente">0</td>
+                        <td data-eval-total="recomendado_ano_actual">0</td>
+                        <td data-eval-total="recomendado_ano_siguiente">0</td>
+                        <td data-eval-total="costo_total_presentado">0</td>
+                        <td data-eval-total="costo_total_recomendado">0</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <p><strong>Costo total presentado:</strong> <span id="prog_costo_presentado">$0</span> &nbsp; <strong>Costo total recomendado:</strong> <span id="prog_costo_recomendado">$0</span></p>
+              </section>
+            </div>
             <div class="col-6">
               <div class="form-group">
                 <label class="form-label" for="prog_estado_evaluacion">Resultado de la Evaluación <span class="required">*</span></label>
@@ -429,8 +472,8 @@
                 <th>FUENTE / SUBTÍTULO</th>
                 <th>ÍTEM</th>
                 <th>ASIGNACIÓN</th>
-                <th id="print_prog_fin_ano_actual_label">SOLICITADO AÑO M$</th>
-                <th>SOLICITADO AÑO SIGUIENTE M$</th>
+                <th id="print_prog_fin_ano_actual_label">RECOMENDADO AÑO M$</th>
+                <th>RECOMENDADO AÑO SIGUIENTE M$</th>
                 <th>COSTO TOTAL M$</th>
               </tr>
             </thead>
@@ -444,6 +487,10 @@
               </tr>
             </tfoot>
           </table>
+          <div class="pert-print-description">
+            <strong>COSTO TOTAL PRESENTADO (M$):</strong> <span id="print_prog_costo_presentado">0</span>
+            &nbsp; <strong>COSTO TOTAL RECOMENDADO (M$):</strong> <span id="print_prog_costo_recomendado">0</span>
+          </div>
 
           <div class="sheet-section-title pert-print-section-title">EVALUACIÓN:</div>
           <div class="pert-print-description" id="print_prog_evaluacion_bloque"></div>
@@ -692,6 +739,8 @@
         modelo: 'EvaluacionProgramasRegional',
         linea: 'Evaluación de Programas'
       });
+      data.costo_total_presentado = calcularCostoTotalPresentado(data);
+      data.costo_total_recomendado = calcularCostoTotalRecomendado(data);
       showJsonModal('Evaluación de Programas - Payload para Backend', data);
     }
 
@@ -896,12 +945,12 @@
     function actualizarFinanciamientoProg() {
       const ano = Number(document.getElementById('prog_ano_postulacion').value) || new Date().getFullYear();
       document.getElementById('prog_fin_ano_actual_label').textContent = `Solicitado Año ${ano} ($)`;
-      document.getElementById('print_prog_fin_ano_actual_label').textContent = `SOLICITADO AÑO ${ano} M$`;
+      document.getElementById('print_prog_fin_ano_actual_label').textContent = `RECOMENDADO AÑO ${ano} M$`;
       const formato = n => n.toLocaleString('es-CL');
       const formatoM = n => (n / 1000).toLocaleString('es-CL', { maximumFractionDigits: 3 });
       const subtitulo = document.getElementById('subtitulo').value;
       const cuerpoImpresion = document.getElementById('print_prog_fin_body');
-      cuerpoImpresion.replaceChildren();
+      const lineas = [];
       let totalActual = 0;
       let totalSiguiente = 0;
       document.querySelectorAll('#prog_fin_body tr[data-table-row]').forEach(fila => {
@@ -917,29 +966,35 @@
 
         const selItem = fila.querySelector('[data-field="item"]');
         if (!selItem.value && actual + siguiente === 0) return;
-        const filaImpresion = document.createElement('tr');
-        [
-          `FNDR / ${subtitulo || '-'}`,
-          selItem.selectedOptions[0]?.textContent || '-',
-          '-',
-          formatoM(actual),
-          formatoM(siguiente),
-          formatoM(actual + siguiente)
-        ].forEach(texto => {
-          const celda = document.createElement('td');
-          celda.textContent = texto;
-          filaImpresion.appendChild(celda);
+        lineas.push({
+          clave: claveFilaFinanciamiento(fila),
+          fuente: `FNDR / ${subtitulo || '-'}`,
+          item: selItem.selectedOptions[0]?.textContent || '-',
+          clasificador: '-',
+          actual,
+          siguiente
         });
-        cuerpoImpresion.appendChild(filaImpresion);
       });
       const tabla = document.getElementById('tablaFinanciamientoProg');
       tabla.querySelector('[data-total-for="solicitado_ano_actual"]').textContent = formato(totalActual);
       tabla.querySelector('[data-total-for="solicitado_ano_siguiente"]').textContent = formato(totalSiguiente);
       tabla.querySelector('[data-total-for="costo_total"]').textContent = formato(totalActual + totalSiguiente);
       document.getElementById('prog_fin_total_calculado').textContent = `$${formato(totalActual + totalSiguiente)}`;
-      document.getElementById('print_prog_total_ano_actual').textContent = formatoM(totalActual);
-      document.getElementById('print_prog_total_ano_siguiente').textContent = formatoM(totalSiguiente);
-      document.getElementById('print_prog_costo_total').textContent = formatoM(totalActual + totalSiguiente);
+      const evaluacion = sincronizarEvaluacionFinanciamiento({
+        cuerpoId: 'prog_eval_fin_body',
+        lineas,
+        presentadoId: 'prog_costo_presentado',
+        recomendadoId: 'prog_costo_recomendado',
+        alCambiar: actualizarFinanciamientoProg
+      });
+      renderizarFilasFichaFinanciamiento(cuerpoImpresion, evaluacion.lineas, formatoM);
+      document.getElementById('print_prog_total_ano_actual').textContent =
+        formatoM(evaluacion.lineas.reduce((suma, l) => suma + l.actual, 0));
+      document.getElementById('print_prog_total_ano_siguiente').textContent =
+        formatoM(evaluacion.lineas.reduce((suma, l) => suma + l.siguiente, 0));
+      document.getElementById('print_prog_costo_total').textContent = formatoM(evaluacion.recomendado);
+      document.getElementById('print_prog_costo_presentado').textContent = formatoM(evaluacion.presentado);
+      document.getElementById('print_prog_costo_recomendado').textContent = formatoM(evaluacion.recomendado);
     }
 
     document.addEventListener('DOMContentLoaded', function () {

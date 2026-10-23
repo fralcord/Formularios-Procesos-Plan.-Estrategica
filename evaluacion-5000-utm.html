@@ -418,6 +418,49 @@
               </div>
             </div>
 
+            <div class="col-12">
+              <section class="form-section-card pert-financing-capture">
+                <div class="section-header">
+                  <h4>Fuentes de Financiamiento (Evaluación)</h4>
+                  <span class="section-badge">Montos en pesos</span>
+                </div>
+                <p class="form-hint">Cuadro de referencia del Registro de la Iniciativa. Lo presentado es de solo lectura; confirme o modifique los montos recomendados de cada partida según los resultados de la evaluación. Esta es la tabla que se referencia en la ficha.</p>
+                <div class="table-responsive">
+                  <table class="data-table pert-financing-table" data-table-id="fuentes_financiamiento_evaluacion">
+                    <thead>
+                      <tr>
+                        <th rowspan="2">Fuente</th>
+                        <th rowspan="2">Ítem</th>
+                        <th rowspan="2">Clasificador Presupuestario</th>
+                        <th colspan="2">Presentado ($)</th>
+                        <th colspan="2">Recomendado ($)</th>
+                        <th rowspan="2">Total Presentado ($)</th>
+                        <th rowspan="2">Total Recomendado ($)</th>
+                      </tr>
+                      <tr>
+                        <th>Año actual</th>
+                        <th>Año siguiente</th>
+                        <th>Año actual</th>
+                        <th>Año siguiente</th>
+                      </tr>
+                    </thead>
+                    <tbody id="financiamiento_5000_eval_body"></tbody>
+                    <tfoot>
+                      <tr>
+                        <th colspan="3" style="text-align:right;">TOTAL</th>
+                        <td data-eval-total="presentado_ano_actual">0</td>
+                        <td data-eval-total="presentado_ano_siguiente">0</td>
+                        <td data-eval-total="recomendado_ano_actual">0</td>
+                        <td data-eval-total="recomendado_ano_siguiente">0</td>
+                        <td data-eval-total="costo_total_presentado">0</td>
+                        <td data-eval-total="costo_total_recomendado">0</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <p><strong>Costo total presentado:</strong> <span id="costo_total_presentado_5000">$0</span> &nbsp; <strong>Costo total recomendado:</strong> <span id="costo_total_recomendado_5000">$0</span></p>
+              </section>
+            </div>
             <div class="col-6">
               <div class="form-group">
                 <label class="form-label" for="estado_resultado_evaluacion">Resultado de la Evaluación <span class="required">*</span></label>
@@ -501,8 +544,8 @@
                 <th>FUENTE</th>
                 <th>ÍTEM</th>
                 <th>CLASIFICADOR PRESUPUESTARIO</th>
-                <th id="print_5000_financing_year_label">SOLICITADO AÑO M$</th>
-                <th id="print_5000_financing_next_year_label">SOLICITADO AÑO SIGUIENTE M$</th>
+                <th id="print_5000_financing_year_label">RECOMENDADO AÑO M$</th>
+                <th id="print_5000_financing_next_year_label">RECOMENDADO AÑO SIGUIENTE M$</th>
                 <th>COSTO TOTAL M$</th>
               </tr>
             </thead>
@@ -516,6 +559,10 @@
               </tr>
             </tfoot>
           </table>
+          <div class="pert-print-description">
+            <strong>COSTO TOTAL PRESENTADO (M$):</strong> <span id="print_5000_costo_presentado">0</span>
+            &nbsp; <strong>COSTO TOTAL RECOMENDADO (M$):</strong> <span id="print_5000_costo_recomendado">0</span>
+          </div>
 
           <div class="sheet-section-title pert-print-section-title">EVALUACIÓN:</div>
           <div class="pert-print-description" id="print_5000_evaluacion_bloque"></div>
@@ -701,9 +748,9 @@
       document.getElementById('print_5000_descripcion').textContent = getVal('descripcion_proyecto_5000') || '-';
       const anoPresupuestario = Number(getVal('ano_postulacion')) || new Date().getFullYear();
       document.getElementById('print_5000_financing_year_label').textContent =
-        `SOLICITADO AÑO ${anoPresupuestario} M$`;
+        `RECOMENDADO AÑO ${anoPresupuestario} M$`;
       document.getElementById('print_5000_financing_next_year_label').textContent =
-        `SOLICITADO AÑO SIGUIENTE ${anoPresupuestario + 1} M$`;
+        `RECOMENDADO AÑO SIGUIENTE ${anoPresupuestario + 1} M$`;
 
       // Desglose de Evaluación
       const estado = getVal('estado_resultado_evaluacion');
@@ -794,9 +841,8 @@
         fuente.clasificador ||
         Number(fuente.solicitado_ano_actual) > 0 || Number(fuente.solicitado_ano_siguiente) > 0
       );
-      data.costo_total = Math.round(data.fuentes_financiamiento.reduce((total, fuente) =>
-        total + Number(fuente.solicitado_ano_actual || 0) + Number(fuente.solicitado_ano_siguiente || 0), 0
-      ));
+      data.costo_total_presentado = calcularCostoTotalPresentado(data);
+      data.costo_total_recomendado = calcularCostoTotalRecomendado(data);
       showJsonModal('Ficha de Evaluación de Iniciativas Menores a 5.000 UTM - Payload para Backend', data);
     }
 
@@ -940,9 +986,7 @@
     function actualizarFinanciamiento5000() {
       let totalActual = 0;
       let totalSiguiente = 0;
-      const cuerpoImpresion = document.getElementById('print_financiamiento_5000_body');
-      cuerpoImpresion.replaceChildren();
-
+      const lineas = [];
       document.querySelectorAll('#financiamiento_5000_body tr[data-table-row]').forEach(fila => {
         const actualInput = fila.querySelector('[data-field="solicitado_ano_actual"]');
         const siguienteInput = fila.querySelector('[data-field="solicitado_ano_siguiente"]');
@@ -961,21 +1005,14 @@
         const item = descripcion
           ? descripcion.toLocaleLowerCase('es-CL').replace(/^./u, letra => letra.toLocaleUpperCase('es-CL'))
           : '-';
-        const celdas = [
-          'FNDR',
+        lineas.push({
+          clave: claveFilaFinanciamiento(fila),
+          fuente: 'FNDR',
           item,
-          selectorAsignacion.value ? `31-02-${selectorAsignacion.value}` : '-',
-          formatearMontoFinanciamientoM5000(actual),
-          formatearMontoFinanciamientoM5000(siguiente),
-          formatearMontoFinanciamientoM5000(costo)
-        ];
-        const filaImpresion = document.createElement('tr');
-        celdas.forEach(texto => {
-          const celda = document.createElement('td');
-          celda.textContent = texto;
-          filaImpresion.appendChild(celda);
+          clasificador: selectorAsignacion.value ? `31-02-${selectorAsignacion.value}` : '-',
+          actual,
+          siguiente
         });
-        cuerpoImpresion.appendChild(filaImpresion);
       });
 
       const total = totalActual + totalSiguiente;
@@ -983,9 +1020,25 @@
       document.querySelector('#tablaFinanciamiento5000 [data-total-for="solicitado_ano_siguiente"]').textContent = formatearMontoFinanciamiento5000(totalSiguiente);
       document.querySelector('#tablaFinanciamiento5000 [data-total-for="costo_total"]').textContent = formatearMontoFinanciamiento5000(total);
       document.getElementById('costo_total_calculado_5000').textContent = `$${formatearMontoFinanciamiento5000(total)}`;
-      document.getElementById('print_total_ano_actual_5000').textContent = formatearMontoFinanciamientoM5000(totalActual);
-      document.getElementById('print_total_ano_siguiente_5000').textContent = formatearMontoFinanciamientoM5000(totalSiguiente);
-      document.getElementById('print_5000_costo_total').textContent = formatearMontoFinanciamientoM5000(total);
+      const evaluacion = sincronizarEvaluacionFinanciamiento({
+        cuerpoId: 'financiamiento_5000_eval_body',
+        lineas,
+        presentadoId: 'costo_total_presentado_5000',
+        recomendadoId: 'costo_total_recomendado_5000',
+        alCambiar: actualizarFinanciamiento5000
+      });
+      renderizarFilasFichaFinanciamiento(
+        document.getElementById('print_financiamiento_5000_body'),
+        evaluacion.lineas,
+        formatearMontoFinanciamientoM5000
+      );
+      document.getElementById('print_total_ano_actual_5000').textContent =
+        formatearMontoFinanciamientoM5000(evaluacion.lineas.reduce((suma, l) => suma + l.actual, 0));
+      document.getElementById('print_total_ano_siguiente_5000').textContent =
+        formatearMontoFinanciamientoM5000(evaluacion.lineas.reduce((suma, l) => suma + l.siguiente, 0));
+      document.getElementById('print_5000_costo_total').textContent = formatearMontoFinanciamientoM5000(evaluacion.recomendado);
+      document.getElementById('print_5000_costo_presentado').textContent = formatearMontoFinanciamientoM5000(evaluacion.presentado);
+      document.getElementById('print_5000_costo_recomendado').textContent = formatearMontoFinanciamientoM5000(evaluacion.recomendado);
       return total;
     }
 
