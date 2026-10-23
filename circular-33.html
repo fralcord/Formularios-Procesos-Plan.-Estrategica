@@ -261,14 +261,13 @@
                   <h3>Fuentes de Financiamiento</h3>
                   <span class="section-badge" id="c33_fin_badge_subtitulo">Subtítulo sin seleccionar</span>
                 </div>
-                <p class="form-hint">Los ítems y asignaciones disponibles dependen del subtítulo seleccionado. Ingrese los montos en pesos.</p>
+                <p class="form-hint">Los ítems disponibles dependen del subtítulo seleccionado. Ingrese los montos en pesos.</p>
                 <div class="table-responsive">
                   <table class="data-table pert-financing-table" id="tablaFinanciamientoC33" data-table-id="fuentes_financiamiento">
                     <thead>
                       <tr>
                         <th>Fuente</th>
                         <th>Ítem</th>
-                        <th>Asignación</th>
                         <th id="c33_fin_ano_actual_label">Solicitado Año ($)</th>
                         <th>Solicitado Año Siguiente ($)</th>
                         <th>Costo Total ($)</th>
@@ -278,7 +277,7 @@
                     <tbody id="c33_fin_body"></tbody>
                     <tfoot>
                       <tr>
-                        <th colspan="3">TOTAL ($)</th>
+                        <th colspan="2">TOTAL ($)</th>
                         <td data-total-for="solicitado_ano_actual">0</td>
                         <td data-total-for="solicitado_ano_siguiente">0</td>
                         <td data-total-for="costo_total">0</td>
@@ -380,7 +379,7 @@
                       <tr>
                         <th rowspan="2">Fuente / Subtítulo</th>
                         <th rowspan="2">Ítem</th>
-                        <th rowspan="2">Asignación</th>
+                        <th rowspan="2">Clasificador presupuestario</th>
                         <th colspan="2">Presentado ($)</th>
                         <th colspan="2">Recomendado ($)</th>
                         <th rowspan="2">Total Presentado ($)</th>
@@ -490,7 +489,7 @@
               <tr>
                 <th>FUENTE / SUBTÍTULO</th>
                 <th>ÍTEM</th>
-                <th>ASIGNACIÓN</th>
+                <th>CLASIFICADOR PRESUPUESTARIO</th>
                 <th id="print_c33_fin_ano_actual_label">RECOMENDADO AÑO M$</th>
                 <th>RECOMENDADO AÑO SIGUIENTE M$</th>
                 <th>COSTO TOTAL M$</th>
@@ -1001,9 +1000,6 @@
       const selItem = fila.querySelector('[data-field="item"]');
       selItem.value = item;
       selItem.dispatchEvent(new Event('change'));
-      const selAsig = fila.querySelector('[data-field="clasificador"]');
-      selAsig.value = clasificador;
-      selAsig.dispatchEvent(new Event('change'));
       fila.querySelector('[data-field="solicitado_ano_actual"]').value = actual;
       fila.querySelector('[data-field="solicitado_ano_siguiente"]').value = siguiente;
       actualizarFinanciamientoC33();
@@ -1163,18 +1159,8 @@
 
     function actualizarAsignacionesFilaC33(fila) {
       const selectItem = fila.querySelector('[data-field="item"]');
-      const selectAsig = fila.querySelector('[data-field="clasificador"]');
       const item = itemsFinanciamientoC33().find(i => i.item === selectItem.value);
-      let placeholder = 'Seleccione ítem primero...';
-      if (item) placeholder = item.asignaciones.length ? 'Seleccione asignación...' : 'Sin asignación (no aplica)';
-      llenarSelectC33(
-        selectAsig,
-        placeholder,
-        (item?.asignaciones || []).map(([cod, nombre]) => [cod, `${cod} - ${nombre}`, nombre])
-      );
-      selectAsig.disabled = !item || item.asignaciones.length === 0;
       fila.querySelector('[data-field="item_descripcion"]').value = item?.nombre || '';
-      fila.querySelector('[data-field="clasificador_descripcion"]').value = '';
     }
 
     function crearFilaFinanciamientoC33() {
@@ -1192,16 +1178,10 @@
       celdaItem.append(
         selectItem,
         campoFinanciamientoC33('subtitulo', 'hidden'),
-        campoFinanciamientoC33('item_descripcion', 'hidden')
+        campoFinanciamientoC33('item_descripcion', 'hidden'),
+        campoFinanciamientoC33('clasificador', 'hidden')
       );
       fila.appendChild(celdaItem);
-
-      const celdaAsig = document.createElement('td');
-      const selectAsig = document.createElement('select');
-      selectAsig.className = 'form-control';
-      selectAsig.dataset.field = 'clasificador';
-      celdaAsig.append(selectAsig, campoFinanciamientoC33('clasificador_descripcion', 'hidden'));
-      fila.appendChild(celdaAsig);
 
       ['solicitado_ano_actual', 'solicitado_ano_siguiente'].forEach(campo => {
         const input = campoFinanciamientoC33(campo, 'text');
@@ -1237,10 +1217,6 @@
       fila.appendChild(celdaAcciones);
 
       selectItem.addEventListener('change', () => actualizarAsignacionesFilaC33(fila));
-      selectAsig.addEventListener('change', () => {
-        fila.querySelector('[data-field="clasificador_descripcion"]').value =
-          selectAsig.selectedOptions[0]?.dataset.descripcion || '';
-      });
 
       actualizarItemsFilaC33(fila);
       return fila;
@@ -1286,13 +1262,14 @@
         totalSiguiente += siguiente;
 
         const selItem = fila.querySelector('[data-field="item"]');
-        const selAsig = fila.querySelector('[data-field="clasificador"]');
+        const clasificador = selItem.value ? `${subtituloSel}-${selItem.value}` : '';
+        fila.querySelector('[data-field="clasificador"]').value = clasificador;
         if (!selItem.value && actual + siguiente === 0) return;
         lineas.push({
           clave: claveFilaFinanciamiento(fila),
           fuente: `FNDR / ${subtituloSel || '-'}`,
           item: selItem.selectedOptions[0]?.textContent || '-',
-          clasificador: selItem.value ? `${subtituloSel}-${selItem.value}` : '-',
+          clasificador: clasificador || '-',
           actual,
           siguiente
         });
