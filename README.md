@@ -1,209 +1,286 @@
-# Formularios de Procesos - Planificación Estratégica (GORE Los Lagos)
+# Formularios de Evaluación de Procesos – Planificación Estratégica (GORE Los Lagos · DIPLADER)
 
-Módulo integral de **Formularios Web en HTML5, CSS3 y JavaScript puro (Vanilla)** para contener, estandarizar y digitalizar las cuatro líneas de evaluación técnica de la División de Planificación y Desarrollo Regional (DIPLADER).
+Documento técnico para **Informática** y sus herramientas de IA. Describe el propósito, la arquitectura, la lógica de negocio, el contrato de datos (payload JSON) y la guía para desplegar en un sitio propio.
 
-El diseño está 100% desacoplado del backend, permitiendo al equipo de desarrollo implementar la persistencia (Base de Datos), endpoints de API y despliegue sin depender de frameworks frontend pesados.
+- Sitio de pruebas (GitHub Pages): https://fralcord.github.io/Formularios-Procesos-Plan.-Estrategica/
+- Repositorio: `fralcord/Formularios-Procesos-Plan.-Estrategica` (rama `main`)
 
 ---
 
-## Navegación entre Pasos
+## 1. Propósito y alcance
 
-Cada formulario cuenta con una barra de pestañas superior que refleja el orden del flujo:
+Suite de **4 formularios web** que digitalizan el ciclo de evaluación de iniciativas de inversión del Gobierno Regional de Los Lagos:
 
-| Pestaña | Contenido |
-|---|---|
-| `[1] Registro de la Iniciativa` | Identificación de la iniciativa, localización y antecedentes de postulación/oficio; los campos varían según el formulario. |
-| `[2] Evaluación y sus Resultados` | Detalle del dictamen y estado; el tipo de instancia se registra como atributo de la evaluación. |
-| `[3] Ficha de Evaluación (PDF)` | Vista de la ficha oficial de la evaluación; no incluye etiquetas de instancia ni bloques de respuesta/reevaluación. |
-| `[4] Registro Documental Evaluación` | Constancia documental (N° registro, oficio, validador). |
+| Formulario | Archivo | Línea |
+|---|---|---|
+| Evaluación de Pertinencia | [pertinencia.html](pertinencia.html) | Pertinencia regional |
+| Circular 33 | [circular-33.html](circular-33.html) | Iniciativas Circular 33 (subtítulos 22, 29, 31) |
+| Menores a 5.000 UTM | [evaluacion-5000-utm.html](evaluacion-5000-utm.html) | Proyectos FNDR < 5.000 UTM |
+| Evaluación de Programas | [evaluacion-programas.html](evaluacion-programas.html) | Programas (22, 24, 29, 33, etc.) |
 
-Los controles del formulario (`no-print`) se ocultan al generar el PDF; únicamente la ficha oficial se muestra. Los bloques extensos de evaluación y observaciones pueden continuar en páginas siguientes, con ajuste de texto dentro de sus cuadros.
-La aplicación actual es una interfaz cliente: el botón de generación produce un payload JSON, pero no guarda registros de forma persistente en una base de datos ni cambia por sí mismo el estado de una iniciativa en un sistema central.
+Más el portal [index.html](index.html) (flujo general, tarjetas de acceso y visor interactivo de la especificación técnica/esquemas).
 
-## Publicación en línea
+**Lo que hace el sistema**
+1. El evaluador registra la iniciativa, evalúa, obtiene un resultado y emite una **ficha de evaluación imprimible/PDF**.
+2. Genera un **payload JSON** estandarizado (botón de guardar → modal con *Copiar* / *Descargar .json*) pensado para API REST, base de datos, dashboard y procesamiento de datos.
 
-El sitio se publica desde este repositorio con **GitHub Pages** al enviar cambios a `main`, o manualmente mediante **Deploy forms to GitHub Pages** en Actions. El flujo publica sólo la portada, los cuatro formularios, estilos, scripts y recursos necesarios; no publica el README ni la carpeta `Referencia de los procesos`. La actualización tarda lo que dure el flujo, no es instantánea al guardar un archivo.
+**Lo que NO hace (importante)**
+- **No persiste datos**: no hay backend, base de datos ni autenticación. Todo ocurre en el navegador; al recargar se pierde lo ingresado. La persistencia es la tarea de Informática (ver sección 11).
+- Los datos de ejemplo cargables son **ficticios/demostrativos**.
 
-`https://fralcord.github.io/Formularios-Procesos-Plan.-Estrategica/`
+---
 
-La página publicada es **pública** y accesible para cualquier persona en Internet, aunque el código fuente de este repositorio sea privado. Antes de publicar, mantén los ejemplos ficticios: el flujo publica el código y los datos de muestra presentes en los formularios. Los formularios no envían ni guardan registros en un servidor: cada usuario trabaja en su propio navegador y genera su propio JSON. Una vez habilitado **GitHub Actions** como fuente en **Settings → Pages**, el despliegue usa `GITHUB_TOKEN`; no requiere un token personal.
+## 2. Arquitectura
 
-## Flujo General del Proceso
+- HTML + CSS + JavaScript **vanilla**, sin framework, sin npm, sin build. Se abre `index.html` directamente o se sirve como archivos estáticos.
+- Sin dependencias externas en tiempo de ejecución (sin CDN obligatorio).
+- Codificación **UTF-8**; idioma de interfaz y de claves de datos: español.
+- Cada formulario contiene su JS específico *inline* (al final del HTML) y reutiliza los módulos compartidos de `js/`.
 
-La plataforma organiza la captura en módulos independientes, no en una secuencia obligatoria. El **Registro de la Iniciativa**, la **Evaluación y sus Resultados** y el **Registro Documental** se pueden completar en cualquier orden. El ciclo iterativo aplica sólo a las instancias de evaluación:
+### Estructura de archivos
 
-```text
-┌──────────────────────────┐   ┌──────────────────────────┐   ┌──────────────────────────┐
-│ Registro de la Iniciativa│   │ Evaluación y Resultados  │   │ Registro Documental      │
-│ Completable independiente│   │ Ciclo de instancias      │   │ Completable independiente│
-└──────────────────────────┘   └────────────┬─────────────┘   └──────────────────────────┘
-                                             │
-                        observaciones: archivar etapa y abrir la siguiente
-                                             └──► Responde Observaciones ──► Reevaluación ...
+```
+index.html                    Portal, flujo general, visor de esquemas
+pertinencia.html              Formulario Pertinencia
+circular-33.html              Formulario Circular 33
+evaluacion-5000-utm.html      Formulario Menores a 5.000 UTM
+evaluacion-programas.html     Formulario Programas
+css/styles.css                Estilos (variables CSS: --primary #003e6b, --secondary #0284c7 …)
+css/print.css                 @media print / @page; .no-print se oculta al imprimir
+js/app.js                     Lógica compartida (serialización, moneda, fechas, modal JSON, iteraciones, financiamiento)
+js/schemas.js                 Contrato formal de datos: window.AppSchemas
+js/localizacion.js            Provincias/comunas de Los Lagos (selectores enlazados)
+js/erd-selector.js            Selector multi-nivel de articulación ERD y Programa de Gobierno
+js/erd-regional-data.js       Catálogo ERD regional (window.datosRegionalesERD5000)
+js/gobernador-data.js         Catálogo Programa Gobernador (window.datosProgramaGobernador)
+assets/                       Logos institucionales (gore-los-lagos.png, core-los-lagos.png)
+Referencia de los procesos/   Expedientes reales de referencia (PDF/xlsx/docx) – NO se publica
+.github/workflows/deploy-pages.yml   Despliegue a GitHub Pages
 ```
 
-1. **Registro de la Iniciativa** *(módulo independiente)*: se identifican la iniciativa y sus antecedentes de postulación. Según el formulario, incluye proceso presupuestario, código BIP/IDI, nombre, unidades formuladora y técnica, sector o subtítulo, localización, etapa, costo total y antecedentes del oficio de postulación. No es requisito previo para editar o completar la evaluación ni el registro documental.
-2. **Evaluación y sus Resultados** *(módulo con ciclo iterativo propio)*: el profesional registra el dictamen técnico, las observaciones por área y el estado resultante; el estado se presenta después del detalle de la evaluación. El selector identifica **Primer Ingreso**, **Responde Observaciones** o **Reevaluación** como atributo de la entrada evaluativa. Sólo el avance entre instancias valida y archiva los snapshots de esta evaluación en el payload; el historial se destina a la base de datos para el dashboard. El N° de iteración se calcula con los registros archivados y la instancia activa. Desde aquí se genera la **Ficha de Evaluación en PDF**, documento oficial de la DIPLADER, sin mostrar etiquetas de instancia ni bloques de respuesta/reevaluación.
-3. **Ficha de Evaluación (PDF)**: permite visualizar y exportar la ficha oficial de la iteración en curso; en impresión se ocultan los controles del formulario y se muestra únicamente esta sección.
-4. **Registro Documental Evaluación** *(módulo independiente)*: permite dejar constancia de la ficha emitida: N° de registro, fecha, profesional que registra, referencia del oficio y enlace validador Ley N° 19.799. No se exige para continuar el ciclo de evaluación ni se modifica al avanzar entre instancias.
+### Módulos clave de [js/app.js](js/app.js)
 
-### Avance y cierre del proceso
-
-El estado registrado en **Evaluación y sus Resultados** determina si corresponde habilitar otra instancia; esta regla no conecta ni bloquea los módulos de Registro de la Iniciativa o Registro Documental. Antes de avanzar, el sistema comprueba sólo los campos requeridos de la instancia evaluativa actual y que exista una fecha no anterior a las ya registradas. Si el resultado contiene observaciones, el botón **"Continuar a la siguiente instancia"** archiva una copia de la evaluación y abre una nueva entrada para la misma iniciativa. **Primer Ingreso**, **Responde Observaciones** y **Reevaluación** se registran como atributos de esa entrada (en `proceso.instancia_evaluacion` y `proceso.clave_instancia`), no como bloques de captura separados. La ficha PDF no muestra el tipo de instancia ni campos específicos de respuesta o reevaluación.
-
-| Resultado | Consecuencia |
+| Función / módulo | Rol |
 |---|---|
-| **Pertinencia** | PERTINENTE o OBSERVADO. |
-| **Circular 33** | RECOMENDADO TÉCNICAMENTE u OBSERVADO. |
-| **Iniciativas menores a 5.000 UTM** | RECOMENDADO TÉCNICAMENTE, OBSERVADO o DADO DE BAJA. |
-| **Evaluación de Programas** | RECOMENDADO u OBSERVADO. |
+| `serializeForm(form)` | Convierte el formulario en objeto JSON (ver sección 6) |
+| `parseValue`, `parseCurrencyValue` | Tipado: números, booleanos, códigos con cero inicial se mantienen string; moneda → entero en pesos |
+| `formatPesosInput`, `initCurrencyInputs` | Inputs con `data-format-currency`: muestran `1.234.567`, el valor lógico es entero |
+| `configurarFechasDesdePostulacion`, `validarFechasDesdePostulacion` | Regla: ninguna fecha puede ser anterior a la fecha del oficio de postulación |
+| `showJsonModal`, `copyJsonToClipboard`, `downloadJsonFile` | Modal con el payload |
+| `AppIteracion` | Motor de iteraciones del proceso (sección 5) |
+| `serializarEvaluacion` | `serializeForm` + bloque `proceso` |
+| `mostrarSoloFicha` | Vista de impresión de la ficha |
+| `recalculateTable`, `addTableRow`, `removeTableRow` | Tablas dinámicas con totales |
+| `sincronizarEvaluacionFinanciamiento`, `calcularCostoTotalPresentado/Recomendado`, `renderizarFilasFichaFinanciamiento` | Financiamiento presentado vs recomendado (sección 7) |
 
-Los resultados recomendados y pertinentes cierran el proceso; un resultado OBSERVADO abre una nueva iteración. DADO DE BAJA cierra el proceso.
+---
 
-En las fichas, los resultados favorables se identifican en verde, los observados en amarillo y, para iniciativas menores a 5.000 UTM, el estado **DADO DE BAJA** en borgoña.
+## 3. Flujo de usuario (todos los formularios)
 
-Las fichas de Menores a 5.000 UTM, Circular 33 y Programas incluyen proceso presupuestario, etapa y sector. Para Circular 33 y Programas, la etapa se registra como atributo predeterminado **Ejecución** en el formulario y en el esquema de datos.
+Cada formulario tiene **4 pestañas/pasos**:
 
-> El detalle de las firmas electrónicas y de la emisión de oficios se realiza en otra instancia; la ficha oficial en PDF no incluye pie de firma.
+1. **Registro de la Iniciativa** – datos de identificación, localización, tipología, financiamiento, oficio de postulación, articulación estratégica.
+2. **Evaluación y sus Resultados** – evaluación técnica, *cuadro de financiamiento de evaluación* (confirmar/modificar lo propuesto), resultado y observaciones.
+3. **Ficha de Evaluación (PDF)** – vista imprimible con referencia a los datos de los pasos 1 y 2 (se imprime con el navegador → Guardar como PDF).
+4. **Registro Documental** – antecedentes/documentos de respaldo (`registro_documental_evaluacion.*`).
 
-## Ciclo de Iteraciones
+Al final, el botón de guardar genera el payload.
 
-Cada resultado que exige observaciones devuelve la iniciativa al postulante y abre una nueva iteración:
+### Instancias del ciclo
 
-| Instancia | Descripción |
+`PRIMER_INGRESO` → `RESPONDE_OBSERVACIONES` → `REEVALUACION` (esta última **no existe en Pertinencia**).
+
+### Resultados posibles por línea
+
+| Línea | Resultados |
 |---|---|
-| **Primer Ingreso** | Primera evaluación técnica de la iniciativa. |
-| **Responde Observaciones** | Nueva entrada de evaluación asociada a la misma iniciativa, identificada por la instancia `RESPONDE_OBSERVACIONES` en el registro de base de datos. |
-| **Reevaluación** | Nueva entrada de evaluación asociada a la misma iniciativa, identificada por la instancia `REEVALUACION` en el registro de base de datos. |
+| Pertinencia | PERTINENTE · OBSERVADO |
+| Circular 33 | RECOMENDADO TÉCNICAMENTE · OBSERVADO |
+| Menores a 5.000 UTM | RECOMENDADO TÉCNICAMENTE · OBSERVADO · DADO DE BAJA |
+| Programas | RECOMENDADO · OBSERVADO |
 
-| Línea de evaluación | Primer Ingreso | Responde Observaciones | Reevaluación |
-|---|---|---|---|
-| Evaluación de Pertinencia | Disponible | Disponible | **No aplica** |
-| Circular N° 33 | Disponible | Disponible | Disponible |
-| Iniciativas Menores a 5.000 UTM | Disponible | Disponible | Disponible |
-| Evaluación de Programas | Disponible | Disponible | Disponible |
-
-En cada formulario, el selector **"Instancia de Evaluación"** asigna el tipo de entrada evaluativa. El número de iteración se calcula sumando una a la cantidad de etapas previas archivadas, usando como mínimo el ordinal inicial de la instancia seleccionada. Las etapas cerradas desde el botón se archivan con sus campos de evaluación y fecha. Las iteraciones se conservan en el payload como datos para la base de datos y el dashboard, pero no se presentan como historial, etiquetas ni secciones de respuesta/reevaluación en las fichas PDF.
-
-> **Alcance de validación:** esta versión es una plataforma cliente sin API ni servidor. Las comprobaciones al avanzar y el snapshot del historial se ejecutan en el navegador; cualquier API futura debe repetirlas en el servidor (campos obligatorios, orden cronológico, continuidad de instancia y preservación del snapshot), sin confiar en datos validados sólo por el cliente.
+Todo estado que coincida con `/OBSERV/i` **abre una nueva iteración**.
 
 ---
 
-## Estructura de los Formularios
+## 4. Reglas de negocio y validaciones
 
-Los cuatro formularios comparten la navegación y el ciclo de evaluación, pero los campos del registro se adaptan a cada línea. El orden de captura vigente es:
+- Fechas: todas deben ser ≥ fecha del oficio de postulación (validación nativa `setCustomValidity` + `validarFechasDesdePostulacion` antes de generar el payload).
+- Moneda: se ingresa en **pesos**; el payload lleva enteros. La ficha imprime en **M$** (pesos / 1.000).
+- Localización: provincia → comuna dependientes (`localizacion.js`).
+- Circular 33: el **desglose por clasificador** es obligatorio cuando `subtitulo = 29` y estado `RECOMENDADO TÉCNICAMENTE` (`validarDesgloseC33`).
+- 5.000 UTM: financiamiento fijo FNDR / subtítulo 31 / ítem 02 PROYECTOS; las asignaciones (001–007 y 999) dependen de la etapa. Las filas vacías se filtran del payload.
+- Circular 33: subtítulos 22, 29 y 31 con catálogo propio de ítems y asignaciones.
+- Pertinencia: filtra filas de financiamiento vacías y calcula `costo_total`.
 
-| Formulario | Orden y campos del Registro de la Iniciativa |
+---
+
+## 5. Motor de iteraciones (`AppIteracion`)
+
+Configuración **declarativa** por atributos `data-*` en el contenedor `#selectorInstancia`:
+
+`data-nombre-campo` (campo de instancia, `instancia_evaluacion`), `data-permite-reevaluacion`, `data-tabla-iteraciones`, `data-panel-evaluacion` (panel del paso 2), `data-campo-estado`, `data-campo-fecha`, `data-campo-detalle`, `data-paso-evaluacion`.
+
+Lógica:
+- `numeroActual` = máx(mínimo de la instancia, iteraciones archivadas con fecha + 1).
+- `controlesEtapa`: inputs con `name` dentro del panel del paso 2 **que no estén dentro de una `table`**.
+- `archivarEtapa`: agrega una fila al historial (`numero`, `fecha`, `instancia`, `estado`, `detalle` y un JSON oculto `registro` con `campos`).
+- `limpiarEtapa`: limpia los campos del paso 2 para la nueva iteración.
+- `avanzar`: valida → archiva → limpia → pasa a la siguiente instancia.
+
+Payload resultante: bloque `proceso` (`modelo`, `linea_evaluacion`, `instancia_evaluacion`, `clave_instancia`, `numero_iteracion`, `admite_reevaluacion`, `iteraciones_registradas`) y la tabla `iteraciones` (historial).
+
+> **Limitación conocida:** el cuadro de financiamiento de evaluación está dentro de una `table`, por lo que **no se archiva** en el snapshot de cada iteración; en el payload final queda solo el valor vigente (última iteración).
+
+---
+
+## 6. Serialización a payload (`serializeForm`)
+
+- Campos con nombre con puntos → objetos anidados: `oficio_postulacion.fecha` → `{ "oficio_postulacion": { "fecha": ... } }`.
+- `table[data-table-id="X"]` → arreglo `X` con un objeto por `tbody tr[data-table-row]`, usando `data-field` como clave.
+- Inputs con `data-format-currency` → entero en pesos.
+- Los valores se tipan con `parseValue` (número, booleano, string; los códigos con cero inicial se conservan como string).
+
+---
+
+## 7. Financiamiento: presentado vs recomendado
+
+### Paso 1 – "Fuente de financiamiento" (lo presentado)
+Tabla `fuentes_financiamiento` (tbody: `c33_fin_body`, `financiamiento_5000_body`, `prog_fin_body`). Por línea: `fuente`, `item`, `clasificador`, `solicitado_ano_actual`, `solicitado_ano_siguiente`, `costo_total`.
+
+### Paso 2 – cuadro de financiamiento de evaluación (Circular 33, 5.000 UTM, Programas)
+Replica el cuadro del paso 1 **como referencia y a la vez editable**: el evaluador confirma lo propuesto o lo modifica con el resultado de la evaluación.
+- `data-table-id="fuentes_financiamiento_evaluacion"` (tbody: `c33_eval_fin_body`, `financiamiento_5000_eval_body`, `prog_eval_fin_body`).
+- Por línea: `fuente`, `item`, `clasificador`, `presentado_ano_actual`, `presentado_ano_siguiente` (solo lectura), `recomendado_ano_actual`, `recomendado_ano_siguiente` (editables), `costo_total_presentado`, `costo_total_recomendado`.
+- Las filas se vinculan a las del paso 1 mediante `dataset.evalKey`. Mientras el usuario no edite, **lo recomendado sigue a lo presentado**; al editar una celda se marca `dataset.editado` y deja de seguirlo.
+- La función evita reconstruir el DOM si las filas no cambian (así no se pierde el foco al teclear).
+- Pie de tabla y resumen: "Costo total presentado / recomendado".
+
+### Totales en el payload
+- `costo_total_presentado` = suma de lo presentado (años actual + siguiente).
+- `costo_total_recomendado` = suma de lo recomendado.
+- Estos dos reemplazan a `costo_total` en Circular 33, 5.000 UTM y Programas. **Pertinencia mantiene `costo_total`** (no tiene paso de financiamiento de evaluación).
+
+### Ficha de evaluación
+Muestra la tabla con encabezados "RECOMENDADO AÑO …" (valores recomendados, en M$). No muestra línea de costo total.
+
+---
+
+## 8. Circular 33 – desglose por clasificador
+
+Aplica con subtítulo 29 y resultado RECOMENDADO TÉCNICAMENTE.
+- Editor `contenteditable` (`c33_desglose_editor`) + textarea oculto `c33_desglose_valor` → campo `evaluacion_c33.desglose_clasificador`.
+- Acepta: pegar tablas HTML (Excel/Word), texto tabulado o imágenes.
+- Las celdas de las tablas pegadas son **editables** (texto y números). Pegar texto en una celda inserta texto plano; pegar una tabla fuera de celda agrega otra tabla.
+- Se sanea con `sanitizarTablasC33` / `sanitizarDesgloseGuardadoC33`; el valor guardado es HTML **sin** `contenteditable`.
+- **Seguridad:** el backend debe volver a sanear este HTML antes de almacenarlo o renderizarlo.
+
+---
+
+## 9. Contrato de datos
+
+La definición formal vive en [js/schemas.js](js/schemas.js) (`window.AppSchemas`), con modelos `pertinencia`, `circular33`, `evaluacion5000Utm`, `evaluacionProgramas` y `seguimientoCartera`, y bloques compartidos (`BLOQUE_PROCESO_EVALUACION`, `HISTORIAL_ITERACIONES`, `BLOQUE_REGISTRO_DOCUMENTAL`, `BLOQUE_CIERRE_CICLO`). El visor de [index.html](index.html) los presenta interactivamente. **Fuente de verdad: `schemas.js` + las funciones `guardarFormulario*` de cada HTML.**
+
+Claves principales por formulario:
+
+| Formulario | Claves |
 |---|---|
-| **Evaluación de Pertinencia** | Proceso presupuestario (año), etapa a la que postula, código BIP/IDI y nombre de la iniciativa, unidad formuladora y unidad técnica, sector/tipología y costo total (M$), provincia/comuna/localidad, descripción del proyecto, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
-| **Circular N° 33** | Proceso presupuestario (año) y subtítulo, código BIP/IDI y nombre de iniciativa/acción, unidad formuladora y unidad técnica, sector y costo total, provincia/comuna/localidad o sector, descripción del proyecto, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
-| **Iniciativas Menores a 5.000 UTM** | Proceso presupuestario (año) y etapa a la que postula (opciones: Diseño y Ejecución), código IDI/BIP y nombre de la iniciativa, unidad formuladora y unidad técnica, sector, partidas de financiamiento FNDR/Subtítulo 31, provincia/comuna/localidad o sector, descripción de la iniciativa, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación. |
-| **Evaluación de Programas** | Proceso presupuestario (año) y sector, código IDI/BIP y nombre del programa, unidad formuladora y unidad técnica, provincia/comuna/localidad o sector, N° y fecha del oficio de postulación, ingreso a Oficina de Partes e ingreso a Evaluación; costo total se conserva al final del registro. |
+| Pertinencia | `evaluacion_pertinencia.*`, `resolucion.*`, `trazabilidad.*`, `tipologia`, `codigo_bip`, `localizacion.*`, `fuentes_financiamiento`, `costo_total` |
+| Circular 33 | `subtitulo`, `codigo_bip`, `nombre_accion`, `provincia`, `comuna`, `evaluacion_c33.*`, `fuentes_financiamiento`, `fuentes_financiamiento_evaluacion`, `costo_total_presentado`, `costo_total_recomendado` |
+| 5.000 UTM | `codigo_idi`, `evaluacion_tecnica.*` (observaciones por área, ERD, Gobernador), `control_evaluacion.*`, ambas tablas de financiamiento, ambos costos |
+| Programas | `codigo_idi`, `nombre_programa`, `subtitulo`, `evaluacion.*`, ambas tablas, ambos costos |
+| Todos | `proceso`, `iteraciones`, `registro_documental_evaluacion.*` |
 
-Los campos de oficio y sus fechas de ingreso se capturan como antecedentes de la iniciativa. En los cuatro formularios, bajo la fecha del oficio se muestra el **Año de Postulación** calculado; no es un campo editable ni se duplica en el payload. Las fichas distinguen el **Proceso Presupuestario** ingresado de ese año derivado; si no se registra la fecha del oficio, el año de postulación se muestra como “-”. En Circular N° 33, Menores a 5.000 UTM y Programas, el Registro de la Iniciativa conserva las partidas presentadas en `fuentes_financiamiento` y deriva `costo_total_presentado` (pesos). En Evaluación y sus Resultados, antes del resultado, se replica ese cuadro como una tabla editable (`fuentes_financiamiento_evaluacion`): cada partida muestra lo presentado (solo lectura) y permite confirmar o modificar lo recomendado por año; mientras no se edite, lo recomendado sigue a lo presentado. El payload incluye `costo_total_presentado` y `costo_total_recomendado` (pesos, derivados de las tablas), además del detalle por partida. La ficha PDF referencia el cuadro de evaluación (montos recomendados) y muestra ambos costos totales convertidos a **M$** (pesos divididos por 1.000). En Pertinencia, el costo se construye sumando las partidas de la lista de financiamiento y los montos solicitados para el proceso presupuestario y el año siguiente, ingresados en **pesos**. En Pertinencia se mantienen seleccionables el ítem y la asignación presupuestaria. En Menores a 5.000 UTM, la fuente FNDR, el subtítulo 31 **Iniciativas de Inversión** y el ítem 02 **Proyectos** son fijos; la lista de asignaciones disponibles (001, 002, 003, 004, 005, 006, 007 y 999) sigue la referencia visual de esa ficha. El total por partida y ambos totales generales se calculan o capturan en pesos; la ficha presenta el desglose y los totales en **M$**. La captura no incluye sector por partida. En la evaluación de Menores a 5.000 UTM se registran, antes de las observaciones generales y solo para el payload de base de datos, el lineamiento, ítem, objetivo y actividad/programa de la ERD, además del pilar, eje/letra y fundamento de articulación con el Programa del Gobernador Regional; el lineamiento ERD y el pilar son obligatorios. Estos campos no se incluyen en la ficha PDF. En Pertinencia y Circular N° 33, la descripción del proyecto se registra después de provincia, comuna y localidad; Menores a 5.000 UTM también captura una descripción para incluirla en su ficha PDF, cuyo proponente se obtiene de la unidad formuladora. La etapa postulada solo está incluida en Pertinencia y en el formulario **Menores a 5.000 UTM**; en este último el selector ofrece únicamente **Diseño** y **Ejecución**. El subtítulo de Circular N° 33 es independiente de las listas de financiamiento de Pertinencia y Menores a 5.000 UTM.
-
-La grilla mantiene juntos los campos que forman pares o grupos —por ejemplo, código y nombre, unidades, localización y fechas— en pantallas amplias; en pantallas pequeñas los campos se apilan para facilitar su captura.
-
-La arquitectura restante del flujo es:
-
-1. **Paso 1: Registro de la Iniciativa**, con la estructura propia indicada arriba.
-2. **Paso 2: Evaluación y sus Resultados**
-   - Selector de instancia para registrar el atributo correspondiente e indicador calculado del N° de iteración en curso.
-   - Dictamen técnico, desglose de observaciones sectoriales específicas, estado de la evaluación según el formulario (OBSERVADO, PERTINENTE, RECOMENDADO TÉCNICAMENTE, RECOMENDADO o DADO DE BAJA), profesional evaluador y fecha.
-   - **Primer Ingreso**, **Responde Observaciones** y **Reevaluación** se almacenan como atributos de cada entrada; no se habilitan bloques de captura dedicados para respuesta o reevaluación.
-   - Las iteraciones se archivan en el payload y se consultarán desde la base de datos para el dashboard; ninguna línea presenta una tabla de historial en el formulario o PDF.
-   - **Salida del paso: Ficha de Evaluación (PDF)**, documento oficial de la DIPLADER, que se previsualiza en la tercera pestaña del formulario.
-3. **Paso 3: Ficha de Evaluación (PDF)**
-   - Vista e impresión de la ficha oficial correspondiente a la iteración en curso.
-4. **Paso 4: Registro Documental Evaluación**
-   - Profesional que registra, número, fecha y destinatario del oficio asociado en la instancia de Oficios de la DIPLADER.
-   - Constancia del registro y, donde corresponda, enlace validador Ley N° 19.799.
-   - Enlace validador Ley N° 19.799 y constancia del registro.
-   - La ficha oficial en PDF **no incluye pie de firma**: las firmas y la emisión de oficios se realizan en otra instancia.
-
----
-
-## Estructura de Archivos del Proyecto
-
-```text
-├── index.html                   # Portal, flujograma general y panel central de las 4 líneas
-├── pertinencia.html             # 1. Evaluación de Pertinencia Regional (ORD a MDSF u Oficio con Observaciones)
-├── circular-33.html             # 2. Circular N° 33 (Anexo 1 con C.A.E. y Evaluación DIPLADER de Vehículos/Maquinarias)
-├── evaluacion-5000-utm.html     # 3. Evaluación Menores a 5.000 UTM (Generales, Estudio Preinversional, Presupuesto, EETT, Planos, Anexos y Terreno)
-├── evaluacion-programas.html    # 4. Evaluación de Programas (Transferencias Subtítulo 24 y Subtítulo 33)
-├── css/
-│   ├── styles.css               # Estilos institucionales GORE Los Lagos (responsivo, grillas, tabs, flujograma)
-│   └── print.css                # Estilos oficiales para impresión limpia y exportación a PDF institucional
-├── assets/
-│   ├── gore-los-lagos.png        # Logotipo del Gobierno Regional de Los Lagos
-│   └── core-los-lagos.png        # Logotipo del Consejo Regional de Los Lagos
-├── js/
-│   ├── app.js                   # Controlador cliente, auto-cálculos, visor JSON y motor de iteraciones
-│   └── schemas.js               # Contrato formal de modelos y esquemas JSON para el equipo de Base de Datos
-└── Referencia de los procesos/  # Expedientes y documentos de referencia oficial
-    ├── Evaluacion Pertinencia/  # Casos reales ORD 1628, Oficio 1644 y Listado Proyectos 2026
-    ├── Evaluacion Circular 33/  # Ficha Anexo 1, FICHA 22-6-26, FICHA 9-9-26 y C33 FRG
-    ├── Evaluacion Menores a 5000 UTM/ # Rev-2 (Observado) y Rev-6 (Sin observaciones)
-    └── Evaluacion Programas/    # Casos reales Ficha 40065461-0 y 40080639-0
-```
-
----
-
-## Guía de Uso de los Formularios
-
-1. **Apertura Directa**
-   - No requiere dependencias externas ni `npm install`. Basta con abrir `index.html` en cualquier navegador web.
-2. **Selección de la instancia**
-   - El bloque azul **"Instancia de Evaluación"** se ubica sobre las pestañas y aplica a todo el formulario. Determina la instancia seleccionada y los bloques que corresponda mostrar; el N° de iteración se calcula a partir de las etapas archivadas.
-3. **Navegación entre Pasos**
-    - Cada formulario cuenta con las pestañas superiores:
-      - `[1] Registro de la Iniciativa`
-      - `[2] Evaluación y sus Resultados`
-      - `[3] Ficha de Evaluación (PDF)`
-      - `[4] Registro Documental Evaluación`
-4. **Avance de iteración**
-   - Al registrar un estado con observaciones, el botón **"Continuar a la siguiente instancia"** activa la instancia correspondiente y posiciona el formulario en el paso de evaluación.
-   - El botón **"Continuar a la siguiente instancia"** archiva automáticamente el snapshot de la evaluación concluida; no se capturan iteraciones anteriores manualmente en el formulario.
-5. **Botones de Caso Real ("Cargar Caso...")**
-   - **Pertinencia**: *Caso Tehuaco* (Dalcahue, emisión ORD 1628 a MDSF) y *Caso Maillen* (Puerto Montt, Oficio 1644 con observaciones).
-   - **Circular 33**: *Maquinaria Chiloé* (Anexo 1 con C.A.E.) y *Camión Aljibe Los Muermos* (Evaluación técnica).
-   - **Menores a 5.000 UTM**: *Rev-2* (Puyehue con observaciones sectoriales) y *Rev-6* (Puyehue, reevaluación sin observaciones, con el historial de la Rev-2 ya cargado).
-   - **Programas**: *Salud Osorno* (`40065461-0`) y *Cuidados Renales Puerto Montt* (`40080639-0`).
-6. **Impresión / Exportación a PDF Oficial**
-   - El botón **"Imprimir / Guardar PDF"** activa los estilos de `css/print.css`, ocultando la interfaz de captura y enviando a la impresora o convertidor PDF la **Ficha de Evaluación** con la identificación acotada y la evaluación de la iteración en curso. El historial no se imprime; sus snapshots se destinan a la base de datos y el dashboard.
-   - Los logotipos institucionales del GORE y CORE aparecen en la cabecera de las cuatro fichas y se incluyen al exportarlas a PDF.
-   - En **Pertinencia**, la ficha presenta los antecedentes del proyecto en una tabla, la evaluación numerada y los datos del profesional y fecha. Utiliza los campos disponibles; no incorpora descripción del proyecto ni fuente y montos de financiamiento, que no se capturan actualmente.
-7. **Generar Payload JSON para Base de Datos**
-   - El botón **"Generar carga útil JSON"** serializa la información en formato JSON estructurado, agregando el bloque `proceso` con la instancia activa y el número de iteración, además de los snapshots archivados. El payload está destinado a persistencia en la API REST o base de datos y posterior consulta por el dashboard.
-
----
-
-## Contrato de Datos (extracto)
-
-El payload generado por cada formulario incluye, además de los datos de la iniciativa y de la evaluación:
+### Ejemplo reducido (Circular 33)
 
 ```json
 {
   "proceso": {
-    "modelo": "FichaEvaluacion5000UTM",
-    "linea_evaluacion": "Iniciativas Menores a 5.000 UTM",
-    "instancia_evaluacion": "Reevaluación",
-    "clave_instancia": "REEVALUACION",
-    "numero_iteracion": 3,
-    "admite_reevaluacion": true,
-    "iteraciones_registradas": 1
+    "modelo": "EvaluacionCircular33",
+    "instancia_evaluacion": "PRIMER_INGRESO",
+    "numero_iteracion": 1,
+    "admite_reevaluacion": true
   },
-  "iteraciones": [
-    { "numero": 1, "fecha": "2026-08-05", "instancia": "Primer Ingreso", "estado": "OBSERVADO", "detalle": "Rev-2..." }
+  "subtitulo": "29",
+  "fuentes_financiamiento": [
+    { "fuente": "FNDR", "item": "…", "clasificador": "…",
+      "solicitado_ano_actual": 100000000, "solicitado_ano_siguiente": 50000000, "costo_total": 150000000 }
   ],
-  "registro_documental_evaluacion": {
-    "numero_registro": "REG-DIP-2026-0142",
-    "fecha_registro": "2026-08-28",
-    "registrado_por": "Diego Alexis Castro Henríquez",
-    "referencia_oficio": "ORD. GR. N° 1780 del 2026-08-28",
-    "url_validador_docdigital": "https://doc.digital.gob.cl/validador/..."
-  }
+  "fuentes_financiamiento_evaluacion": [
+    { "fuente": "FNDR", "presentado_ano_actual": 100000000, "recomendado_ano_actual": 90000000,
+      "presentado_ano_siguiente": 50000000, "recomendado_ano_siguiente": 50000000,
+      "costo_total_presentado": 150000000, "costo_total_recomendado": 140000000 }
+  ],
+  "costo_total_presentado": 150000000,
+  "costo_total_recomendado": 140000000
 }
 ```
+(Para el ejemplo real y completo, pulse el botón de guardar en el formulario con cualquiera de los ejemplos cargados.)
 
-Los esquemas completos de los cuatro modelos y del seguimiento de cartera están en `js/schemas.js`, disponibles también como visor interactivo en `index.html`.
+### Sugerencia de modelo relacional
+- `iniciativa` (código BIP/IDI, nombre, línea, localización, tipología).
+- `evaluacion` (FK iniciativa, instancia, número de iteración, estado, fechas, `costo_total_presentado`, `costo_total_recomendado`, payload JSON completo).
+- `financiamiento_linea` (FK evaluacion, tipo = `presentado`/`evaluacion`, fuente, ítem, clasificador, montos por año).
+- `documento` (FK evaluacion, registro documental).
+Guardar además el JSON crudo (columna JSON) para trazabilidad. Dashboard: agrupar por línea, estado, comuna/provincia y comparar `costo_total_presentado` vs `costo_total_recomendado`.
+
+---
+
+## 10. Catálogos y datos de apoyo
+
+- **Localización:** [js/localizacion.js](js/localizacion.js) – provincias y comunas de Los Lagos.
+- **ERD regional:** [js/erd-regional-data.js](js/erd-regional-data.js) y **Programa Gobernador:** [js/gobernador-data.js](js/gobernador-data.js), usados por [js/erd-selector.js](js/erd-selector.js) (secciones plegables de selección múltiple). Si cambia la estrategia, solo se actualizan estos archivos.
+- **Ejemplos precargados:** `cargarEjemploCircular33`, `cargarEjemploEvaluacionC33`, `cargarEjemplo5000UtmConObs` / `SinObs`, `cargarEjemploProgramaSalud` / `Renal`, `cargarEjemploPertinenciaFavorable` / `Observada` (botones en cada formulario; útiles para pruebas).
+
+---
+
+## 11. Despliegue en el sitio de Informática
+
+**Opción simple (recomendada para iniciar):** copiar estos elementos a cualquier servidor web estático (IIS, Nginx, Apache, SharePoint/portal intranet):
+
+`index.html`, `pertinencia.html`, `circular-33.html`, `evaluacion-5000-utm.html`, `evaluacion-programas.html`, carpetas `css/`, `js/`, `assets/`.
+
+No requiere build ni servidor de aplicaciones. Rutas relativas; funciona bajo cualquier subcarpeta. Servir con `Content-Type` UTF-8. **No** publicar `README.md` ni `Referencia de los procesos/` (documentos reales).
+
+**Integración con backend (trabajo pendiente para Informática):**
+1. Hoy el payload solo se muestra en un modal. Para enviarlo, reemplazar en cada `guardarFormulario*` la llamada `showJsonModal(...)` por un `fetch('/api/…', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) })` (o añadir el envío manteniendo el modal).
+2. Implementar el endpoint que valide contra [js/schemas.js](js/schemas.js), re-sanee `desglose_clasificador` y almacene.
+3. Agregar autenticación (SSO/AD institucional) y control de roles: el front no la trae.
+4. Persistencia/borradores: no existe; considerar guardar el payload por iniciativa e historial de iteraciones, y permitir recargarlo en el formulario (requiere una función de "cargar payload", no implementada).
+5. Dashboard: consumir las tablas derivadas de sección 9.
+
+Referencia del despliegue actual: [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml) (en cada push a `main` copia los HTML, `css/`, `js/` y `assets/` a `_site`).
+
+---
+
+## 12. Impresión / PDF
+
+- Paso 3 usa [css/print.css](css/print.css): `@page` define márgenes; elementos con clase `.no-print` (selectores, botones, pestañas) se ocultan; `mostrarSoloFicha` deja solo la ficha.
+- La ficha referencia datos del paso 1 y del paso 2 (incluye la tabla de financiamiento recomendado en M$). Se genera con *Imprimir → Guardar como PDF*.
+
+---
+
+## 13. Limitaciones conocidas
+
+- Sin persistencia, autenticación ni envío a servidor (ver sección 11).
+- El cuadro de financiamiento de evaluación no se archiva por iteración (solo el valor vigente).
+- `seguimientoCartera` existe en `schemas.js`, pero ningún formulario lo implementa.
+- Pertinencia aún usa `costo_total` (no distingue presentado/recomendado).
+- Los datos viven en el DOM: los pasos ocultos no son editables hasta activar su pestaña.
+- El sitio de pruebas en GitHub Pages es público; no ingresar datos reales.
+
+---
+
+## 14. Pruebas y mantenimiento
+
+- Abrir cualquier HTML en el navegador y usar los botones de ejemplo; revisar el payload en el modal.
+- Pruebas automatizadas: no hay suite; se verificó con Playwright (tipeo de montos, sincronización presentado/recomendado, edición del desglose). Al automatizar, los paneles de pasos ocultos requieren activar la pestaña antes (`cambiarPasoC33('evaluacion')`, etc.) o usar `evaluate`.
+- Al agregar un campo: (1) agregarlo con `name`/`data-field` en el HTML, (2) actualizar `js/schemas.js`, (3) actualizar este README.
+- Entorno Windows + Google Drive: pueden aparecer archivos `desktop.ini` dentro de `.git\refs` que rompen `git pull`; eliminarlos.
+
+## 15. Guía rápida para herramientas de IA
+
+- Fuente de verdad del contrato: `js/schemas.js`; lógica compartida: `js/app.js`; lógica específica y funciones de guardado: bloque `<script>` al final de cada HTML.
+- No hay build: editar y recargar. Mantener español, UTF-8 y nombres de claves existentes (consumidores aguas abajo dependen de ellos).
+- Cambios en financiamiento deben aplicarse en forma coherente a los tres formularios (Circular 33, 5.000 UTM, Programas).
+- Las claves `costo_total_presentado` y `costo_total_recomendado` son el insumo del dashboard; no renombrar.
