@@ -353,7 +353,7 @@
                      aria-describedby="c33_desglose_ayuda c33_desglose_error"
                      data-placeholder="Haga clic aquí y pegue (Ctrl+V) la tabla copiada desde la hoja de cálculo."></div>
                 <textarea id="c33_desglose_valor" name="evaluacion_c33.desglose_clasificador" hidden disabled></textarea>
-                <span id="c33_desglose_ayuda" class="form-hint">Se detecta el formato de la tabla copiada (celdas, combinaciones, alineación y negrita). Cada pegado se agrega a continuación del anterior; también se acepta una captura de pantalla de la tabla.</span>
+                <span id="c33_desglose_ayuda" class="form-hint">Se detecta el formato de la tabla copiada (celdas, combinaciones, alineación y negrita). Cada pegado se agrega a continuación del anterior; también se acepta una captura de pantalla de la tabla. Puede hacer clic en cualquier celda para modificar su texto o números.</span>
                 <span id="c33_desglose_error" class="form-hint desglose-error" role="alert" hidden>Pegue el desglose según clasificador presupuestario para una iniciativa recomendada del subtítulo 29.</span>
               </div>
             </div>
@@ -752,7 +752,10 @@
 
     function sincronizarDesgloseC33() {
       const editor = document.getElementById('c33_desglose_editor');
-      document.getElementById('c33_desglose_valor').value = editor.innerHTML;
+      editor.querySelectorAll('td, th').forEach(celda => celda.setAttribute('contenteditable', 'true'));
+      const copia = editor.cloneNode(true);
+      copia.querySelectorAll('[contenteditable]').forEach(nodo => nodo.removeAttribute('contenteditable'));
+      document.getElementById('c33_desglose_valor').value = copia.innerHTML;
       const aplica = actualizarVisibilidadDesgloseC33();
       const faltante = aplica && !editor.innerHTML;
       document.getElementById('c33_desglose_error').hidden = !(faltante && desgloseC33ValidacionMostrada);
@@ -829,14 +832,22 @@
       const editor = document.getElementById('c33_desglose_editor');
       editor.addEventListener('paste', evento => {
         evento.preventDefault();
+        const texto = evento.clipboardData.getData('text/plain');
+        if (evento.target.closest?.('td, th') && !texto.includes('\t')) {
+          document.execCommand('insertText', false, texto);
+          sincronizarDesgloseC33();
+          return;
+        }
         pegarEnDesgloseC33(evento.clipboardData);
       });
+      editor.addEventListener('input', sincronizarDesgloseC33);
       editor.addEventListener('dragover', evento => evento.preventDefault());
       editor.addEventListener('drop', evento => {
         evento.preventDefault();
         pegarEnDesgloseC33(evento.dataTransfer);
       });
       editor.addEventListener('keydown', evento => {
+        if (evento.target.closest?.('td, th')) return;
         if (!(evento.ctrlKey || evento.metaKey) && evento.key.length === 1) evento.preventDefault();
       });
       document.getElementById('c33_desglose_limpiar').addEventListener('click', () => cargarDesgloseC33(''));
