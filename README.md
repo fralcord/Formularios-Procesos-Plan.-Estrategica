@@ -110,7 +110,7 @@ Todo estado que coincida con `/OBSERV/i` **abre una nueva iteración**.
 - Localización: provincia → comuna dependientes (`localizacion.js`).
 - Circular 33: el **desglose por clasificador** es obligatorio cuando `subtitulo = 29` y estado `RECOMENDADO TÉCNICAMENTE` (`validarDesgloseC33`).
 - 5.000 UTM: financiamiento fijo FNDR / subtítulo 31 / ítem 02 PROYECTOS; las asignaciones (001–007 y 999) dependen de la etapa. Las filas vacías se filtran del payload.
-- Circular 33: subtítulos 22, 29 y 31 con catálogo propio de ítems y asignaciones.
+- Circular 33: subtítulos 22, 29 y 31 con catálogo propio de ítems. El cuadro de financiamiento llega **solo hasta el ítem** (sin asignación): el `clasificador` se guarda como `subtítulo-ítem` (ej. `29-05`) y se muestra como "Clasificador presupuestario" en el paso 2 y en la ficha.
 - Pertinencia: filtra filas de financiamiento vacías y calcula `costo_total`.
 
 ---
@@ -146,7 +146,7 @@ Payload resultante: bloque `proceso` (`modelo`, `linea_evaluacion`, `instancia_e
 ## 7. Financiamiento: presentado vs recomendado
 
 ### Paso 1 – "Fuente de financiamiento" (lo presentado)
-Tabla `fuentes_financiamiento` (tbody: `c33_fin_body`, `financiamiento_5000_body`, `prog_fin_body`). Por línea: `fuente`, `item`, `clasificador`, `solicitado_ano_actual`, `solicitado_ano_siguiente`, `costo_total`.
+Tabla `fuentes_financiamiento` (tbody: `c33_fin_body`, `financiamiento_5000_body`, `prog_fin_body`). Por línea: `fuente`, `item`, `clasificador`, `solicitado_ano_actual`, `solicitado_ano_siguiente`, `costo_total`. En Circular 33 el cuadro llega hasta el ítem (columnas Fuente, Ítem, montos) y `clasificador` = `subtítulo-ítem`; no existe `clasificador_descripcion` ni columna de asignación.
 
 ### Paso 2 – cuadro de financiamiento de evaluación (Circular 33, 5.000 UTM, Programas)
 Replica el cuadro del paso 1 **como referencia y a la vez editable**: el evaluador confirma lo propuesto o lo modifica con el resultado de la evaluación.

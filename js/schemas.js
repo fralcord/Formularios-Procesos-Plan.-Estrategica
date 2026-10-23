@@ -233,8 +233,7 @@ trazabilidad: {
           subtitulo: { tipo: "string" },
           item: { tipo: "string" },
           item_descripcion: { tipo: "string" },
-          clasificador: { tipo: "string" },
-          clasificador_descripcion: { tipo: "string" },
+          clasificador: { tipo: "string", descripcion: "Clasificador presupuestario hasta el ítem, formato subtítulo-ítem (ej. 29-05); no incluye asignación" },
           solicitado_ano_actual: { tipo: "number", unidad: "pesos" },
           solicitado_ano_siguiente: { tipo: "number", unidad: "pesos" },
           costo_total: { tipo: "number", unidad: "pesos" }
